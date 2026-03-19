@@ -119,8 +119,7 @@ function buildContactDetailHtml(id) {
 
   if (id === 'omc-patch') {
     html += `<div class="section-card contact-intro-card">
-      <p class="contact-lead">Reference poster for Online Medical Consultation (OMC) patch process. Tap the patch number to call.</p>
-      <img class="omc-poster-img" src="assets/omc-patch.png" alt="Online Medical Consultation OMC reference poster" />
+      <p class="contact-lead">Reference poster for Online Medical Consultation (OMC) patch process. ISBAR, connection backup, and patch number are on the poster. Tap below or on the poster to call.</p>
     </div>`;
 
     html += `<div class="section-card patch-callout-card">
@@ -128,27 +127,8 @@ function buildContactDetailHtml(id) {
       <a class="patch-callout-number" href="tel:+18885548011">1-888-554-8011</a>
     </div>`;
 
-    html += `<div class="section-card"><div class="section-heading">ISBAR patching template</div>
-      <p class="contact-muted">Structure your report using ISBAR:</p>
-      <div class="isbar-stack">`;
-    const isbar = [
-      ['i', 'Identification', 'Identify BHP & introduce yourself (OASIS, service, ACP / PCP).'],
-      ['S', 'Situation', 'Orders sought — age, sex, weight, problem / concern, ETA to hospital.'],
-      ['B', 'Background', 'Pertinent +/- HPI (OPQRST), PMHx (SAMPLE).'],
-      ['A', 'Assessment', 'Pertinent +/- physical exam, vital signs, ECG.'],
-      ['R', 'Response', 'Response to treatment; reiterate orders sought; receive orders; <strong>repeat back orders</strong>.'],
-    ];
-    isbar.forEach(([letter, label, body]) => {
-      html += `<div class="isbar-card">
-        <div class="isbar-letter"><span>${letter}</span><small>${esc(label)}</small></div>
-        <div class="isbar-body">${body}</div>
-      </div>`;
-    });
-    html += `</div></div>`;
-
-    html += `<div class="section-card connection-backup-card">
-      <div class="section-heading">Connection issues</div>
-      <p>Use <strong>CACC / radio backup</strong> to reach OMC BHP if the primary line fails.</p>
+    html += `<div class="section-card contact-poster-card">
+      <img class="omc-poster-img" src="assets/omc-patch.png" alt="Online Medical Consultation OMC reference poster" />
     </div>`;
     return html;
   }

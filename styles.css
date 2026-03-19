@@ -2,6 +2,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
+  --page-gutter: 20px;
   --navy:    #0D2B55;
   --blue:    #3A82B8;
   --red:     #B03030;
@@ -270,7 +271,7 @@ body {
 .detail-content { background: var(--bg); padding-bottom: 32px; }
 
 .detail-scope-banner {
-  padding: 10px 16px;
+  padding: 10px var(--page-gutter);
   color: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -278,7 +279,7 @@ body {
 }
 
 .detail-cat-banner {
-  padding: 12px 16px;
+  padding: 12px var(--page-gutter);
   color: #fff;
   font-size: 16px;
   font-weight: 600;
@@ -309,13 +310,13 @@ body {
   font-size: 20px;
   font-weight: 700;
   color: var(--text);
-  padding: 16px 16px 4px;
+  padding: 16px var(--page-gutter) 4px;
   background: var(--white);
 }
 .detail-auth {
   font-size: 13px;
   color: var(--subtext);
-  padding: 0 16px 16px;
+  padding: 0 var(--page-gutter) 16px;
   background: var(--white);
   border-bottom: 1px solid var(--border);
   line-height: 1.4;
@@ -329,20 +330,28 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
+/* First body paragraph after a section heading (contact pages, etc.) */
+.section-card > .section-heading + p:not(.address-block):not(.contact-muted) {
+  padding: 12px var(--page-gutter) 14px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
 .section-heading {
   font-size: 13px;
   font-weight: 700;
   color: var(--subtext);
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  padding: 12px 16px 6px;
+  padding: 12px var(--page-gutter) 6px;
   border-bottom: 1px solid var(--border);
 }
 
 .section-heading.red { color: var(--red); }
 
 .indications-list {
-  padding: 10px 16px 14px;
+  padding: 10px var(--page-gutter) 14px;
   list-style: none;
 }
 .indications-list li {
@@ -364,7 +373,7 @@ body {
   font-size: 13px;
   font-weight: 700;
   color: var(--blue);
-  padding: 10px 16px 6px;
+  padding: 10px var(--page-gutter) 6px;
   letter-spacing: 0.2px;
 }
 .conditions-table {
@@ -398,11 +407,11 @@ body {
   font-size: 13px;
   font-weight: 700;
   color: #B03030;
-  padding: 10px 16px 4px;
+  padding: 10px var(--page-gutter) 4px;
 }
 .contra-list {
   list-style: none;
-  padding: 0 16px 8px;
+  padding: 0 var(--page-gutter) 8px;
 }
 .contra-list li {
   font-size: 14px;
@@ -424,7 +433,7 @@ body {
 .table-scroll-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 0 16px;
+  padding: 0 var(--page-gutter);
 }
 
 /* Treatment tables */
@@ -433,7 +442,7 @@ body {
   font-size: 14px;
   font-weight: 700;
   color: var(--text);
-  padding: 10px 16px 6px;
+  padding: 10px var(--page-gutter) 6px;
 }
 .treatment-table {
   width: 100%;
@@ -464,7 +473,7 @@ body {
 .treatment-note {
   font-size: 12.5px;
   color: var(--subtext);
-  padding: 4px 16px 0;
+  padding: 4px var(--page-gutter) 0;
   line-height: 1.4;
   font-style: italic;
 }
@@ -473,7 +482,7 @@ body {
 .patch-point {
   background: #FFF3E0;
   border-left: 3px solid var(--orange);
-  margin: 0 16px 8px;
+  margin: 0 var(--page-gutter) 8px;
   padding: 10px 12px;
   border-radius: 0 4px 4px 0;
   font-size: 13.5px;
@@ -484,7 +493,7 @@ body {
 /* Clinical considerations */
 .cc-list {
   list-style: none;
-  padding: 8px 16px 12px;
+  padding: 8px var(--page-gutter) 12px;
 }
 .cc-list li {
   font-size: 14px;
@@ -505,7 +514,7 @@ body {
 }
 
 /* Treat & Discharge / Refer */
-.tnd-block { padding: 8px 16px 12px; }
+.tnd-block { padding: 8px var(--page-gutter) 12px; }
 .tnd-title {
   font-size: 13px;
   font-weight: 700;
@@ -551,14 +560,14 @@ body {
   font-size: 14px;
   font-weight: 700;
   color: var(--blue);
-  padding: 10px 16px 4px;
+  padding: 10px var(--page-gutter) 4px;
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
 .comp-section-body {
   font-size: 14.5px;
   color: var(--text);
-  padding: 2px 16px 10px;
+  padding: 2px var(--page-gutter) 10px;
   line-height: 1.6;
   white-space: pre-wrap;
 }
@@ -611,8 +620,8 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 10px 16px;
-  margin: 0 16px 8px;
+  padding: 12px 16px;
+  margin: 12px var(--page-gutter) 16px;
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -623,12 +632,11 @@ body {
 }
 .my-notes-anchor svg { flex-shrink: 0; }
 .my-notes-section {
-  margin: 0;
   background: var(--white);
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--border);
-  margin: 0 16px 20px;
+  margin: 32px var(--page-gutter) 28px;
 }
 .my-notes-header {
   display: flex;
@@ -732,7 +740,7 @@ body {
 }
 
 /* ── Reference Detail ────────────────────────────────── */
-.ref-detail { padding: 16px; }
+.ref-detail { padding: var(--page-gutter); }
 
 .ref-subheading {
   font-size: 14px;
@@ -1397,9 +1405,23 @@ body {
 .tel-link:active,
 .mailto-link:active { opacity: 0.75; }
 
+.contact-intro-card .contact-lead {
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+  padding: 14px var(--page-gutter) 16px;
+  color: var(--text);
+}
 .contact-lead { font-size: 14px; line-height: 1.5; margin-bottom: 12px; color: var(--text); }
-.contact-muted { font-size: 12px; color: var(--gray); margin-bottom: 10px; line-height: 1.4; }
-.contact-footnote { font-size: 11px; color: var(--gray); }
+.contact-muted {
+  font-size: 12px;
+  color: var(--gray);
+  margin: 0;
+  padding: 0 var(--page-gutter) 12px;
+  line-height: 1.4;
+}
+.contact-footnote { font-size: 11px; color: var(--gray); padding: 12px var(--page-gutter) 16px; }
+.contact-poster-card { padding: 4px var(--page-gutter) 18px; }
 
 .omc-poster-img {
   display: block;
@@ -1415,6 +1437,7 @@ body {
   text-align: center;
   background: linear-gradient(180deg, #e8f4fc 0%, #d4e9f7 100%);
   border: 1px solid #b8d4ea;
+  padding: 18px var(--page-gutter) 22px;
 }
 .patch-callout-label {
   font-size: 11px;
@@ -1485,14 +1508,15 @@ body {
 .org-address-card .address-block {
   font-size: 15px;
   line-height: 1.5;
-  margin: 10px 0 14px;
+  margin: 4px 0 8px;
+  padding: 0 var(--page-gutter);
 }
 .kv-row {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 8px 16px;
-  padding: 8px 0;
+  padding: 8px var(--page-gutter);
   border-top: 1px solid var(--border);
   font-size: 14px;
 }
@@ -1505,6 +1529,7 @@ body {
   grid-template-columns: 1fr;
   gap: 8px;
   margin-top: 8px;
+  padding: 0 var(--page-gutter) 16px;
 }
 @media (min-width: 480px) {
   .physician-card-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1519,7 +1544,7 @@ body {
 .info-chip-meta { font-size: 12px; color: var(--blue); margin-top: 4px; font-weight: 600; }
 
 /* Staff cards */
-.staff-card-list { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+.staff-card-list { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; padding: 0 var(--page-gutter) 16px; }
 .staff-card {
   background: var(--bg);
   border-radius: 12px;
@@ -1546,7 +1571,12 @@ body {
 }
 
 /* Phone “table” rows */
-.phone-table { margin-top: 8px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.phone-table {
+  margin: 8px var(--page-gutter) 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
 .phone-table-row {
   display: flex;
   flex-direction: column;
@@ -1560,7 +1590,7 @@ body {
 .ptr-num { font-size: 15px; }
 
 /* CAS cards */
-.cas-card-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+.cas-card-list { display: flex; flex-direction: column; gap: 12px; margin: 10px var(--page-gutter) 16px; }
 .cas-card {
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -1578,6 +1608,7 @@ body {
   flex-direction: column;
   gap: 14px;
   margin-top: 12px;
+  padding: 0 var(--page-gutter) 16px;
 }
 .patch-field {
   border: 1px solid var(--border);
@@ -1618,7 +1649,7 @@ body {
 .patch-line-full { grid-column: 1 / -1; }
 
 /* On-scene option cards */
-.option-cards { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+.option-cards { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; padding: 0 var(--page-gutter) 16px; }
 .option-card {
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -1634,8 +1665,9 @@ body {
 .option-card p { font-size: 14px; line-height: 1.45; color: var(--text); }
 
 .numbered-steps {
-  margin: 10px 0 0 0;
+  margin: 10px var(--page-gutter) 0;
   padding-left: 22px;
+  padding-right: var(--page-gutter);
   font-size: 14px;
   line-height: 1.55;
 }

@@ -5,6 +5,8 @@ const $ = id => document.getElementById(id);
 // ─── State ──────────────────────────────────────────────────────────────────
 const state = {
   history: [],
+  /** Screens undone via Back, for swipe-forward (most recent at end). */
+  forwardStack: [],
 };
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -12,6 +14,7 @@ function showView(viewId, title, pushHistory = true) {
   const current = document.querySelector('.view.active');
   if (current) {
     if (pushHistory && current.id !== viewId) {
+      state.forwardStack = [];
       state.history.push({ viewId: current.id, title: $('header-title').textContent, scrollY: window.scrollY });
     }
     current.classList.remove('active');
@@ -28,8 +31,15 @@ function showView(viewId, title, pushHistory = true) {
 
 function goBack() {
   if (!state.history.length) return;
-  const prev = state.history.pop();
   const cur = document.querySelector('.view.active');
+  if (cur) {
+    state.forwardStack.push({
+      viewId: cur.id,
+      title: $('header-title').textContent,
+      scrollY: window.scrollY,
+    });
+  }
+  const prev = state.history.pop();
   if (cur) { cur.classList.remove('active'); cur.hidden = true; }
   const target = $(prev.viewId);
   target.hidden = false;
@@ -39,9 +49,75 @@ function goBack() {
   requestAnimationFrame(() => window.scrollTo(0, prev.scrollY || 0));
 }
 
+function goForward() {
+  if (!state.forwardStack.length) return;
+  const cur = document.querySelector('.view.active');
+  if (cur) {
+    state.history.push({
+      viewId: cur.id,
+      title: $('header-title').textContent,
+      scrollY: window.scrollY,
+    });
+  }
+  const next = state.forwardStack.pop();
+  if (cur) { cur.classList.remove('active'); cur.hidden = true; }
+  const target = $(next.viewId);
+  target.hidden = false;
+  target.classList.add('active');
+  $('header-title').textContent = next.title;
+  updateBackButtonVisibility(next.viewId);
+  requestAnimationFrame(() => window.scrollTo(0, next.scrollY || 0));
+}
+
 function updateBackButtonVisibility(activeViewId) {
   const onHome = activeViewId === 'view-home';
   $('back-btn').hidden = onHome || state.history.length === 0;
+}
+
+/** iOS PWA has no system swipe-back; mimic Safari with edge gestures. */
+function setupEdgeSwipeNavigation() {
+  const EDGE = 32;
+  const SWIPE_MIN = 70;
+  let startX = 0;
+  let startY = 0;
+  let fromLeftEdge = false;
+  let fromRightEdge = false;
+
+  document.body.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) {
+      fromLeftEdge = fromRightEdge = false;
+      return;
+    }
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+      fromLeftEdge = fromRightEdge = false;
+      return;
+    }
+    const t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
+    const w = window.innerWidth;
+    fromLeftEdge = startX <= EDGE;
+    fromRightEdge = startX >= w - EDGE;
+  }, { passive: true });
+
+  document.body.addEventListener('touchend', e => {
+    if (!fromLeftEdge && !fromRightEdge) return;
+    if (e.changedTouches.length !== 1) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    if (Math.abs(dy) > Math.abs(dx) * 1.25) {
+      fromLeftEdge = fromRightEdge = false;
+      return;
+    }
+    if (fromLeftEdge && dx > SWIPE_MIN && state.history.length > 0) {
+      const onHome = document.querySelector('#view-home.active');
+      if (!onHome) goBack();
+    } else if (fromRightEdge && dx < -SWIPE_MIN && state.forwardStack.length > 0) {
+      goForward();
+    }
+    fromLeftEdge = fromRightEdge = false;
+  }, { passive: true });
 }
 
 // ─── Flowchart Viewer ────────────────────────────────────────────────────────
@@ -971,6 +1047,8 @@ function init() {
       }
     });
   });
+
+  setupEdgeSwipeNavigation();
 
   // Register Service Worker
   if ('serviceWorker' in navigator) {
