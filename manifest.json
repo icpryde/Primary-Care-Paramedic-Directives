@@ -1,9 +1,10 @@
 {
+  "id": "https://icpryde.github.io/Primary-Care-Paramedic-Directives/",
   "name": "PCP Medical Directives",
   "short_name": "Directives",
   "description": "Ontario ALS PCS v5.4 Primary Care Paramedic Medical Directives",
-  "start_url": "/Primary-Care-Paramedic-Directives/",
-  "scope": "/Primary-Care-Paramedic-Directives/",
+  "start_url": "https://icpryde.github.io/Primary-Care-Paramedic-Directives/",
+  "scope": "https://icpryde.github.io/Primary-Care-Paramedic-Directives/",
   "display": "standalone",
   "background_color": "#0D2B55",
   "theme_color": "#0D2B55",
