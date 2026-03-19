@@ -1334,3 +1334,309 @@ body {
 .text-muted { color: var(--gray); font-size: 12px; }
 .divider    { height: 1px; background: var(--border); margin: 0 16px; }
 .spacer     { height: 12px; }
+
+/* ── Home: Special Event & Contact buttons ───────────── */
+.cat-specialevent { background: #6B4E9E; }
+.cat-contact      { background: #8B7355; }
+
+/* ── Special Event / Contact list views ──────────────── */
+.specialevent-banner,
+.contact-top-banner {
+  background: var(--navy);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  padding: 14px 16px;
+}
+.contact-top-banner { background: #6d5a4a; }
+
+.view-intro {
+  font-size: 13px;
+  color: var(--subtext);
+  padding: 12px 16px 8px;
+  line-height: 1.45;
+  background: var(--bg);
+}
+
+.category-list.flat-list {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+}
+
+.bg-specialevent {
+  background: linear-gradient(135deg, #5c3d8a 0%, #6B4E9E 100%) !important;
+}
+.bg-specialevent-sub {
+  background: #7d5fb0 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.contact-banner-mauve {
+  background: #8B7355 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.contact-detail-title {
+  font-size: 17px !important;
+  line-height: 1.35;
+}
+
+/* ── Contact: links & typography ─────────────────────── */
+.tel-link,
+.mailto-link {
+  color: var(--blue);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 2px 0;
+  -webkit-tap-highlight-color: rgba(58, 130, 184, 0.2);
+}
+.tel-link:active,
+.mailto-link:active { opacity: 0.75; }
+
+.contact-lead { font-size: 14px; line-height: 1.5; margin-bottom: 12px; color: var(--text); }
+.contact-muted { font-size: 12px; color: var(--gray); margin-bottom: 10px; line-height: 1.4; }
+.contact-footnote { font-size: 11px; color: var(--gray); }
+
+.omc-poster-img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+.patch-callout-card {
+  text-align: center;
+  background: linear-gradient(180deg, #e8f4fc 0%, #d4e9f7 100%);
+  border: 1px solid #b8d4ea;
+}
+.patch-callout-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--navy);
+  text-transform: uppercase;
+}
+.patch-callout-number {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--navy);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+.patch-callout-number:active { opacity: 0.8; }
+
+.isbar-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.isbar-card {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.isbar-letter {
+  background: var(--navy);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 6px;
+  text-align: center;
+}
+.isbar-letter span {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+}
+.isbar-letter small {
+  display: block;
+  margin-top: 6px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  opacity: 0.9;
+  line-height: 1.2;
+}
+.isbar-body {
+  background: var(--white);
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.connection-backup-card {
+  background: #eef6fb;
+  border-left: 4px solid var(--blue);
+}
+
+.org-address-card .address-block {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 10px 0 14px;
+}
+.kv-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+}
+.kv-label { font-weight: 600; color: var(--subtext); min-width: 88px; }
+.kv-val { flex: 1; min-width: 0; }
+
+/* Physician CPSO chips */
+.physician-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+@media (min-width: 480px) {
+  .physician-card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.info-chip-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.info-chip-name { font-weight: 600; font-size: 14px; color: var(--text); }
+.info-chip-meta { font-size: 12px; color: var(--blue); margin-top: 4px; font-weight: 600; }
+
+/* Staff cards */
+.staff-card-list { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+.staff-card {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+}
+.staff-card-name { font-size: 16px; font-weight: 700; color: var(--navy); }
+.staff-card-role { font-size: 13px; color: var(--subtext); margin-top: 4px; line-height: 1.35; }
+.staff-card-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+.staff-card-rows span em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--gray);
+  margin-right: 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Phone “table” rows */
+.phone-table { margin-top: 8px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.phone-table-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+.phone-table-row:last-child { border-bottom: none; }
+.ptr-org { font-weight: 600; font-size: 14px; color: var(--text); line-height: 1.35; }
+.ptr-num { font-size: 15px; }
+
+/* CAS cards */
+.cas-card-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+.cas-card {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  background: linear-gradient(180deg, #fff 0%, #f9fafb 100%);
+}
+.cas-org { font-weight: 700; font-size: 14px; color: var(--navy); line-height: 1.35; margin-bottom: 10px; }
+.cas-lines { display: flex; flex-direction: column; gap: 8px; }
+.cas-line { font-size: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cas-line span:first-child { color: var(--gray); font-size: 12px; font-weight: 600; min-width: 64px; }
+
+/* Patching template */
+.patch-template-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 12px;
+}
+.patch-field {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #fafbfc;
+}
+.patch-field-wide { grid-column: 1 / -1; }
+.patch-field-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.patch-choices { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--gray); font-size: 12px; }
+.patch-blank {
+  min-height: 36px;
+  border-radius: 6px;
+  border: 1px dashed #c5c5c7;
+  background: #fff;
+}
+.patch-blank-tall { min-height: 64px; }
+.patch-subgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.patch-line {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--subtext);
+}
+.patch-line-full { grid-column: 1 / -1; }
+
+/* On-scene option cards */
+.option-cards { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+.option-card {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  background: var(--white);
+}
+.option-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.option-card p { font-size: 14px; line-height: 1.45; color: var(--text); }
+
+.numbered-steps {
+  margin: 10px 0 0 0;
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.numbered-steps li { margin-bottom: 10px; }

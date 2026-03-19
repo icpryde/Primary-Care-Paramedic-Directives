@@ -23,7 +23,7 @@ function showView(viewId, title, pushHistory = true) {
   window.scrollTo(0, 0);
 
   $('header-title').textContent = title || 'MEDICAL DIRECTIVES';
-  $('back-btn').hidden = state.history.length === 0;
+  updateBackButtonVisibility(viewId);
 }
 
 function goBack() {
@@ -35,8 +35,13 @@ function goBack() {
   target.hidden = false;
   target.classList.add('active');
   $('header-title').textContent = prev.title;
-  $('back-btn').hidden = state.history.length === 0;
+  updateBackButtonVisibility(target.id);
   requestAnimationFrame(() => window.scrollTo(0, prev.scrollY || 0));
+}
+
+function updateBackButtonVisibility(activeViewId) {
+  const onHome = activeViewId === 'view-home';
+  $('back-btn').hidden = onHome || state.history.length === 0;
 }
 
 // ─── Flowchart Viewer ────────────────────────────────────────────────────────
@@ -582,6 +587,105 @@ function renderReferenceDetail(ref) {
   $('detail-content').innerHTML = html;
 }
 
+// ─── Special Event & Contact ───────────────────────────────────────────────────
+function renderSpecialEventDetail(directive) {
+  let html = '';
+
+  html += `<div class="detail-scope-banner bg-specialevent">SPECIAL EVENT DIRECTIVES</div>`;
+  html += `<div class="detail-cat-banner bg-specialevent-sub">${directive.title}</div>`;
+  html += `<div class="detail-title">${directive.fullTitle}</div>`;
+  html += `<div class="detail-auth">${directive.scopeNote}</div>`;
+  html += renderMyNotesAnchor();
+
+  if (directive.indications && directive.indications.length) {
+    html += `<div class="section-card">
+      <div class="section-heading">Indications</div>
+      <ul class="indications-list">`;
+    directive.indications.forEach(ind => {
+      const isConnector = ind === 'AND' || ind === 'OR';
+      html += `<li class="${isConnector ? 'and-connector' : ''}">${ind}</li>`;
+    });
+    html += `</ul></div>`;
+  }
+
+  const condKeys = Object.keys(directive.conditions || {});
+  if (condKeys.length) {
+    html += `<div class="section-card"><div class="section-heading">Conditions</div><div class="conditions-block">`;
+    condKeys.forEach(med => {
+      const c = directive.conditions[med];
+      html += `<div class="conditions-med-label">${med}</div>`;
+      html += `<div class="table-scroll-wrap"><table class="conditions-table">`;
+      [
+        ['Age', c.age],
+        ['LOA', c.loa],
+        ['HR', c.hr],
+        ['RR', c.rr],
+        ['SBP', c.sbp],
+        ['Other', c.other],
+      ].forEach(([label, val]) => {
+        html += `<tr><td>${label}</td><td>${String(val || 'N/A').replace(/\n/g, '<br>')}</td></tr>`;
+      });
+      html += `</table></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  if (directive.clinicalConsiderations && directive.clinicalConsiderations.length) {
+    html += `<div class="section-card"><div class="section-heading">Clinical Considerations</div><ul class="cc-list">`;
+    directive.clinicalConsiderations.forEach(cc => {
+      html += `<li>${cc}</li>`;
+    });
+    html += `</ul></div>`;
+  }
+
+  html += renderMyNotesSection(directive.id);
+  $('detail-content').innerHTML = html;
+}
+
+function renderContactDetail(pageId, pageTitle) {
+  let html = '';
+
+  html += `<div class="detail-scope-banner bg-red">PRIMARY CARE PARAMEDIC</div>`;
+  html += `<div class="detail-cat-banner contact-banner-mauve">Contact</div>`;
+  html += `<div class="detail-title contact-detail-title">${pageTitle}</div>`;
+  html += renderMyNotesAnchor();
+  html += typeof buildContactDetailHtml === 'function' ? buildContactDetailHtml(pageId) : '';
+  html += renderMyNotesSection('contact-' + pageId);
+  $('detail-content').innerHTML = html;
+}
+
+function buildSpecialEventView() {
+  const container = $('special-event-list');
+  if (!container || typeof SPECIAL_EVENT_DIRECTIVES === 'undefined') return;
+  container.innerHTML = '';
+  SPECIAL_EVENT_DIRECTIVES.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'directive-row';
+    row.innerHTML = `<span class="directive-row-title">${d.title}</span><span class="directive-row-chevron"></span>`;
+    row.addEventListener('click', () => {
+      renderSpecialEventDetail(d);
+      showView('view-detail', d.title);
+    });
+    container.appendChild(row);
+  });
+}
+
+function buildContactView() {
+  const container = $('contact-list');
+  if (!container || typeof CONTACT_MENU === 'undefined') return;
+  container.innerHTML = '';
+  CONTACT_MENU.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'directive-row';
+    row.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="directive-row-chevron"></span>`;
+    row.addEventListener('click', () => {
+      renderContactDetail(item.id, item.title);
+      showView('view-detail', item.title);
+    });
+    container.appendChild(row);
+  });
+}
+
 // ─── Search ──────────────────────────────────────────────────────────────────
 function buildSearchIndex() {
   const index = [];
@@ -618,6 +722,31 @@ function buildSearchIndex() {
         id: r.id, title: r.title, catLabel: 'Medical References',
         text: [r.title, r.content].join(' ').toLowerCase().replace(/<[^>]*>/g, ''),
         type: 'reference', data: r
+      });
+    });
+  }
+  if (typeof SPECIAL_EVENT_DIRECTIVES !== 'undefined') {
+    SPECIAL_EVENT_DIRECTIVES.forEach(d => {
+      index.push({
+        id: d.id,
+        title: d.title,
+        catLabel: 'Special Event',
+        text: [d.title, d.fullTitle, ...(d.indications || []), ...(d.clinicalConsiderations || []),
+          ...Object.keys(d.conditions || {})].join(' ').toLowerCase(),
+        type: 'specialevent',
+        data: d
+      });
+    });
+  }
+  if (typeof CONTACT_MENU !== 'undefined') {
+    CONTACT_MENU.forEach(c => {
+      index.push({
+        id: c.id,
+        title: c.title,
+        catLabel: 'Contact',
+        text: c.title.toLowerCase(),
+        type: 'contact',
+        data: c
       });
     });
   }
@@ -663,9 +792,11 @@ function init() {
       const viewId = btn.dataset.view;
       const labels = {
         'view-pcp': 'MEDICAL DIRECTIVES',
+        'view-special-event': 'MEDICAL DIRECTIVES',
         'view-special': 'MEDICAL DIRECTIVES',
         'view-companion': 'MEDICAL DIRECTIVES',
         'view-references': 'MEDICAL DIRECTIVES',
+        'view-contact': 'MEDICAL DIRECTIVES',
       };
       showView(viewId, labels[viewId] || 'MEDICAL DIRECTIVES');
     });
@@ -691,6 +822,9 @@ function init() {
 
   // Build References list
   buildReferencesView();
+
+  buildSpecialEventView();
+  buildContactView();
 
   // PCP search
   $('pcp-search').addEventListener('input', e => {
@@ -781,6 +915,12 @@ function init() {
         showView('view-detail', result.data.title);
       } else if (result.type === 'reference') {
         renderReferenceDetail(result.data);
+        showView('view-detail', result.data.title);
+      } else if (result.type === 'specialevent') {
+        renderSpecialEventDetail(result.data);
+        showView('view-detail', result.data.title);
+      } else if (result.type === 'contact') {
+        renderContactDetail(result.data.id, result.data.title);
         showView('view-detail', result.data.title);
       } else {
         renderCompanionDetail(result.data);

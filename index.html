@@ -44,9 +44,11 @@
     </div>
     <nav class="home-nav">
       <button class="home-nav-btn cat-pcp" data-view="view-pcp">Primary Care Paramedic</button>
+      <button class="home-nav-btn cat-specialevent" data-view="view-special-event">Special Event Directives</button>
       <button class="home-nav-btn cat-special" data-view="view-special">Special Care Directives</button>
       <button class="home-nav-btn cat-companion" data-view="view-companion">Companion Document</button>
       <button class="home-nav-btn cat-reference" data-view="view-references">Medical References</button>
+      <button class="home-nav-btn cat-contact" data-view="view-contact">Contact</button>
     </nav>
     <div id="search-results" class="search-results" hidden></div>
     <footer class="home-footer">ABOUT THE ONTARIO PARAMEDIC CLINICAL GUIDE<br>ALS PCS 5.4 2025-06-02</footer>
@@ -64,6 +66,20 @@
       </div>
     </div>
     <div id="pcp-list" class="category-list"></div>
+  </div>
+
+  <!-- SPECIAL EVENT DIRECTIVES LIST -->
+  <div id="view-special-event" class="view" hidden>
+    <div class="specialevent-banner">SPECIAL EVENT DIRECTIVES</div>
+    <p class="view-intro">PCP auxiliary directives for authorized mass-gathering events (ALS PCS Section 3). Use only when authorized by your RBHP.</p>
+    <div id="special-event-list" class="category-list flat-list"></div>
+  </div>
+
+  <!-- CONTACT MENU -->
+  <div id="view-contact" class="view" hidden>
+    <div class="contact-top-banner">CONTACT</div>
+    <p class="view-intro">Regional contacts, OMC patch, and reference tools. Tap any phone number to call.</p>
+    <div id="contact-list" class="category-list flat-list"></div>
   </div>
 
   <!-- SPECIAL CARE DIRECTIVES LIST -->
@@ -109,6 +125,8 @@
   <script src="data/directives.js"></script>
   <script src="data/companion.js"></script>
   <script src="data/references.js"></script>
+  <script src="data/specialEvent.js"></script>
+  <script src="data/contact.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
