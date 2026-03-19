@@ -630,6 +630,45 @@ function renderSpecialEventDetail(directive) {
     html += `</div></div>`;
   }
 
+  // CONTRAINDICATIONS
+  const contraKeys = Object.keys(directive.contraindications || {});
+  if (contraKeys.length) {
+    html += `<div class="section-card"><div class="section-heading red">Contraindications</div><div class="contra-block">`;
+    contraKeys.forEach(med => {
+      const items = directive.contraindications[med];
+      html += `<div class="contra-med-label">${med}</div><ul class="contra-list">`;
+      items.forEach(item => { html += `<li>${item}</li>`; });
+      html += `</ul>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // TREATMENT
+  if (directive.treatments && directive.treatments.length) {
+    html += `<div class="section-card"><div class="section-heading">Treatment</div>`;
+    directive.treatments.forEach(t => {
+      html += `<div class="treatment-block"><div class="treatment-med-label">${t.med}</div>`;
+      if (t.rows && t.rows.length) {
+        html += `<div class="table-scroll-wrap"><table class="treatment-table">`;
+        if (t.cols && t.cols.length > 1) {
+          html += `<thead><tr>`;
+          t.cols.forEach(col => { html += `<td>${String(col).replace(/\n/g, '<br>')}</td>`; });
+          html += `</tr></thead>`;
+        }
+        html += `<tbody>`;
+        t.rows.forEach(row => {
+          html += `<tr>`;
+          row.forEach(cell => { html += `<td>${String(cell).replace(/\n/g, '<br>')}</td>`; });
+          html += `</tr>`;
+        });
+        html += `</tbody></table></div>`;
+        if (t.note) html += `<div class="treatment-note">${t.note.replace(/\n/g, '<br>')}</div>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
+
   if (directive.clinicalConsiderations && directive.clinicalConsiderations.length) {
     html += `<div class="section-card"><div class="section-heading">Clinical Considerations</div><ul class="cc-list">`;
     directive.clinicalConsiderations.forEach(cc => {
@@ -727,12 +766,16 @@ function buildSearchIndex() {
   }
   if (typeof SPECIAL_EVENT_DIRECTIVES !== 'undefined') {
     SPECIAL_EVENT_DIRECTIVES.forEach(d => {
+      const treatText = (d.treatments || []).map(tr =>
+        [tr.med, tr.note, ...(tr.rows || []).flat(), ...(tr.cols || [])].join(' ')
+      ).join(' ');
+      const contraText = Object.values(d.contraindications || {}).flat().join(' ');
       index.push({
         id: d.id,
         title: d.title,
         catLabel: 'Special Event',
         text: [d.title, d.fullTitle, ...(d.indications || []), ...(d.clinicalConsiderations || []),
-          ...Object.keys(d.conditions || {})].join(' ').toLowerCase(),
+          ...Object.keys(d.conditions || {}), contraText, treatText].join(' ').toLowerCase(),
         type: 'specialevent',
         data: d
       });

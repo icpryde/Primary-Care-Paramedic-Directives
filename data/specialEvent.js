@@ -24,8 +24,23 @@ const SPECIAL_EVENT_DIRECTIVES = [
         other: 'N/A',
       },
     },
+    contraindications: {
+      'Topical antibiotic': [
+        'Allergy or sensitivity to any of the components of the topical antibiotic',
+      ],
+    },
+    treatments: [
+      {
+        med: 'Topical antibiotic',
+        rows: [
+          ['Consider topical antibiotic ointment'],
+          ['Consider release from care'],
+        ],
+      },
+    ],
     clinicalConsiderations: [
       'Special Event Medical Directives are for time-limited periods when a mass gathering could strain host community resources. Use only with Regional Base Hospital Program authorization after required training.',
+      'Advise patient that if the problem persists or worsens that they should seek further medical attention.',
     ],
   },
   {
@@ -50,8 +65,26 @@ const SPECIAL_EVENT_DIRECTIVES = [
         other: 'N/A',
       },
     },
+    contraindications: {
+      diphenhydrAMINE: [
+        'Allergy or sensitivity to diphenhydramine',
+        'Antihistamine or sedative use in previous 4 hours',
+        'Signs or symptoms of moderate to severe allergic reaction',
+        'Signs or symptoms of intoxication',
+        'Wheezing',
+      ],
+    },
+    treatments: [
+      {
+        med: 'diphenhydrAMINE',
+        cols: ['Route', 'Dose', 'Max. single dose', 'Dosing interval', 'Max. # of doses'],
+        rows: [['PO', '50 mg', '50 mg', 'N/A', '1']],
+        note: 'Consider diphenhydrAMINE. Consider release from care.',
+      },
+    ],
     clinicalConsiderations: [
       'Special Event Medical Directives are for time-limited periods when a mass gathering could strain host community resources. Use only with Regional Base Hospital Program authorization after required training.',
+      'Advise patient that if the problem persists or worsens that they should seek further medical attention.',
     ],
   },
   {
@@ -76,8 +109,24 @@ const SPECIAL_EVENT_DIRECTIVES = [
         other: 'N/A',
       },
     },
+    contraindications: {
+      acetaminophen: [
+        'Acetaminophen use within previous 4 hours',
+        'Allergy or sensitivity to acetaminophen',
+        'Signs or symptoms of intoxication',
+      ],
+    },
+    treatments: [
+      {
+        med: 'acetaminophen',
+        cols: ['Route', 'Dose', 'Max. single dose', 'Dosing interval', 'Max. # of doses'],
+        rows: [['PO', '960–1000 mg', '960–1000 mg', 'N/A', '1']],
+        note: 'Consider acetaminophen. Consider release from care.',
+      },
+    ],
     clinicalConsiderations: [
       'Special Event Medical Directives are for time-limited periods when a mass gathering could strain host community resources. Use only with Regional Base Hospital Program authorization after required training.',
+      'Advise patient that if the problem persists or worsens that they should seek further medical attention.',
     ],
   },
   {
@@ -102,8 +151,24 @@ const SPECIAL_EVENT_DIRECTIVES = [
         other: 'N/A',
       },
     },
+    contraindications: {
+      acetaminophen: [
+        'Acetaminophen use within previous 4 hours',
+        'Allergy or sensitivity to acetaminophen',
+        'Signs or symptoms of intoxication',
+      ],
+    },
+    treatments: [
+      {
+        med: 'acetaminophen',
+        cols: ['Route', 'Dose', 'Max. single dose', 'Dosing interval', 'Max. # of doses'],
+        rows: [['PO', '960–1000 mg', '960–1000 mg', 'N/A', '1']],
+        note: 'Consider acetaminophen. Consider release from care.',
+      },
+    ],
     clinicalConsiderations: [
       'Special Event Medical Directives are for time-limited periods when a mass gathering could strain host community resources. Use only with Regional Base Hospital Program authorization after required training.',
+      'Advise patient that if the problem persists or worsens that they should seek further medical attention.',
     ],
   },
 ];
