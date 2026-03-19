@@ -23,7 +23,43 @@
       </svg>
     </button>
     <h1 id="header-title">MEDICAL DIRECTIVES</h1>
+    <button type="button" id="header-help-btn" class="header-help" aria-label="How to install this app" title="How to install this app">?</button>
   </header>
+
+  <div id="install-help-modal" class="help-modal" hidden aria-hidden="true">
+    <div class="help-modal-backdrop" tabindex="-1"></div>
+    <div class="help-modal-panel" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
+      <div class="help-modal-header">
+        <h2 id="help-modal-title">Install this app</h2>
+        <button type="button" class="help-modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="help-modal-body">
+        <p class="help-modal-lead">Add this site to your home screen for quick access like a regular app.</p>
+
+        <section class="help-modal-section">
+          <h3>iPhone &amp; iPad (Safari)</h3>
+          <ol class="help-modal-steps">
+            <li>Open this site in <strong>Safari</strong> (use your service’s full link if you were given one).</li>
+            <li>Tap the <strong>Share</strong> button <span class="help-icon-inline" aria-hidden="true">□↗</span> at the bottom (or top on some devices).</li>
+            <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
+            <li>Optional: edit the name, then tap <strong>Add</strong>.</li>
+            <li>Open the app from your home screen. If an old shortcut opens the wrong page, delete it and add again from the correct URL.</li>
+          </ol>
+        </section>
+
+        <section class="help-modal-section">
+          <h3>Android (Chrome)</h3>
+          <ol class="help-modal-steps">
+            <li>Open this site in <strong>Chrome</strong>.</li>
+            <li>Tap the <strong>⋮</strong> menu (three dots), usually top right.</li>
+            <li>Tap <strong>Install app</strong> or <strong>Add to Home screen</strong> (wording varies by version).</li>
+            <li>Confirm. The icon appears on your home screen or in your app drawer.</li>
+          </ol>
+          <p class="help-modal-note"><strong>Samsung Internet:</strong> Menu → <strong>Add page to</strong> → <strong>Home screen</strong>.</p>
+        </section>
+      </div>
+    </div>
+  </div>
 
   <!-- ── VIEWS ──────────────────────────────────────────── -->
 

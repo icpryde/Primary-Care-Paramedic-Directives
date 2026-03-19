@@ -72,6 +72,28 @@ function goForward() {
 function updateBackButtonVisibility(activeViewId) {
   const onHome = activeViewId === 'view-home';
   $('back-btn').hidden = onHome || state.history.length === 0;
+  const helpBtn = $('header-help-btn');
+  if (helpBtn) helpBtn.hidden = !onHome;
+}
+
+function openInstallHelpModal() {
+  const modal = $('install-help-modal');
+  if (!modal) return;
+  modal.hidden = false;
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('help-modal-open');
+  const closeBtn = modal.querySelector('.help-modal-close');
+  if (closeBtn) closeBtn.focus();
+}
+
+function closeInstallHelpModal() {
+  const modal = $('install-help-modal');
+  if (!modal) return;
+  modal.hidden = true;
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('help-modal-open');
+  const helpBtn = $('header-help-btn');
+  if (helpBtn && !helpBtn.hidden) helpBtn.focus();
 }
 
 /** iOS PWA has no system swipe-back; mimic Safari with edge gestures. */
@@ -924,6 +946,21 @@ function init() {
   // Back button
   $('back-btn').addEventListener('click', goBack);
 
+  const helpBtn = $('header-help-btn');
+  if (helpBtn) {
+    helpBtn.addEventListener('click', () => openInstallHelpModal());
+  }
+  const helpModal = $('install-help-modal');
+  if (helpModal) {
+    helpModal.querySelector('.help-modal-backdrop')?.addEventListener('click', closeInstallHelpModal);
+    helpModal.querySelector('.help-modal-close')?.addEventListener('click', closeInstallHelpModal);
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && helpModal && !helpModal.hidden) {
+      closeInstallHelpModal();
+    }
+  });
+
   // Build PCP list
   buildCategoryList($('pcp-list'), getDirectivesByCategory, directive => {
     renderDirectiveDetail(directive);
@@ -1049,6 +1086,9 @@ function init() {
   });
 
   setupEdgeSwipeNavigation();
+
+  const activeView = document.querySelector('.view.active');
+  if (activeView) updateBackButtonVisibility(activeView.id);
 
   // Register Service Worker
   if ('serviceWorker' in navigator) {

@@ -53,6 +53,35 @@ body {
   padding-left: 72px;
 }
 
+/* Help (?) on home — top right */
+#app-header:has(#header-help-btn:not([hidden])) {
+  padding-right: 52px;
+}
+
+.header-help {
+  position: absolute;
+  right: 8px;
+  top: calc(var(--safe-top) + (var(--header-h) - 34px) / 2);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.header-help:active {
+  background: rgba(255, 255, 255, 0.22);
+}
+
 #header-title {
   font-size: 15px;
   font-weight: 600;
@@ -82,6 +111,139 @@ body {
 }
 
 .header-back::after { content: 'Back'; font-size: 15px; color: #fff; }
+
+/* ── Install help modal ───────────────────────────────── */
+.help-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+.help-modal[hidden] {
+  display: none !important;
+}
+@media (min-width: 540px) {
+  .help-modal {
+    align-items: center;
+    padding: 24px;
+  }
+}
+.help-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+.help-modal-panel {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: min(88vh, 640px);
+  background: var(--white);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+@media (min-width: 540px) {
+  .help-modal-panel {
+    border-radius: 16px;
+    max-height: min(85vh, 620px);
+  }
+}
+.help-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--navy);
+  color: #fff;
+  flex-shrink: 0;
+}
+.help-modal-header h2 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+.help-modal-close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.help-modal-close:active {
+  background: rgba(255, 255, 255, 0.25);
+}
+.help-modal-body {
+  padding: 18px 20px 24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.help-modal-lead {
+  margin: 0 0 18px;
+  color: var(--subtext);
+  font-size: 14px;
+}
+.help-modal-section {
+  margin-bottom: 22px;
+}
+.help-modal-section:last-child {
+  margin-bottom: 0;
+}
+.help-modal-section h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin: 0 0 10px;
+}
+.help-modal-steps {
+  margin: 0;
+  padding-left: 22px;
+}
+.help-modal-steps li {
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+.help-modal-steps li:last-child {
+  margin-bottom: 0;
+}
+.help-modal-note {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--subtext);
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: 10px;
+  border-left: 3px solid var(--blue);
+}
+.help-icon-inline {
+  font-size: 12px;
+  opacity: 0.85;
+}
+body.help-modal-open {
+  overflow: hidden;
+}
 
 /* ── Views ────────────────────────────────────────────── */
 .view { display: none; min-height: calc(100vh - var(--header-h) - var(--safe-top)); }
