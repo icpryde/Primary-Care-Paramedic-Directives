@@ -1,32 +1,35 @@
-const CACHE_NAME = 'pcp-directives-v9';
+const CACHE_NAME = 'pcp-directives-v10';
+const BASE = (self.location && self.location.hostname === 'icpryde.github.io')
+  ? '/Primary-Care-Paramedic-Directives'
+  : '';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js',
-  '/data/directives.js',
-  '/data/companion.js',
-  '/data/references.js',
-  '/manifest.json',
-  '/assets/newborn-flowchart.pdf',
-  '/assets/newborn-flowchart-thumb.png',
-  '/assets/trauma-arrest-flowchart.pdf',
-  '/assets/trauma-arrest-flowchart-thumb.png',
-  '/assets/12-lead-ecg.png',
-  '/assets/v4r-ecg.png',
-  '/assets/15-lead-v8-v9.png',
-  '/assets/cpr-guidelines.pdf',
-  '/assets/cpr-guidelines-thumb.png',
-  '/assets/breech-delivery.png',
-  '/assets/breech-flowchart.png',
-  '/assets/cord-prolapse-management.png',
-  '/assets/cord-prolapse-transport.png',
-  '/assets/pain-scale.png',
-  '/assets/rule-of-nines.png',
-  '/assets/etco2-waveforms.png',
-  '/assets/cpap-step1.png',
-  '/assets/cpap-step2.png',
-  '/assets/cpap-step3.png'
+  BASE + '/',
+  BASE + '/index.html',
+  BASE + '/styles.css',
+  BASE + '/app.js',
+  BASE + '/data/directives.js',
+  BASE + '/data/companion.js',
+  BASE + '/data/references.js',
+  BASE + '/manifest.json',
+  BASE + '/assets/newborn-flowchart.pdf',
+  BASE + '/assets/newborn-flowchart-thumb.png',
+  BASE + '/assets/trauma-arrest-flowchart.pdf',
+  BASE + '/assets/trauma-arrest-flowchart-thumb.png',
+  BASE + '/assets/12-lead-ecg.png',
+  BASE + '/assets/v4r-ecg.png',
+  BASE + '/assets/15-lead-v8-v9.png',
+  BASE + '/assets/cpr-guidelines.pdf',
+  BASE + '/assets/cpr-guidelines-thumb.png',
+  BASE + '/assets/breech-delivery.png',
+  BASE + '/assets/breech-flowchart.png',
+  BASE + '/assets/cord-prolapse-management.png',
+  BASE + '/assets/cord-prolapse-transport.png',
+  BASE + '/assets/pain-scale.png',
+  BASE + '/assets/rule-of-nines.png',
+  BASE + '/assets/etco2-waveforms.png',
+  BASE + '/assets/cpap-step1.png',
+  BASE + '/assets/cpap-step2.png',
+  BASE + '/assets/cpap-step3.png'
 ];
 
 self.addEventListener('install', event => {
