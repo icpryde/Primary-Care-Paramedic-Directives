@@ -1,0 +1,798 @@
+// ── PCP Directives App ──────────────────────────────────────────────────────
+
+const $ = id => document.getElementById(id);
+
+// ─── State ──────────────────────────────────────────────────────────────────
+const state = {
+  history: [],
+};
+
+// ─── Helpers ────────────────────────────────────────────────────────────────
+function showView(viewId, title, pushHistory = true) {
+  const current = document.querySelector('.view.active');
+  if (current) {
+    if (pushHistory && current.id !== viewId) {
+      state.history.push({ viewId: current.id, title: $('header-title').textContent, scrollY: window.scrollY });
+    }
+    current.classList.remove('active');
+    current.hidden = true;
+  }
+  const next = $(viewId);
+  next.hidden = false;
+  next.classList.add('active');
+  window.scrollTo(0, 0);
+
+  $('header-title').textContent = title || 'MEDICAL DIRECTIVES';
+  $('back-btn').hidden = state.history.length === 0;
+}
+
+function goBack() {
+  if (!state.history.length) return;
+  const prev = state.history.pop();
+  const cur = document.querySelector('.view.active');
+  if (cur) { cur.classList.remove('active'); cur.hidden = true; }
+  const target = $(prev.viewId);
+  target.hidden = false;
+  target.classList.add('active');
+  $('header-title').textContent = prev.title;
+  $('back-btn').hidden = state.history.length === 0;
+  requestAnimationFrame(() => window.scrollTo(0, prev.scrollY || 0));
+}
+
+// ─── Flowchart Viewer ────────────────────────────────────────────────────────
+function openFlowchartPdf(pdfUrl) {
+  window.open(pdfUrl, '_blank');
+}
+
+// ─── GCS / Coma Scale Calculator ─────────────────────────────────────────────
+function gcsSelect(el) {
+  const group = el.dataset.group;
+  document.querySelectorAll(`.gcs-option[data-group="${group}"]`).forEach(o => o.classList.remove('selected'));
+  el.classList.toggle('selected', true);
+  gcsUpdateTotal(group.startsWith('pcs') ? 'pcs' : 'gcs');
+}
+
+function gcsUpdateTotal(prefix) {
+  const groups = [`${prefix}-eye`, `${prefix}-verbal`, `${prefix}-motor`];
+  let total = 0;
+  let allSelected = true;
+  groups.forEach(g => {
+    const sel = document.querySelector(`.gcs-option[data-group="${g}"].selected`);
+    if (sel) {
+      total += parseInt(sel.dataset.value, 10);
+    } else {
+      allSelected = false;
+    }
+  });
+  const scoreEl = document.getElementById(`${prefix}-score`);
+  if (scoreEl) scoreEl.textContent = allSelected ? total : (total > 0 ? total + '+' : '--');
+}
+
+function gcsReset(prefix) {
+  const groups = [`${prefix}-eye`, `${prefix}-verbal`, `${prefix}-motor`];
+  groups.forEach(g => {
+    document.querySelectorAll(`.gcs-option[data-group="${g}"]`).forEach(o => o.classList.remove('selected'));
+  });
+  const scoreEl = document.getElementById(`${prefix}-score`);
+  if (scoreEl) scoreEl.textContent = '--';
+}
+
+// ─── My Notes (localStorage) ───────────────────────────────────────────────
+function getNote(directiveId) {
+  try { return localStorage.getItem('notes-' + directiveId) || ''; } catch(e) { return ''; }
+}
+
+function saveNote(directiveId, text) {
+  try { localStorage.setItem('notes-' + directiveId, text); } catch(e) { /* quota */ }
+}
+
+function renderMyNotesAnchor() {
+  return `<div class="my-notes-anchor" onclick="document.getElementById('my-notes-bottom').scrollIntoView({behavior:'smooth'})">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9l-6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 3v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    My Notes
+  </div>`;
+}
+
+function renderMyNotesSection(directiveId) {
+  const saved = getNote(directiveId);
+  const displayText = saved || 'No notes yet. Tap Edit to add notes.';
+  const emptyClass = saved ? '' : ' empty';
+  return `<div id="my-notes-bottom" class="my-notes-section" data-directive-id="${directiveId}">
+    <div class="my-notes-header">
+      <span>My Notes</span>
+      <button class="my-notes-edit-btn" onclick="enterNotesEditMode(this)">Edit</button>
+    </div>
+    <div class="my-notes-display${emptyClass}">${escapeHtml(displayText)}</div>
+  </div>`;
+}
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function enterNotesEditMode(btn) {
+  const section = btn.closest('.my-notes-section');
+  const directiveId = section.dataset.directiveId;
+  const display = section.querySelector('.my-notes-display');
+  const saved = getNote(directiveId);
+
+  display.outerHTML = `<textarea class="my-notes-textarea" id="notes-edit-area">${escapeHtml(saved)}</textarea>
+    <div class="my-notes-actions">
+      <button class="my-notes-cancel-btn" onclick="exitNotesEditMode('${directiveId}')">Cancel</button>
+      <button class="my-notes-save-btn" onclick="saveNotesFromEditor('${directiveId}')">Save</button>
+    </div>`;
+
+  btn.style.display = 'none';
+  const ta = $('notes-edit-area');
+  if (ta) { ta.focus(); ta.selectionStart = ta.value.length; }
+}
+
+function saveNotesFromEditor(directiveId) {
+  const ta = $('notes-edit-area');
+  if (ta) saveNote(directiveId, ta.value);
+  exitNotesEditMode(directiveId);
+}
+
+function exitNotesEditMode(directiveId) {
+  const section = document.querySelector(`.my-notes-section[data-directive-id="${directiveId}"]`);
+  if (!section) return;
+  const saved = getNote(directiveId);
+  const displayText = saved || 'No notes yet. Tap Edit to add notes.';
+  const emptyClass = saved ? '' : ' empty';
+
+  const ta = section.querySelector('.my-notes-textarea');
+  const actions = section.querySelector('.my-notes-actions');
+  if (ta) ta.remove();
+  if (actions) actions.remove();
+
+  const header = section.querySelector('.my-notes-header');
+  header.insertAdjacentHTML('afterend', `<div class="my-notes-display${emptyClass}">${escapeHtml(displayText)}</div>`);
+
+  const editBtn = section.querySelector('.my-notes-edit-btn');
+  if (editBtn) editBtn.style.display = '';
+}
+
+// ─── Category helpers ────────────────────────────────────────────────────────
+function getCategoryForId(catId) {
+  return CATEGORIES.find(c => c.id === catId);
+}
+
+function getDirectivesByCategory(catId) {
+  return DIRECTIVES.filter(d => d.category === catId);
+}
+
+function getCompanionByCategory(catId) {
+  return COMPANION.filter(c => c.category === catId);
+}
+
+// ─── Build category list (PCP or Companion) ──────────────────────────────────
+function buildCategoryList(containerEl, items_fn, onClickFn) {
+  containerEl.innerHTML = '';
+
+  CATEGORIES.forEach(cat => {
+    const items = items_fn(cat.id);
+    if (!items.length) return;
+
+    const section = document.createElement('div');
+    section.className = 'cat-section';
+
+    const header = document.createElement('div');
+    header.className = `cat-header ${cat.colorClass}`;
+    header.innerHTML = `<span class="cat-header-title">${cat.label}</span><span class="cat-chevron"></span>`;
+    header.addEventListener('click', () => {
+      itemsEl.classList.toggle('collapsed');
+      header.classList.toggle('collapsed');
+    });
+
+    const itemsEl = document.createElement('div');
+    itemsEl.className = 'cat-items';
+
+    items.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'directive-row';
+      row.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="directive-row-chevron"></span>`;
+      row.addEventListener('click', () => onClickFn(item));
+      itemsEl.appendChild(row);
+    });
+
+    section.appendChild(header);
+    section.appendChild(itemsEl);
+    containerEl.appendChild(section);
+  });
+}
+
+// ─── Render Directive Detail ─────────────────────────────────────────────────
+function renderDirectiveDetail(directive) {
+  const cat = getCategoryForId(directive.category);
+  const colorClass = cat ? cat.colorClass : 'bg-navy';
+  const catLabel = cat ? cat.label : '';
+
+  let html = '';
+
+  html += `<div class="detail-scope-banner bg-navy">PRIMARY CARE PARAMEDIC</div>`;
+  html += `<div class="detail-cat-banner ${colorClass}">${catLabel}</div>`;
+
+  html += `<div class="detail-title">${directive.fullTitle}</div>`;
+  html += `<div class="detail-auth">${directive.scopeNote}</div>`;
+
+  // My Notes anchor at top
+  html += renderMyNotesAnchor();
+
+  // INDICATIONS
+  if (directive.indications && directive.indications.length) {
+    html += `<div class="section-card">
+      <div class="section-heading">Indications</div>
+      <ul class="indications-list">`;
+    directive.indications.forEach(ind => {
+      const isConnector = ind === 'AND' || ind === 'OR';
+      html += `<li class="${isConnector ? 'and-connector' : ''}">${ind}</li>`;
+    });
+    html += `</ul></div>`;
+  }
+
+  // CONDITIONS
+  const condKeys = Object.keys(directive.conditions || {});
+  if (condKeys.length) {
+    html += `<div class="section-card"><div class="section-heading">Conditions</div><div class="conditions-block">`;
+    condKeys.forEach(med => {
+      const c = directive.conditions[med];
+      html += `<div class="conditions-med-label">${med}</div>`;
+      html += `<div class="table-scroll-wrap"><table class="conditions-table">`;
+      const rows = [
+        ['Age', c.age],
+        c.weight !== undefined ? ['Weight', c.weight] : null,
+        ['LOA', c.loa],
+        ['HR', c.hr],
+        ['RR', c.rr],
+        ['SBP', c.sbp],
+        ['Other', c.other],
+      ].filter(Boolean);
+      rows.forEach(([label, val]) => {
+        html += `<tr><td>${label}</td><td>${String(val || 'N/A').replace(/\n/g, '<br>')}</td></tr>`;
+      });
+      html += `</table></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // CONTRAINDICATIONS
+  const contraKeys = Object.keys(directive.contraindications || {});
+  if (contraKeys.length) {
+    html += `<div class="section-card"><div class="section-heading red">Contraindications</div><div class="contra-block">`;
+    contraKeys.forEach(med => {
+      const items = directive.contraindications[med];
+      html += `<div class="contra-med-label">${med}</div><ul class="contra-list">`;
+      items.forEach(item => { html += `<li>${item}</li>`; });
+      html += `</ul>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // TREATMENT
+  if (directive.treatments && directive.treatments.length) {
+    html += `<div class="section-card"><div class="section-heading">Treatment</div>`;
+    directive.treatments.forEach(t => {
+      html += `<div class="treatment-block"><div class="treatment-med-label">${t.med}</div>`;
+      if (t.rows && t.rows.length) {
+        html += `<div class="table-scroll-wrap"><table class="treatment-table">`;
+        if (t.cols && t.cols.length > 1) {
+          html += `<thead><tr>`;
+          t.cols.forEach(col => { html += `<td>${String(col).replace(/\n/g, '<br>')}</td>`; });
+          html += `</tr></thead>`;
+        }
+        html += `<tbody>`;
+        t.rows.forEach(row => {
+          html += `<tr>`;
+          row.forEach(cell => { html += `<td>${String(cell).replace(/\n/g, '<br>')}</td>`; });
+          html += `</tr>`;
+        });
+        html += `</tbody></table></div>`;
+        if (t.note) html += `<div class="treatment-note">${t.note.replace(/\n/g,'<br>')}</div>`;
+      }
+      html += `</div>`;
+    });
+
+    // Flowchart thumbnail + PDF link (if present)
+    if (directive.flowchartPdf) {
+      html += `<div class="flowchart-wrap">
+        <div class="flowchart-label">Treatment Flowchart (tap to view full PDF)</div>
+        <img class="flowchart-thumb" src="${directive.flowchartThumb}" alt="Treatment Flowchart"
+             onclick="openFlowchartPdf('${directive.flowchartPdf}')" />
+      </div>`;
+    }
+
+    html += `</div>`;
+  }
+
+  // PATCH POINTS
+  if (directive.patchPoints && directive.patchPoints.length) {
+    html += `<div class="section-card"><div class="section-heading">Mandatory Patch Point(s)</div>`;
+    directive.patchPoints.forEach(pp => {
+      html += `<div class="patch-point">${pp}</div>`;
+    });
+    html += `<div class="spacer"></div></div>`;
+  }
+
+  // CLINICAL CONSIDERATIONS
+  if (directive.clinicalConsiderations && directive.clinicalConsiderations.length) {
+    html += `<div class="section-card"><div class="section-heading">Clinical Considerations</div><ul class="cc-list">`;
+    directive.clinicalConsiderations.forEach(cc => {
+      html += `<li>${cc}</li>`;
+    });
+    html += `</ul></div>`;
+  }
+
+  // TREAT & DISCHARGE
+  if (directive.treatDischarge) {
+    const td = directive.treatDischarge;
+    html += `<div class="section-card"><div class="section-heading">${td.title}</div><div class="tnd-block">`;
+    if (td.criteria && td.criteria.length) {
+      html += `<div class="tnd-title">All of the following criteria must be met:</div><ul class="tnd-list">`;
+      td.criteria.forEach(c => { html += `<li>${c}</li>`; });
+      html += `</ul>`;
+    }
+    if (td.contraindications && td.contraindications.length) {
+      html += `<div class="tnd-title" style="margin-top:10px">Contraindications</div><ul class="tnd-list tnd-contra-list">`;
+      td.contraindications.forEach(c => { html += `<li>${c}</li>`; });
+      html += `</ul>`;
+    }
+    if (td.clinicalConsiderationsTD) {
+      html += `<div class="tnd-title" style="margin-top:10px">Clinical Considerations (Treat and Discharge)</div>`;
+      html += `<div class="tnd-cc">${td.clinicalConsiderationsTD}</div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  // My Notes section at bottom
+  html += renderMyNotesSection(directive.id);
+
+  $('detail-content').innerHTML = html;
+}
+
+// ─── Render Companion Detail ─────────────────────────────────────────────────
+function renderCompanionDetail(entry) {
+  const cat = getCategoryForId(entry.category);
+  const colorClass = cat ? cat.colorClass : 'bg-navy';
+  const catLabel = cat ? cat.label : '';
+
+  let html = '';
+
+  html += `<div class="detail-scope-banner bg-orange">COMPANION DOCUMENT</div>`;
+  html += `<div class="detail-cat-banner ${colorClass}">${catLabel}</div>`;
+  html += `<div class="detail-title">${entry.title}</div>`;
+
+  // My Notes anchor at top
+  html += renderMyNotesAnchor();
+
+  const sections = [
+    { key: 'introduction', label: 'Introduction' },
+    { key: 'essentials',   label: 'Essentials' },
+    { key: 'interventions',label: 'Interventions' },
+  ];
+
+  sections.forEach(s => {
+    if (entry[s.key]) {
+      html += `<div class="section-card">
+        <div class="section-heading">${s.label}</div>
+        <div class="comp-section-body">${entry[s.key].trim()}</div>
+      </div>`;
+    }
+  });
+
+  if (entry.references && entry.references.length) {
+    html += `<div class="section-card"><div class="section-heading">References</div><ul class="cc-list">`;
+    entry.references.forEach(ref => { html += `<li>${ref}</li>`; });
+    html += `</ul></div>`;
+  }
+
+  // My Notes section at bottom
+  html += renderMyNotesSection(entry.id);
+
+  $('detail-content').innerHTML = html;
+}
+
+// ─── Render Palliative Detail ─────────────────────────────────────────────────
+function renderPalliativeDetail(directive) {
+  let html = '';
+
+  html += `<div class="detail-scope-banner bg-gray">SPECIAL CARE DIRECTIVES</div>`;
+  html += `<div class="detail-title">${directive.fullTitle}</div>`;
+  html += `<div class="detail-auth">${directive.scopeNote}</div>`;
+
+  // My Notes anchor at top
+  html += renderMyNotesAnchor();
+
+  // INDICATIONS
+  if (directive.indications && directive.indications.length) {
+    html += `<div class="section-card">
+      <div class="section-heading">Indications</div>
+      <ul class="indications-list">`;
+    directive.indications.forEach(ind => {
+      const isConnector = ind === 'AND' || ind === 'OR';
+      html += `<li class="${isConnector ? 'and-connector' : ''}">${ind}</li>`;
+    });
+    html += `</ul></div>`;
+  }
+
+  // CONDITIONS
+  const condKeys = Object.keys(directive.conditions || {});
+  if (condKeys.length) {
+    html += `<div class="section-card"><div class="section-heading">Conditions</div><div class="conditions-block">`;
+    condKeys.forEach(med => {
+      const c = directive.conditions[med];
+      html += `<div class="conditions-med-label">${med}</div>`;
+      html += `<div class="table-scroll-wrap"><table class="conditions-table">`;
+      [['Age', c.age], ['LOA', c.loa], ['HR', c.hr], ['RR', c.rr], ['SBP', c.sbp], ['Other', c.other]]
+        .forEach(([label, val]) => {
+          html += `<tr><td>${label}</td><td>${String(val || 'N/A').replace(/\n/g,'<br>')}</td></tr>`;
+        });
+      html += `</table></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // CONTRAINDICATIONS
+  const contraKeys = Object.keys(directive.contraindications || {});
+  if (contraKeys.length) {
+    html += `<div class="section-card"><div class="section-heading red">Contraindications</div><div class="contra-block">`;
+    contraKeys.forEach(med => {
+      const items = directive.contraindications[med];
+      html += `<div class="contra-med-label">${med}</div><ul class="contra-list">`;
+      items.forEach(item => { html += `<li>${item}</li>`; });
+      html += `</ul>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // TREATMENT
+  if (directive.treatments && directive.treatments.length) {
+    html += `<div class="section-card"><div class="section-heading">Treatment</div>`;
+    directive.treatments.forEach(t => {
+      html += `<div class="treatment-block"><div class="treatment-med-label">${t.med}</div>`;
+      if (t.rows && t.rows.length) {
+        html += `<div class="table-scroll-wrap"><table class="treatment-table">`;
+        if (t.cols && t.cols.length > 1) {
+          html += `<thead><tr>`;
+          t.cols.forEach(col => { html += `<td>${String(col).replace(/\n/g,'<br>')}</td>`; });
+          html += `</tr></thead>`;
+        }
+        html += `<tbody>`;
+        t.rows.forEach(row => {
+          html += `<tr>`;
+          row.forEach(cell => { html += `<td>${String(cell).replace(/\n/g,'<br>')}</td>`; });
+          html += `</tr>`;
+        });
+        html += `</tbody></table></div>`;
+        if (t.note) html += `<div class="treatment-note">${t.note.replace(/\n/g,'<br>')}</div>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
+
+  // CLINICAL CONSIDERATIONS
+  if (directive.clinicalConsiderations && directive.clinicalConsiderations.length) {
+    html += `<div class="section-card"><div class="section-heading">Clinical Considerations</div><ul class="cc-list">`;
+    directive.clinicalConsiderations.forEach(cc => { html += `<li>${cc}</li>`; });
+    html += `</ul></div>`;
+  }
+
+  // My Notes section at bottom
+  html += renderMyNotesSection(directive.id);
+
+  $('detail-content').innerHTML = html;
+}
+
+// ─── Render Palliative Preamble ──────────────────────────────────────────────
+function renderPalliativePreamble() {
+  let html = '';
+  html += `<div class="detail-scope-banner bg-gray">SPECIAL CARE DIRECTIVES</div>`;
+  html += `<div class="detail-title">PCP Palliative Directives</div>`;
+
+  html += `<div class="section-card">`;
+  PALLIATIVE_PREAMBLE.sections.forEach(s => {
+    html += `<div class="preamble-section">
+      <div class="preamble-heading">${s.heading}</div>
+      <div class="preamble-body">${s.body}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  $('detail-content').innerHTML = html;
+}
+
+// ─── Build Special Care View ──────────────────────────────────────────────────
+function buildSpecialView() {
+  const container = $('special-list');
+  container.innerHTML = '';
+
+  const section = document.createElement('div');
+  section.className = 'cat-section';
+
+  const header = document.createElement('div');
+  header.className = 'cat-header bg-gray';
+  header.innerHTML = `<span class="cat-header-title">PCP Palliative Care Medical Directive</span><span class="cat-chevron"></span>`;
+  header.addEventListener('click', () => {
+    itemsEl.classList.toggle('collapsed');
+    header.classList.toggle('collapsed');
+  });
+
+  const itemsEl = document.createElement('div');
+  itemsEl.className = 'cat-items';
+
+  // Overview / Introduction row
+  const overviewRow = document.createElement('div');
+  overviewRow.className = 'directive-row';
+  overviewRow.innerHTML = `<span class="directive-row-title" style="font-weight:600;">Overview / Introduction</span><span class="directive-row-chevron"></span>`;
+  overviewRow.addEventListener('click', () => {
+    renderPalliativePreamble();
+    showView('view-detail', 'Palliative Care Overview');
+  });
+  itemsEl.appendChild(overviewRow);
+
+  PALLIATIVE_DIRECTIVES.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'directive-row';
+    row.innerHTML = `<span class="directive-row-title">${d.title}</span><span class="directive-row-chevron"></span>`;
+    row.addEventListener('click', () => {
+      renderPalliativeDetail(d);
+      showView('view-detail', d.title);
+    });
+    itemsEl.appendChild(row);
+  });
+
+  section.appendChild(header);
+  section.appendChild(itemsEl);
+  container.appendChild(section);
+}
+
+// ─── Build Medical References View ───────────────────────────────────────────
+function buildReferencesView() {
+  const container = $('references-list');
+  container.innerHTML = '';
+
+  REFERENCES.forEach(ref => {
+    const row = document.createElement('div');
+    row.className = 'directive-row';
+    row.innerHTML = `<span class="directive-row-title">${ref.title}</span><span class="directive-row-chevron"></span>`;
+    row.addEventListener('click', () => {
+      renderReferenceDetail(ref);
+      showView('view-detail', ref.title);
+    });
+    container.appendChild(row);
+  });
+}
+
+// ─── Render Reference Detail ─────────────────────────────────────────────────
+function renderReferenceDetail(ref) {
+  let html = '';
+
+  html += `<div class="detail-scope-banner bg-red">PRIMARY CARE PARAMEDIC</div>`;
+  html += `<div class="detail-scope-banner bg-purple" style="font-size:14px;">Medical References</div>`;
+  html += `<div class="detail-title">${ref.title}</div>`;
+
+  html += renderMyNotesAnchor();
+
+  html += `<div class="section-card ref-detail">${ref.content}</div>`;
+
+  html += renderMyNotesSection(ref.id);
+
+  $('detail-content').innerHTML = html;
+}
+
+// ─── Search ──────────────────────────────────────────────────────────────────
+function buildSearchIndex() {
+  const index = [];
+  DIRECTIVES.forEach(d => {
+    const cat = getCategoryForId(d.category);
+    index.push({
+      id: d.id, title: d.title, catLabel: cat ? cat.label : '',
+      text: [d.title, d.fullTitle, ...(d.indications || []), ...(d.clinicalConsiderations || []),
+             ...Object.keys(d.conditions || {}), ...Object.keys(d.contraindications || {})].join(' ').toLowerCase(),
+      type: 'directive', data: d
+    });
+  });
+  COMPANION.forEach(c => {
+    const cat = getCategoryForId(c.category);
+    index.push({
+      id: c.id, title: c.title, catLabel: (cat ? cat.label : '') + ' – Companion',
+      text: [c.title, c.introduction || '', c.essentials || '', c.interventions || ''].join(' ').toLowerCase(),
+      type: 'companion', data: c
+    });
+  });
+  if (typeof PALLIATIVE_DIRECTIVES !== 'undefined') {
+    PALLIATIVE_DIRECTIVES.forEach(d => {
+      index.push({
+        id: d.id, title: d.title, catLabel: 'Palliative Care',
+        text: [d.title, d.fullTitle, ...(d.indications || []), ...(d.clinicalConsiderations || []),
+               ...Object.keys(d.conditions || {}), ...Object.keys(d.contraindications || {})].join(' ').toLowerCase(),
+        type: 'palliative', data: d
+      });
+    });
+  }
+  if (typeof REFERENCES !== 'undefined') {
+    REFERENCES.forEach(r => {
+      index.push({
+        id: r.id, title: r.title, catLabel: 'Medical References',
+        text: [r.title, r.content].join(' ').toLowerCase().replace(/<[^>]*>/g, ''),
+        type: 'reference', data: r
+      });
+    });
+  }
+  return index;
+}
+
+let searchIndex = null;
+
+function performSearch(query, containerEl, onResultClick) {
+  if (!searchIndex) searchIndex = buildSearchIndex();
+  const q = query.trim().toLowerCase();
+
+  if (!q) {
+    containerEl.hidden = true;
+    return;
+  }
+
+  const results = searchIndex.filter(item => item.text.includes(q) || item.title.toLowerCase().includes(q));
+  containerEl.hidden = false;
+
+  if (!results.length) {
+    containerEl.innerHTML = '<div class="search-result-item"><div class="search-result-title">No results</div></div>';
+    return;
+  }
+
+  containerEl.innerHTML = results.slice(0, 20).map((r, i) =>
+    `<div class="search-result-item" data-idx="${i}">
+      <div class="search-result-title">${r.title}</div>
+      <div class="search-result-cat">${r.catLabel}</div>
+    </div>`
+  ).join('');
+
+  containerEl.querySelectorAll('.search-result-item').forEach((el, i) => {
+    el.addEventListener('click', () => onResultClick(results[i]));
+  });
+}
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+function init() {
+  // Home nav buttons
+  document.querySelectorAll('.home-nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const viewId = btn.dataset.view;
+      const labels = {
+        'view-pcp': 'MEDICAL DIRECTIVES',
+        'view-special': 'MEDICAL DIRECTIVES',
+        'view-companion': 'MEDICAL DIRECTIVES',
+        'view-references': 'MEDICAL DIRECTIVES',
+      };
+      showView(viewId, labels[viewId] || 'MEDICAL DIRECTIVES');
+    });
+  });
+
+  // Back button
+  $('back-btn').addEventListener('click', goBack);
+
+  // Build PCP list
+  buildCategoryList($('pcp-list'), getDirectivesByCategory, directive => {
+    renderDirectiveDetail(directive);
+    showView('view-detail', directive.title);
+  });
+
+  // Build Companion list
+  buildCategoryList($('companion-list'), getCompanionByCategory, entry => {
+    renderCompanionDetail(entry);
+    showView('view-detail', entry.title);
+  });
+
+  // Build Special list
+  buildSpecialView();
+
+  // Build References list
+  buildReferencesView();
+
+  // PCP search
+  $('pcp-search').addEventListener('input', e => {
+    const q = e.target.value;
+    if (!q.trim()) {
+      $('pcp-list').querySelectorAll('.directive-row').forEach(r => { r.style.display = ''; });
+      $('pcp-list').querySelectorAll('.cat-items').forEach(el => { el.classList.remove('collapsed'); });
+      $('pcp-list').querySelectorAll('.cat-header').forEach(el => { el.classList.remove('collapsed'); });
+      return;
+    }
+    const lq = q.toLowerCase();
+    $('pcp-list').querySelectorAll('.cat-items').forEach(section => {
+      let hasVisible = false;
+      section.querySelectorAll('.directive-row').forEach(row => {
+        const title = row.querySelector('.directive-row-title').textContent.toLowerCase();
+        const matches = title.includes(lq);
+        row.style.display = matches ? '' : 'none';
+        if (matches) hasVisible = true;
+      });
+      const header = section.previousElementSibling;
+      if (hasVisible) {
+        section.classList.remove('collapsed');
+        header.classList.remove('collapsed');
+        section.style.display = '';
+        header.style.display = '';
+      } else {
+        section.style.display = 'none';
+        header.style.display = 'none';
+      }
+    });
+  });
+
+  // Companion search
+  $('comp-search').addEventListener('input', e => {
+    const q = e.target.value;
+    if (!q.trim()) {
+      $('companion-list').querySelectorAll('.directive-row').forEach(r => { r.style.display = ''; });
+      $('companion-list').querySelectorAll('.cat-items').forEach(el => { el.classList.remove('collapsed'); });
+      $('companion-list').querySelectorAll('.cat-header').forEach(el => { el.classList.remove('collapsed'); });
+      return;
+    }
+    const lq = q.toLowerCase();
+    $('companion-list').querySelectorAll('.cat-items').forEach(section => {
+      let hasVisible = false;
+      section.querySelectorAll('.directive-row').forEach(row => {
+        const title = row.querySelector('.directive-row-title').textContent.toLowerCase();
+        const matches = title.includes(lq);
+        row.style.display = matches ? '' : 'none';
+        if (matches) hasVisible = true;
+      });
+      const header = section.previousElementSibling;
+      if (hasVisible) {
+        section.classList.remove('collapsed');
+        header.classList.remove('collapsed');
+        section.style.display = '';
+        header.style.display = '';
+      } else {
+        section.style.display = 'none';
+        header.style.display = 'none';
+      }
+    });
+  });
+
+  // References search
+  $('ref-search').addEventListener('input', e => {
+    const q = e.target.value;
+    if (!q.trim()) {
+      $('references-list').querySelectorAll('.directive-row').forEach(r => { r.style.display = ''; });
+      return;
+    }
+    const lq = q.toLowerCase();
+    $('references-list').querySelectorAll('.directive-row').forEach(row => {
+      const title = row.querySelector('.directive-row-title').textContent.toLowerCase();
+      row.style.display = title.includes(lq) ? '' : 'none';
+    });
+  });
+
+  // Global search on home
+  $('global-search').addEventListener('input', e => {
+    performSearch(e.target.value, $('search-results'), result => {
+      $('global-search').value = '';
+      $('search-results').hidden = true;
+      if (result.type === 'directive') {
+        renderDirectiveDetail(result.data);
+        showView('view-detail', result.data.title);
+      } else if (result.type === 'palliative') {
+        renderPalliativeDetail(result.data);
+        showView('view-detail', result.data.title);
+      } else if (result.type === 'reference') {
+        renderReferenceDetail(result.data);
+        showView('view-detail', result.data.title);
+      } else {
+        renderCompanionDetail(result.data);
+        showView('view-detail', result.data.title);
+      }
+    });
+  });
+
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg failed:', err));
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Directives" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#0D2B55" />
+  <title>PCP Medical Directives</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header id="app-header">
+    <button id="back-btn" class="header-back" aria-label="Back" hidden>
+      <svg width="11" height="18" viewBox="0 0 11 18" fill="none">
+        <path d="M10 1L2 9L10 17" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <h1 id="header-title">MEDICAL DIRECTIVES</h1>
+  </header>
+
+  <!-- ── VIEWS ──────────────────────────────────────────── -->
+
+  <!-- HOME -->
+  <div id="view-home" class="view active">
+    <div class="home-branding">
+      <h2 class="home-title">REGION OF WATERLOO<br>PARAMEDIC SERVICES</h2>
+      <div class="home-subtitle">ALS PCS v5.4 – 2025</div>
+    </div>
+    <div class="search-bar-wrap">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="global-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <nav class="home-nav">
+      <button class="home-nav-btn cat-pcp" data-view="view-pcp">Primary Care Paramedic</button>
+      <button class="home-nav-btn cat-special" data-view="view-special">Special Care Directives</button>
+      <button class="home-nav-btn cat-companion" data-view="view-companion">Companion Document</button>
+      <button class="home-nav-btn cat-reference" data-view="view-references">Medical References</button>
+    </nav>
+    <div id="search-results" class="search-results" hidden></div>
+    <footer class="home-footer">ABOUT THE ONTARIO PARAMEDIC CLINICAL GUIDE<br>ALS PCS 5.4 2025-06-02</footer>
+  </div>
+
+  <!-- PCP DIRECTIVES LIST -->
+  <div id="view-pcp" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="pcp-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div id="pcp-list" class="category-list"></div>
+  </div>
+
+  <!-- SPECIAL CARE DIRECTIVES LIST -->
+  <div id="view-special" class="view" hidden>
+    <div id="special-list" class="category-list"></div>
+  </div>
+
+  <!-- COMPANION DOCUMENT LIST -->
+  <div id="view-companion" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="comp-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div class="companion-banner">COMPANION DOCUMENT</div>
+    <div id="companion-list" class="category-list"></div>
+  </div>
+
+  <!-- MEDICAL REFERENCES LIST -->
+  <div id="view-references" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="ref-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div class="reference-banner">MEDICAL REFERENCES</div>
+    <div id="references-list" class="category-list"></div>
+  </div>
+
+  <!-- DIRECTIVE DETAIL -->
+  <div id="view-detail" class="view" hidden>
+    <div id="detail-content" class="detail-content"></div>
+  </div>
+
+  <script src="data/directives.js"></script>
+  <script src="data/companion.js"></script>
+  <script src="data/references.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
