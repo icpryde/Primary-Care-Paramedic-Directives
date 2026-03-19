@@ -76,12 +76,34 @@ function updateBackButtonVisibility(activeViewId) {
   if (helpBtn) helpBtn.hidden = !onHome;
 }
 
+let helpModalScrollY = 0;
+
+function helpModalOnTouchMove(e) {
+  const modal = $('install-help-modal');
+  if (!modal || modal.hidden) return;
+  const scrollBody = modal.querySelector('.help-modal-body');
+  if (scrollBody && (e.target === scrollBody || scrollBody.contains(e.target))) {
+    return;
+  }
+  e.preventDefault();
+}
+
 function openInstallHelpModal() {
   const modal = $('install-help-modal');
   if (!modal) return;
+  helpModalScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${helpModalScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+
   modal.hidden = false;
   modal.setAttribute('aria-hidden', 'false');
+  document.documentElement.classList.add('help-modal-open');
   document.body.classList.add('help-modal-open');
+  document.addEventListener('touchmove', helpModalOnTouchMove, { passive: false });
+
   const closeBtn = modal.querySelector('.help-modal-close');
   if (closeBtn) closeBtn.focus();
 }
@@ -89,9 +111,19 @@ function openInstallHelpModal() {
 function closeInstallHelpModal() {
   const modal = $('install-help-modal');
   if (!modal) return;
+  document.removeEventListener('touchmove', helpModalOnTouchMove, { passive: false });
+
   modal.hidden = true;
   modal.setAttribute('aria-hidden', 'true');
+  document.documentElement.classList.remove('help-modal-open');
   document.body.classList.remove('help-modal-open');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, helpModalScrollY);
+
   const helpBtn = $('header-help-btn');
   if (helpBtn && !helpBtn.hidden) helpBtn.focus();
 }

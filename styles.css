@@ -44,23 +44,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-/* Reserve space for Back button when visible; prevent title overlap */
-#app-header:has(#back-btn:not([hidden])) {
-  padding-left: 72px;
-}
-
-/* Help (?) on home — top right */
-#app-header:has(#header-help-btn:not([hidden])) {
-  padding-right: 52px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .header-help {
   position: absolute;
-  right: 8px;
+  z-index: 2;
+  right: 6px;
   top: calc(var(--safe-top) + (var(--header-h) - 34px) / 2);
   width: 34px;
   height: 34px;
@@ -88,16 +79,18 @@ body {
   letter-spacing: 0.5px;
   color: #fff;
   text-align: center;
-  flex: 1;
-  min-width: 0;
+  max-width: min(100vw - 140px, 420px);
+  margin: 0 auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  pointer-events: none;
 }
 
 .header-back {
   position: absolute;
-  left: 8px;
+  z-index: 2;
+  left: 4px;
   background: none;
   border: none;
   padding: 10px 12px;
@@ -118,40 +111,38 @@ body {
   inset: 0;
   z-index: 1000;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: max(20px, env(safe-area-inset-top, 20px)) 16px max(24px, env(safe-area-inset-bottom, 24px));
+  touch-action: none;
+  overscroll-behavior: none;
 }
 .help-modal[hidden] {
   display: none !important;
-}
-@media (min-width: 540px) {
-  .help-modal {
-    align-items: center;
-    padding: 24px;
-  }
 }
 .help-modal-backdrop {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
+  touch-action: none;
 }
 .help-modal-panel {
   position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 420px;
-  max-height: min(88vh, 640px);
+  max-height: min(72vh, 520px);
   background: var(--white);
-  border-radius: 16px 16px 0 0;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  touch-action: auto;
 }
-@media (min-width: 540px) {
+@media (min-height: 700px) {
   .help-modal-panel {
-    border-radius: 16px;
-    max-height: min(85vh, 620px);
+    max-height: min(68vh, 540px);
   }
 }
 .help-modal-header {
@@ -191,9 +182,14 @@ body {
   background: rgba(255, 255, 255, 0.25);
 }
 .help-modal-body {
-  padding: 18px 20px 24px;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 16px 20px 20px;
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   font-size: 15px;
   line-height: 1.5;
   color: var(--text);
@@ -241,8 +237,10 @@ body {
   font-size: 12px;
   opacity: 0.85;
 }
+html.help-modal-open,
 body.help-modal-open {
   overflow: hidden;
+  touch-action: none;
 }
 
 /* ── Views ────────────────────────────────────────────── */
