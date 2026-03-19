@@ -9,6 +9,56 @@ const state = {
   forwardStack: [],
 };
 
+/** Short labels for the top bar — full titles stay on the page body. */
+const HEADER_TITLE_ALIASES = {
+  'Moderate to Severe Allergic Reaction': 'Severe allergic reaction',
+  'Advanced Airway and Tracheostomy Suctioning & Reinsertion': 'Adv airway / trach',
+  'Continuous Positive Airway Pressure (CPAP)': 'CPAP',
+  'Return of Spontaneous Circulation (ROSC)': 'ROSC',
+  'Acute Cardiogenic Pulmonary Edema': 'ACPE',
+  'Intravenous and Fluid Therapy': 'IV & fluid therapy',
+  'Home Dialysis Emergency Disconnect': 'Dialysis disconnect',
+  'Opioid Toxicity and Withdrawal': 'Opioid toxicity',
+  'Palliative Care Medical Directive': 'Palliative care',
+  'Treat and Discharge (if authorized)': 'Treat & discharge',
+  'Considerations for Treat and Discharge (if authorized)': 'Treat & discharge info',
+  'Online Medical Consultation (OMC) Patch': 'OMC patch',
+  'OMC BHP Number List': 'OMC BHP list',
+  'Additional Contact Information Reference': 'Extra contacts',
+  'Base Hospital Physician Patching Template': 'BHP patch template',
+  'Emergency Dialysis Disconnect Prompt Card': 'Dialysis disconnect card',
+  'Rescuer II Compact CPAP System': 'Rescuer II CPAP',
+  'Neonatal Pre-ductal Oxygen Saturation': 'Neonatal SpO₂',
+  'Physician On-Scene Reference': 'On-scene physician',
+  'Croup Medical Directive': 'Croup',
+  'Hallucinations or Agitation': 'Hallucination / agitation',
+  'Terminal Congested Breathing': 'Terminal congestion',
+  'Suspected Adrenal Crisis': 'Adrenal crisis',
+  'Lateral Patellar Dislocation': 'Patellar dislocation',
+};
+
+function trimHeaderTitle(str, max = 22) {
+  if (!str || str.length <= max) return str;
+  let cut = str.slice(0, max - 1);
+  const sp = cut.lastIndexOf(' ');
+  if (sp > 8) cut = cut.slice(0, sp);
+  return `${cut}…`;
+}
+
+/** Object with optional .navTitle / .title, or a plain string. */
+function headerTitleFromItem(obj) {
+  if (obj == null) return 'MEDICAL DIRECTIVES';
+  if (typeof obj === 'string') {
+    if (HEADER_TITLE_ALIASES[obj]) return HEADER_TITLE_ALIASES[obj];
+    return trimHeaderTitle(obj, 24);
+  }
+  if (obj.navTitle) return obj.navTitle;
+  const t = obj.title;
+  if (!t) return 'MEDICAL DIRECTIVES';
+  if (HEADER_TITLE_ALIASES[t]) return HEADER_TITLE_ALIASES[t];
+  return trimHeaderTitle(t, 24);
+}
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 function showView(viewId, title, pushHistory = true) {
   const current = document.querySelector('.view.active');
@@ -71,9 +121,11 @@ function goForward() {
 
 function updateBackButtonVisibility(activeViewId) {
   const onHome = activeViewId === 'view-home';
-  $('back-btn').hidden = onHome || state.history.length === 0;
+  document.body.classList.toggle('app-on-home', onHome);
+  const back = $('back-btn');
+  if (back) back.hidden = onHome || state.history.length === 0;
   const helpBtn = $('header-help-btn');
-  if (helpBtn) helpBtn.hidden = !onHome;
+  if (helpBtn) helpBtn.hidden = false;
 }
 
 let helpModalScrollY = 0;
@@ -663,7 +715,7 @@ function buildSpecialView() {
   overviewRow.innerHTML = `<span class="directive-row-title" style="font-weight:600;">Overview / Introduction</span><span class="directive-row-chevron"></span>`;
   overviewRow.addEventListener('click', () => {
     renderPalliativePreamble();
-    showView('view-detail', 'Palliative Care Overview');
+    showView('view-detail', 'Palliative overview');
   });
   itemsEl.appendChild(overviewRow);
 
@@ -673,7 +725,7 @@ function buildSpecialView() {
     row.innerHTML = `<span class="directive-row-title">${d.title}</span><span class="directive-row-chevron"></span>`;
     row.addEventListener('click', () => {
       renderPalliativeDetail(d);
-      showView('view-detail', d.title);
+      showView('view-detail', headerTitleFromItem(d));
     });
     itemsEl.appendChild(row);
   });
@@ -694,7 +746,7 @@ function buildReferencesView() {
     row.innerHTML = `<span class="directive-row-title">${ref.title}</span><span class="directive-row-chevron"></span>`;
     row.addEventListener('click', () => {
       renderReferenceDetail(ref);
-      showView('view-detail', ref.title);
+      showView('view-detail', headerTitleFromItem(ref));
     });
     container.appendChild(row);
   });
@@ -833,7 +885,7 @@ function buildSpecialEventView() {
     row.innerHTML = `<span class="directive-row-title">${d.title}</span><span class="directive-row-chevron"></span>`;
     row.addEventListener('click', () => {
       renderSpecialEventDetail(d);
-      showView('view-detail', d.title);
+      showView('view-detail', headerTitleFromItem(d));
     });
     container.appendChild(row);
   });
@@ -849,7 +901,7 @@ function buildContactView() {
     row.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="directive-row-chevron"></span>`;
     row.addEventListener('click', () => {
       renderContactDetail(item.id, item.title);
-      showView('view-detail', item.title);
+      showView('view-detail', headerTitleFromItem(item));
     });
     container.appendChild(row);
   });
@@ -996,13 +1048,13 @@ function init() {
   // Build PCP list
   buildCategoryList($('pcp-list'), getDirectivesByCategory, directive => {
     renderDirectiveDetail(directive);
-    showView('view-detail', directive.title);
+    showView('view-detail', headerTitleFromItem(directive));
   });
 
   // Build Companion list
   buildCategoryList($('companion-list'), getCompanionByCategory, entry => {
     renderCompanionDetail(entry);
-    showView('view-detail', entry.title);
+    showView('view-detail', headerTitleFromItem(entry));
   });
 
   // Build Special list
@@ -1097,22 +1149,22 @@ function init() {
       $('search-results').hidden = true;
       if (result.type === 'directive') {
         renderDirectiveDetail(result.data);
-        showView('view-detail', result.data.title);
+        showView('view-detail', headerTitleFromItem(result.data));
       } else if (result.type === 'palliative') {
         renderPalliativeDetail(result.data);
-        showView('view-detail', result.data.title);
+        showView('view-detail', headerTitleFromItem(result.data));
       } else if (result.type === 'reference') {
         renderReferenceDetail(result.data);
-        showView('view-detail', result.data.title);
+        showView('view-detail', headerTitleFromItem(result.data));
       } else if (result.type === 'specialevent') {
         renderSpecialEventDetail(result.data);
-        showView('view-detail', result.data.title);
+        showView('view-detail', headerTitleFromItem(result.data));
       } else if (result.type === 'contact') {
         renderContactDetail(result.data.id, result.data.title);
-        showView('view-detail', result.data.title);
+        showView('view-detail', headerTitleFromItem(result.data));
       } else {
         renderCompanionDetail(result.data);
-        showView('view-detail', result.data.title);
+        showView('view-detail', headerTitleFromItem(result.data));
       }
     });
   });

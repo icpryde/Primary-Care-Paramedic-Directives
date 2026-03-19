@@ -3,6 +3,7 @@
 
 :root {
   --page-gutter: 20px;
+  --header-side: 78px;
   --navy:    #0D2B55;
   --blue:    #3A82B8;
   --red:     #B03030;
@@ -41,18 +42,48 @@ body {
   background: var(--navy);
   height: calc(var(--header-h) + var(--safe-top));
   padding-top: var(--safe-top);
+  display: grid;
+  grid-template-columns: var(--header-side) 1fr var(--header-side);
+  grid-template-rows: minmax(var(--header-h), auto);
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.header-cell-left,
+.header-cell-right {
+  display: flex;
+  align-items: center;
+  min-height: var(--header-h);
+  min-width: 0;
+  grid-row: 1;
+  position: relative;
+  z-index: 2;
+}
+.header-cell-left {
+  grid-column: 1;
+  justify-content: flex-start;
+  padding-left: 2px;
+}
+.header-cell-right {
+  grid-column: 3;
+  justify-content: flex-end;
+  padding-right: 2px;
+}
+/* Full-width row so the title is centered on the screen, not only in the middle grid track */
+.header-cell-center {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-left: 0;
-  padding-right: 0;
+  min-width: 0;
+  min-height: var(--header-h);
+  pointer-events: none;
 }
 
 .header-help {
-  position: absolute;
-  z-index: 2;
-  right: 6px;
-  top: calc(var(--safe-top) + (var(--header-h) - 34px) / 2);
+  flex-shrink: 0;
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -74,23 +105,32 @@ body {
 }
 
 #header-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.35px;
   color: #fff;
   text-align: center;
-  max-width: min(100vw - 140px, 420px);
-  margin: 0 auto;
+  width: auto;
+  max-width: calc(100% - 2 * var(--header-side) - 12px);
+  margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   pointer-events: none;
+  line-height: 1.2;
+}
+
+/* Never show Back on home (PWA / WebKit can ignore [hidden] vs display:flex fights) */
+body.app-on-home #back-btn {
+  display: none !important;
+}
+#back-btn[hidden] {
+  display: none !important;
 }
 
 .header-back {
-  position: absolute;
+  position: relative;
   z-index: 2;
-  left: 4px;
   background: none;
   border: none;
   padding: 10px 12px;
@@ -232,6 +272,25 @@ body {
   background: var(--bg);
   border-radius: 10px;
   border-left: 3px solid var(--blue);
+}
+.help-modal-para {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.help-modal-bullets {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.help-modal-bullets li {
+  margin-bottom: 12px;
+}
+.help-modal-bullets li:last-child {
+  margin-bottom: 0;
 }
 .help-icon-inline {
   font-size: 12px;
