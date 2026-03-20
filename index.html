@@ -95,7 +95,7 @@
       <button class="home-nav-btn cat-special" data-view="view-special">Special Care Directives</button>
       <button class="home-nav-btn cat-companion" data-view="view-companion">Companion Document</button>
       <button class="home-nav-btn cat-reference" data-view="view-references">Medical References</button>
-      <button class="home-nav-btn cat-presepsis" data-view="view-presepsis">Pre-Sepsis Tool</button>
+      <button class="home-nav-btn cat-calculators" data-view="view-calculators">Medical Calculators</button>
       <button class="home-nav-btn cat-contact" data-view="view-contact">Contact</button>
     </nav>
     <div id="search-results" class="search-results" hidden></div>
@@ -121,6 +121,50 @@
     <div class="specialevent-banner">SPECIAL EVENT DIRECTIVES</div>
     <p class="view-intro">PCP auxiliary directives for authorized mass-gathering events (ALS PCS Section 3). Use only when authorized by your RBHP.</p>
     <div id="special-event-list" class="category-list flat-list"></div>
+  </div>
+
+  <!-- MEDICAL CALCULATORS (menu) -->
+  <div id="view-calculators" class="view" hidden>
+    <div class="calculators-top-banner">MEDICAL CALCULATORS</div>
+    <p class="view-intro">Interactive scoring and decision-support tools. Reference charts for Glasgow / Pediatric Coma scales remain under <strong>Medical References</strong>.</p>
+    <div id="calculators-list" class="category-list flat-list"></div>
+  </div>
+
+  <!-- BURN CALCULATOR -->
+  <div id="view-burn" class="view burn-view" hidden>
+    <div class="burn-scroll">
+      <div class="burn-top-card">
+        <div class="burn-top-row">
+          <div>
+            <h2 class="burn-h2">Burn Calculator</h2>
+            <p class="burn-tagline">Rule of Nines Assessment</p>
+          </div>
+          <div class="burn-top-actions">
+            <button type="button" class="burn-icon-btn" id="burn-btn-zoom" aria-label="Toggle diagram zoom" title="Zoom">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            </button>
+            <button type="button" class="burn-icon-btn burn-icon-btn--reset" id="burn-btn-reset" aria-label="Reset selection" title="Reset">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="burn-panel">
+        <div class="burn-row-split">
+          <button type="button" id="burn-type-adult" class="burn-type-btn burn-type-btn--on">Adult</button>
+          <button type="button" id="burn-type-ped" class="burn-type-btn">Paediatric</button>
+        </div>
+        <div class="burn-degree-row">
+          <button type="button" class="burn-deg-btn" data-burn-degree="1st">1st Degree</button>
+          <button type="button" class="burn-deg-btn burn-deg-btn--on" data-burn-degree="2nd">2nd Degree</button>
+          <button type="button" class="burn-deg-btn" data-burn-degree="3rd">3rd Degree</button>
+        </div>
+      </div>
+      <div id="burn-diagrams" class="burn-diagrams"></div>
+      <div id="burn-result-mount"></div>
+      <div id="burn-bls-mount"></div>
+      <p class="burn-foot">Medical decision support tool — not sole basis for critical interventions.</p>
+    </div>
   </div>
 
   <!-- PRE-SEPSIS TOOL (FAST ParaHEWS) -->
@@ -234,6 +278,7 @@
   <script src="data/references.js"></script>
   <script src="data/specialEvent.js"></script>
   <script src="data/contact.js"></script>
+  <script src="data/calculators-content.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

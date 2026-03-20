@@ -78,6 +78,7 @@ function showView(viewId, title, pushHistory = true) {
   $('header-title').textContent = title || 'MEDICAL DIRECTIVES';
   updateBackButtonVisibility(viewId);
   if (viewId === 'view-presepsis') presepsisRefreshUI();
+  if (viewId === 'view-burn') burnRefreshUI();
 }
 
 function goBack() {
@@ -753,6 +754,49 @@ function buildReferencesView() {
   });
 }
 
+// ─── Medical Calculators hub ─────────────────────────────────────────────────
+function buildCalculatorsView() {
+  const container = $('calculators-list');
+  if (!container) return;
+  const items = [
+    { title: 'Pre-Sepsis Tool', fn: () => showView('view-presepsis', 'Pre-Sepsis') },
+    { title: 'Burn Calculator', fn: () => showView('view-burn', 'Burn Calculator') },
+    { title: 'Glasgow Coma Scale (Calculator)', fn: () => renderCalculatorDetail('gcs') },
+    { title: 'Pediatric Coma Scale (Calculator)', fn: () => renderCalculatorDetail('pcs') },
+  ];
+  container.innerHTML = '';
+  items.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'directive-row';
+    row.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="directive-row-chevron"></span>`;
+    row.addEventListener('click', item.fn);
+    container.appendChild(row);
+  });
+}
+
+function renderCalculatorDetail(kind) {
+  const body = typeof GCS_CALCULATOR_HTML !== 'undefined' && kind === 'gcs'
+    ? GCS_CALCULATOR_HTML
+    : typeof PCS_CALCULATOR_HTML !== 'undefined' && kind === 'pcs'
+      ? PCS_CALCULATOR_HTML
+      : '';
+  if (!body) return;
+  const title = kind === 'gcs' ? 'Glasgow Coma Scale' : 'Pediatric Coma Scale';
+  const shortTitle = kind === 'gcs' ? 'GCS Calculator' : 'PCS Calculator';
+  const notesId = kind === 'gcs' ? 'ref-gcs' : 'ref-pediatric-coma';
+  const prefix = kind === 'gcs' ? 'gcs' : 'pcs';
+  let html = '';
+  html += `<div class="detail-scope-banner bg-red">PRIMARY CARE PARAMEDIC</div>`;
+  html += `<div class="detail-scope-banner calc-hub-banner">Medical Calculators</div>`;
+  html += `<div class="detail-title">${title}</div>`;
+  html += renderMyNotesAnchor();
+  html += `<div class="section-card ref-detail">${body}</div>`;
+  html += renderMyNotesSection(notesId);
+  $('detail-content').innerHTML = html;
+  gcsReset(prefix);
+  showView('view-detail', shortTitle);
+}
+
 // ─── Render Reference Detail ─────────────────────────────────────────────────
 function renderReferenceDetail(ref) {
   let html = '';
@@ -977,12 +1021,44 @@ function buildSearchIndex() {
     });
   }
   index.push({
-    id: 'presepsis-tool',
-    title: 'Pre-Sepsis Tool',
+    id: 'calc-hub',
+    title: 'Medical Calculators',
     catLabel: 'Tools',
+    text: 'medical calculators calculator pre-sepsis sepsis parahews burn rule of nines tbsa body surface glasgow coma pediatric pcs gcs'.toLowerCase(),
+    type: 'calc-hub',
+    data: null,
+  });
+  index.push({
+    id: 'calc-presepsis',
+    title: 'Pre-Sepsis Tool',
+    catLabel: 'Medical Calculators',
     text: 'pre-sepsis pre sepsis fast parahews parhews infection alert capnography hospital notify gwps hps rowps clinical suspicion'.toLowerCase(),
     type: 'presepsis',
-    data: null
+    data: null,
+  });
+  index.push({
+    id: 'calc-burn',
+    title: 'Burn Calculator',
+    catLabel: 'Medical Calculators',
+    text: 'burn calculator rule of nines tbsa thermal bls dressing cooling pediatric adult groin'.toLowerCase(),
+    type: 'calc-burn',
+    data: null,
+  });
+  index.push({
+    id: 'calc-gcs',
+    title: 'Glasgow Coma Scale (Calculator)',
+    catLabel: 'Medical Calculators',
+    text: 'glasgow coma scale gcs calculator adult eye verbal motor'.toLowerCase(),
+    type: 'calc-gcs',
+    data: null,
+  });
+  index.push({
+    id: 'calc-pcs',
+    title: 'Pediatric Coma Scale (Calculator)',
+    catLabel: 'Medical Calculators',
+    text: 'pediatric coma scale pcs calculator child infant babbles'.toLowerCase(),
+    type: 'calc-pcs',
+    data: null,
   });
   return index;
 }
@@ -1227,6 +1303,261 @@ function initPreSepsisTool() {
   }
 }
 
+// ─── Burn Calculator (Rule of Nines) ───────────────────────────────────────────
+const burnState = {
+  type: 'adult',
+  selected: new Set(),
+  zoom: false,
+  degree: '2nd',
+};
+
+const BURN_BASE_PATH = {
+  adult: 'M50,5 Q60,5 65,20 Q65,35 50,35 Q35,35 35,20 Q40,5 50,5 M32,35 L68,35 L92,45 L88,85 L72,75 L68,135 L32,135 L28,75 L12,85 L8,45 Z',
+  pediatric: 'M50,5 Q75,5 75,30 Q75,55 50,55 Q25,55 25,30 Q25,5 50,5 M30,60 L70,60 L92,75 L88,105 L75,95 L70,135 L30,135 L25,95 L12,105 L8,75 Z',
+};
+
+const BURN_BODY_DATA = {
+  adult: {
+    front: [
+      { id: 'af_head', label: 'Head (Front)', value: 4.5, path: 'M50,5 Q55,5 60,10 Q65,20 60,30 Q50,35 40,30 Q35,20 40,10 Q45,5 50,5' },
+      { id: 'af_torso', label: 'Torso (Front)', value: 18, path: 'M32,35 L68,35 L72,75 L28,75 Z' },
+      { id: 'af_arm_l', label: 'Left Arm (Front)', value: 4.5, path: 'M68,35 L92,45 L88,85 L72,75 Z' },
+      { id: 'af_arm_r', label: 'Right Arm (Front)', value: 4.5, path: 'M32,35 L8,45 L12,85 L28,75 Z' },
+      { id: 'af_leg_l', label: 'Left Leg (Front)', value: 9, path: 'M50,85 L72,75 L68,135 L52,135 Z' },
+      { id: 'af_leg_r', label: 'Right Leg (Front)', value: 9, path: 'M50,85 L28,75 L32,135 L48,135 Z' },
+      { id: 'af_groin', label: 'Groin', value: 1, path: 'M44,75 L56,75 L50,85 Z' },
+    ],
+    back: [
+      { id: 'ab_head', label: 'Head (Back)', value: 4.5, path: 'M50,5 Q55,5 60,10 Q65,20 60,30 Q50,35 40,30 Q35,20 40,10 Q45,5 50,5' },
+      { id: 'ab_torso', label: 'Torso (Back)', value: 18, path: 'M32,35 L68,35 L72,75 L28,75 Z' },
+      { id: 'ab_arm_l', label: 'Left Arm (Back)', value: 4.5, path: 'M68,35 L92,45 L88,85 L72,75 Z' },
+      { id: 'ab_arm_r', label: 'Right Arm (Back)', value: 4.5, path: 'M32,35 L8,45 L12,85 L28,75 Z' },
+      { id: 'ab_leg_l', label: 'Left Leg (Back)', value: 9, path: 'M50,85 L72,75 L68,135 L52,135 Z' },
+      { id: 'ab_leg_r', label: 'Right Leg (Back)', value: 9, path: 'M50,85 L28,75 L32,135 L48,135 Z' },
+    ],
+  },
+  pediatric: {
+    front: [
+      { id: 'pf_head', label: 'Head (Front)', value: 9, path: 'M50,5 Q65,5 75,20 Q75,40 65,55 Q50,65 35,55 Q25,40 25,20 Q35,5 50,5' },
+      { id: 'pf_torso', label: 'Torso (Front)', value: 18, path: 'M30,60 L70,60 L75,95 L25,95 Z' },
+      { id: 'pf_arm_l', label: 'Left Arm (Front)', value: 4.5, path: 'M70,65 L92,75 L88,105 L75,95 Z' },
+      { id: 'pf_arm_r', label: 'Right Arm (Front)', value: 4.5, path: 'M30,65 L8,75 L12,105 L25,95 Z' },
+      { id: 'pf_leg_l', label: 'Left Leg (Front)', value: 7, path: 'M50,95 L75,95 L70,135 L52,135 Z' },
+      { id: 'pf_leg_r', label: 'Right Leg (Front)', value: 7, path: 'M50,95 L25,95 L30,135 L48,135 Z' },
+    ],
+    back: [
+      { id: 'pb_head', label: 'Head (Back)', value: 9, path: 'M50,5 Q65,5 75,20 Q75,40 65,55 Q50,65 35,55 Q25,40 25,20 Q35,5 50,5' },
+      { id: 'pb_torso', label: 'Torso (Back)', value: 13, path: 'M30,60 L70,60 L75,95 L25,95 Z' },
+      { id: 'pb_arm_l', label: 'Left Arm (Back)', value: 4.5, path: 'M70,65 L92,75 L88,105 L75,95 Z' },
+      { id: 'pb_arm_r', label: 'Right Arm (Back)', value: 4.5, path: 'M30,65 L8,75 L12,105 L25,95 Z' },
+      { id: 'pb_leg_l', label: 'Left Leg (Back)', value: 7, path: 'M50,95 L75,95 L70,135 L52,135 Z' },
+      { id: 'pb_leg_r', label: 'Right Leg (Back)', value: 7, path: 'M50,95 L25,95 L30,135 L48,135 Z' },
+      { id: 'pb_butt_l', label: 'Left Buttock', value: 2.5, path: 'M50,95 L75,95 L72,108 L50,108 Z' },
+      { id: 'pb_butt_r', label: 'Right Buttock', value: 2.5, path: 'M50,95 L25,95 L28,108 L50,108 Z' },
+    ],
+  },
+};
+
+function burnTextPos(id, type) {
+  if (id.includes('head')) return { x: 50, y: type === 'adult' ? 18 : 30 };
+  if (id.includes('torso')) return { x: 50, y: type === 'adult' ? 55 : 78 };
+  if (id.includes('arm_l')) return { x: 80, y: type === 'adult' ? 62 : 85 };
+  if (id.includes('arm_r')) return { x: 20, y: type === 'adult' ? 62 : 85 };
+  if (id.includes('leg_l')) return { x: 60, y: 110 };
+  if (id.includes('leg_r')) return { x: 40, y: 110 };
+  if (id.includes('groin')) return { x: 50, y: 78 };
+  if (id.includes('butt_l')) return { x: 62, y: 101 };
+  if (id.includes('butt_r')) return { x: 38, y: 101 };
+  return { x: 50, y: 72 };
+}
+
+function burnRender() {
+  const mount = $('burn-diagrams');
+  if (!mount) return;
+  const t = burnState.type;
+  const d = BURN_BODY_DATA[t];
+  const base = BURN_BASE_PATH[t];
+  mount.classList.toggle('burn-diagrams--zoom', burnState.zoom);
+  const mk = (label, parts) => {
+    const paths = parts.map(part => {
+      const sel = burnState.selected.has(part.id);
+      const pos = burnTextPos(part.id, t);
+      return `<g class="burn-hit" data-id="${part.id}" role="button" tabindex="0">
+        <path d="${part.path}" class="burn-region${sel ? ' burn-region--selected' : ''}" />
+        <text x="${pos.x}" y="${pos.y}" class="burn-pct${sel ? ' burn-pct--on' : ''}" text-anchor="middle" dominant-baseline="middle">${part.value}%</text>
+      </g>`;
+    }).join('');
+    return `<div class="burn-figure"><span class="burn-side-label">${label}</span>
+      <svg class="burn-svg" viewBox="0 0 100 145" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="${base}" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+        ${paths}
+      </svg></div>`;
+  };
+  mount.innerHTML = mk('Front', d.front) + mk('Back', d.back);
+}
+
+function burnComputeTotal() {
+  const t = burnState.type;
+  const all = BURN_BODY_DATA[t].front.concat(BURN_BODY_DATA[t].back);
+  let sum = 0;
+  burnState.selected.forEach(sid => {
+    const p = all.find(x => x.id === sid);
+    if (p) sum += p.value;
+  });
+  return parseFloat(sum.toFixed(1));
+}
+
+function burnShortLabel(label) {
+  return label.replace(/\s*\(Front\)\s*$/i, '').replace(/\s*\(Back\)\s*$/i, '').trim();
+}
+
+function burnUpdateResult() {
+  const mount = $('burn-result-mount');
+  if (!mount) return;
+  const total = burnComputeTotal();
+  const has = burnState.selected.size > 0;
+  const t = burnState.type;
+  const all = BURN_BODY_DATA[t].front.concat(BURN_BODY_DATA[t].back);
+  const tags = [...burnState.selected].map(sid => {
+    const p = all.find(x => x.id === sid);
+    return p ? `<span class="burn-tag">${burnShortLabel(p.label)}</span>` : '';
+  }).join('');
+  mount.innerHTML = `
+    <div class="burn-result-card${has ? ' burn-result-card--on' : ''}">
+      <span class="burn-result-badge">Calculated TBSA</span>
+      <div class="burn-result-pct">${total}%</div>
+      <div class="burn-result-tags">${has ? tags : '<span class="burn-result-hint">Select burn areas above…</span>'}</div>
+    </div>`;
+}
+
+function burnUpdateBls() {
+  const mount = $('burn-bls-mount');
+  if (!mount) return;
+  const pct = burnComputeTotal();
+  const deg = burnState.degree;
+  if (pct === 0) {
+    mount.innerHTML = `<div class="burn-bls">
+      <div class="burn-bls-head"><div class="burn-bls-icon">i</div><div class="burn-bls-title">Ontario BLS standards</div></div>
+      <p class="burn-bls-idle">Select body regions and a burn degree to view treatment reminders aligned with Ontario BLS burn care.</p>
+    </div>`;
+    return;
+  }
+  const items = [];
+  if (pct < 15) {
+    items.push('For burn sites estimated to involve &lt;15% of body surface area, cool burns and limit cooling to &lt;30 minutes to prevent hypothermia.');
+  }
+  if (pct >= 15) {
+    items.push('TBSA ≥15%: Monitor closely. Discontinue cooling if shivering or hypotension develops.');
+  }
+  if (deg === '1st') {
+    items.push('Cover all 1st degree burns with moist sterile dressing, then cover with a dry sheet or blanket.');
+  }
+  if (deg === '2nd' && pct < 15) {
+    items.push('Cover 2nd degree burns involving &lt;15% TBSA with moist sterile dressing, then a dry sheet or blanket.');
+  }
+  if (deg === '2nd' && pct >= 15) {
+    items.push('Cover 2nd degree burns involving ≥15% TBSA with dry sterile dressing or sheet.');
+  }
+  if (deg === '3rd') {
+    items.push('Cover all 3rd degree burns with dry sterile dressing or sheet.');
+  }
+  items.push('Stop the burning process. When removing clothing, cut around clothing adherent to skin.');
+  items.push('Dress digits individually; leave blisters intact.');
+  items.push('Keep the patient warm and prepare for expected problems (airway obstruction, respiratory distress, agitation, etc.).');
+  mount.innerHTML = `<div class="burn-bls">
+    <div class="burn-bls-head"><div class="burn-bls-icon">i</div><div class="burn-bls-title">Ontario BLS standards</div></div>
+    <ul>${items.map(x => `<li>${x}</li>`).join('')}</ul>
+  </div>`;
+}
+
+function burnToggle(id) {
+  if (burnState.selected.has(id)) burnState.selected.delete(id);
+  else burnState.selected.add(id);
+  burnRender();
+  burnUpdateResult();
+  burnUpdateBls();
+}
+
+function burnSyncTypeButtons() {
+  const adult = $('burn-type-adult');
+  const ped = $('burn-type-ped');
+  if (adult) adult.classList.toggle('burn-type-btn--on', burnState.type === 'adult');
+  if (ped) ped.classList.toggle('burn-type-btn--on', burnState.type === 'pediatric');
+}
+
+function burnSyncDegButtons() {
+  document.querySelectorAll('.burn-deg-btn').forEach(btn => {
+    const d = btn.getAttribute('data-burn-degree');
+    btn.classList.toggle('burn-deg-btn--on', d === burnState.degree);
+  });
+}
+
+function burnRefreshUI() {
+  burnSyncTypeButtons();
+  burnSyncDegButtons();
+  burnRender();
+  burnUpdateResult();
+  burnUpdateBls();
+}
+
+function initBurnCalculator() {
+  const diagrams = $('burn-diagrams');
+  if (diagrams && !diagrams.dataset.bound) {
+    diagrams.dataset.bound = '1';
+    diagrams.addEventListener('click', e => {
+      const hit = e.target.closest('.burn-hit');
+      if (hit && hit.dataset.id) burnToggle(hit.dataset.id);
+    });
+  }
+  const adult = $('burn-type-adult');
+  if (adult && !adult.dataset.bound) {
+    adult.dataset.bound = '1';
+    adult.addEventListener('click', () => {
+      burnState.type = 'adult';
+      burnState.selected = new Set();
+      burnRefreshUI();
+    });
+  }
+  const ped = $('burn-type-ped');
+  if (ped && !ped.dataset.bound) {
+    ped.dataset.bound = '1';
+    ped.addEventListener('click', () => {
+      burnState.type = 'pediatric';
+      burnState.selected = new Set();
+      burnRefreshUI();
+    });
+  }
+  const degRow = document.querySelector('.burn-degree-row');
+  if (degRow && !degRow.dataset.bound) {
+    degRow.dataset.bound = '1';
+    degRow.addEventListener('click', e => {
+      const b = e.target.closest('.burn-deg-btn');
+      if (!b) return;
+      const d = b.getAttribute('data-burn-degree');
+      if (!d) return;
+      burnState.degree = d;
+      burnSyncDegButtons();
+      burnUpdateBls();
+    });
+  }
+  const zoomBtn = $('burn-btn-zoom');
+  if (zoomBtn && !zoomBtn.dataset.bound) {
+    zoomBtn.dataset.bound = '1';
+    zoomBtn.addEventListener('click', () => {
+      burnState.zoom = !burnState.zoom;
+      burnRender();
+    });
+  }
+  const resetBtn = $('burn-btn-reset');
+  if (resetBtn && !resetBtn.dataset.bound) {
+    resetBtn.dataset.bound = '1';
+    resetBtn.addEventListener('click', () => {
+      burnState.selected = new Set();
+      burnRefreshUI();
+    });
+  }
+}
+
 // ─── Init ────────────────────────────────────────────────────────────────────
 function init() {
   // Home nav buttons
@@ -1239,7 +1570,8 @@ function init() {
         'view-special': 'MEDICAL DIRECTIVES',
         'view-companion': 'MEDICAL DIRECTIVES',
         'view-references': 'MEDICAL DIRECTIVES',
-        'view-presepsis': 'Pre-Sepsis',
+        'view-calculators': 'Calculators',
+        'view-burn': 'Burn Calculator',
         'view-contact': 'MEDICAL DIRECTIVES',
       };
       showView(viewId, labels[viewId] || 'MEDICAL DIRECTIVES');
@@ -1281,6 +1613,8 @@ function init() {
 
   // Build References list
   buildReferencesView();
+
+  buildCalculatorsView();
 
   buildSpecialEventView();
   buildContactView();
@@ -1381,6 +1715,14 @@ function init() {
       } else if (result.type === 'contact') {
         renderContactDetail(result.data.id, result.data.title);
         showView('view-detail', headerTitleFromItem(result.data));
+      } else if (result.type === 'calc-hub') {
+        showView('view-calculators', 'Calculators');
+      } else if (result.type === 'calc-burn') {
+        showView('view-burn', 'Burn Calculator');
+      } else if (result.type === 'calc-gcs') {
+        renderCalculatorDetail('gcs');
+      } else if (result.type === 'calc-pcs') {
+        renderCalculatorDetail('pcs');
       } else if (result.type === 'presepsis') {
         showView('view-presepsis', 'Pre-Sepsis');
       } else {
@@ -1393,6 +1735,8 @@ function init() {
   setupEdgeSwipeNavigation();
 
   initPreSepsisTool();
+  initBurnCalculator();
+  burnRefreshUI();
 
   const activeView = document.querySelector('.view.active');
   if (activeView) updateBackButtonVisibility(activeView.id);

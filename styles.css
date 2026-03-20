@@ -352,7 +352,7 @@ body.help-modal-open {
 .cat-special   { background: var(--gray); }
 .cat-companion { background: var(--orange); }
 .cat-reference { background: var(--purple); }
-.cat-presepsis { background: #8f7a0a; color: #fff; }
+.cat-calculators { background: #115e59; color: #fff; }
 
 .home-footer {
   text-align: center;
@@ -2181,4 +2181,339 @@ body.help-modal-open {
   font-weight: 600;
   opacity: 0.95;
   margin-top: 4px;
+}
+
+/* ── Medical Calculators hub ───────────────────────────── */
+.calculators-top-banner {
+  background: #115e59;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-align: center;
+  padding: 14px 16px;
+}
+.detail-scope-banner.calc-hub-banner {
+  background: #115e59;
+  color: #fff;
+  font-size: 14px;
+}
+
+/* ── Burn Calculator ────────────────────────────────────── */
+.view.burn-view {
+  background: #f1f5f9;
+  min-height: calc(100vh - var(--header-h) - var(--safe-top));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.burn-scroll {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 12px 14px 28px;
+}
+.burn-top-card {
+  background: #1d4ed8;
+  color: #fff;
+  border-radius: 16px;
+  padding: 16px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.25);
+}
+.burn-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.burn-h2 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.burn-tagline {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 6px;
+}
+.burn-top-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.burn-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.burn-icon-btn:active {
+  background: rgba(255, 255, 255, 0.35);
+}
+.burn-icon-btn--reset {
+  background: #ef4444;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
+}
+.burn-panel {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+.burn-row-split {
+  display: flex;
+  gap: 10px;
+}
+.burn-type-btn {
+  flex: 1;
+  padding: 14px 10px;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  background: #f8fafc;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #94a3b8;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.burn-type-btn--on {
+  background: #fff;
+  border-color: #2563eb;
+  color: #1d4ed8;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+.burn-degree-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.burn-deg-btn {
+  flex: 1;
+  min-width: 88px;
+  max-width: 120px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  background: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #64748b;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.burn-deg-btn--on {
+  border-color: #ef4444;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+.burn-diagrams {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+@media (min-width: 520px) {
+  .burn-diagrams {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 16px;
+  }
+}
+.burn-diagrams--zoom .burn-svg {
+  transform: scale(1.08);
+  transform-origin: center top;
+}
+.burn-figure {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.burn-side-label {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: #1e3a8a;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+.burn-svg {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  aspect-ratio: 100 / 145;
+  display: block;
+  transition: transform 0.25s ease;
+  touch-action: manipulation;
+}
+.burn-region {
+  fill: rgba(191, 219, 254, 0.75);
+  stroke: #93c5fd;
+  cursor: pointer;
+  transition: fill 0.15s, stroke 0.15s;
+}
+.burn-region--selected {
+  fill: #ef4444;
+  stroke: #b91c1c;
+}
+.burn-pct {
+  font-size: 6px;
+  font-weight: 900;
+  pointer-events: none;
+  fill: #1e40af;
+}
+.burn-pct--on {
+  fill: #fff;
+}
+.burn-result-card {
+  border-radius: 20px;
+  border: 4px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 20px 16px;
+  text-align: center;
+  margin-bottom: 14px;
+  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+}
+.burn-result-card--on {
+  border-color: #ef4444;
+  background: #fef2f2;
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.12);
+}
+.burn-result-badge {
+  display: inline-block;
+  font-size: 0.55rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #64748b;
+  margin-bottom: 10px;
+}
+.burn-result-card--on .burn-result-badge {
+  background: #ef4444;
+  color: #fff;
+}
+.burn-result-pct {
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: #cbd5e1;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.burn-result-card--on .burn-result-pct {
+  color: #dc2626;
+}
+.burn-result-tags {
+  margin-top: 14px;
+  min-height: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.burn-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 2px solid #fecaca;
+  background: #fff;
+  color: #b91c1c;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.burn-tag::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+.burn-result-hint {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-top: 8px;
+}
+.burn-bls {
+  background: #0f172a;
+  border-radius: 16px;
+  padding: 18px 16px;
+  color: #e2e8f0;
+  margin-bottom: 16px;
+}
+.burn-bls-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.burn-bls-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #fbbf24;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.burn-bls-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fbbf24;
+}
+.burn-bls ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  font-weight: 600;
+}
+.burn-bls li {
+  margin-bottom: 8px;
+}
+.burn-bls-idle {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-style: italic;
+  line-height: 1.5;
+}
+.burn-foot {
+  text-align: center;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  line-height: 1.4;
+  padding: 0 8px;
 }
