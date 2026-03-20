@@ -131,6 +131,69 @@ const REFERENCES = [
   },
 
   {
+    id: 'ref-pediatric-values',
+    title: 'Pediatric Values',
+    content: `
+      <p class="ref-body-text">Reference ranges and formulas for paediatric assessment. Use the <strong>Pediatric Values Calculator</strong> (Medical Calculators) for quick estimates from age.</p>
+
+      <div class="table-scroll-wrap ped-ref-table-wrap">
+        <table class="ref-table ref-table-striped ped-vitals-table" aria-label="Pediatric normal vital signs">
+          <thead>
+            <tr>
+              <th scope="col">Age</th>
+              <th scope="col">Respiratory rate</th>
+              <th scope="col">Heart rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>0–3 months</td><td>30–60</td><td>90–180</td></tr>
+            <tr><td>3–6 months</td><td>30–60</td><td>80–160</td></tr>
+            <tr><td>6–12 months</td><td>25–45</td><td>80–140</td></tr>
+            <tr><td>1–3 years</td><td>20–30</td><td>75–130</td></tr>
+            <tr><td>6 years</td><td>16–24</td><td>70–110</td></tr>
+            <tr><td>10 years</td><td>14–20</td><td>60–90</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="ref-subheading ped-ref-formula-h">Formulas</h3>
+      <ul class="ref-body-list">
+        <li><strong>Normotension:</strong> SBP ≥ 90 mmHg + (2 × age in years)</li>
+        <li><strong>Hypotension:</strong> SBP &lt; 70 mmHg + (2 × age in years)</li>
+        <li><strong>Weight (kg):</strong> (age in years × 2) + 10</li>
+      </ul>
+
+      <h3 class="ref-subheading ped-ref-formula-h">Hypoglycemia</h3>
+      <div class="table-scroll-wrap ped-ref-table-wrap">
+        <table class="ref-table ref-table-striped ped-vitals-table" aria-label="Pediatric hypoglycemia thresholds">
+          <thead>
+            <tr>
+              <th scope="col">Age</th>
+              <th scope="col">Blood glucose level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>&lt; 2 years</td><td>&lt; 3.0 mmol/L</td></tr>
+            <tr><td>≥ 2 years</td><td>&lt; 4.0 mmol/L</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="ref-subheading ped-ref-formula-h">Level of Awareness (LOA)</h3>
+      <div class="ref-note ped-loa-note">
+        <p class="ref-body-text" style="margin:0 0 8px;">The word <strong>altered</strong> refers to a GCS that is <em>less than normal</em> for the patient.</p>
+        <p class="ref-body-text" style="margin:0;">The word <strong>unaltered</strong> refers to a GCS that is <em>normal</em> for the patient. This may be a GCS &lt; 15.</p>
+      </div>
+
+      <div class="ref-calc-launch-wrap">
+        <button type="button" class="ref-open-calc-btn" onclick="showView('view-ped-calc', 'Pediatric Values Calculator')">
+          Open Pediatric Values Calculator
+        </button>
+      </div>
+    `
+  },
+
+  {
     id: 'ref-defib-joules',
     title: 'Adult Defibrillation Joule Settings',
     content: `

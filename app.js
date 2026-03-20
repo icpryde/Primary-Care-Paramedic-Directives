@@ -80,6 +80,7 @@ function showView(viewId, title, pushHistory = true) {
   if (viewId === 'view-presepsis') presepsisRefreshUI();
   if (viewId === 'view-burn') burnRefreshUI();
   if (viewId === 'view-lams') lamsRefreshUI();
+  if (viewId === 'view-ped-calc') pedCalcRefresh();
 }
 
 function goBack() {
@@ -554,6 +555,117 @@ function initLamsTool() {
     lamsState.criteriaOpen = !lamsState.criteriaOpen;
     lamsRefreshUI();
   });
+}
+
+// ─── Pediatric Values Calculator ─────────────────────────────────────────────
+function pedCalcGetVitals(value, timeUnit) {
+  if (timeUnit === 'months') {
+    if (value <= 3) return { rr: '30–60', hr: '90–180' };
+    if (value <= 6) return { rr: '30–60', hr: '80–160' };
+    if (value <= 12) return { rr: '25–45', hr: '80–140' };
+    return { rr: '20–30', hr: '75–130' };
+  }
+  if (value < 1) return { rr: '25–45', hr: '80–140' };
+  if (value <= 3) return { rr: '20–30', hr: '75–130' };
+  if (value <= 6) return { rr: '16–24', hr: '70–110' };
+  return { rr: '14–20', hr: '60–90' };
+}
+
+function pedCalcPopulateAgeOptions() {
+  const sel = $('ped-calc-age');
+  const unitEl = $('ped-calc-unit');
+  if (!sel || !unitEl) return;
+  const unit = unitEl.value;
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">Select…</option>';
+  if (unit === 'months') {
+    for (let i = 0; i <= 11; i += 1) {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = String(i);
+      sel.appendChild(opt);
+    }
+  } else {
+    for (let i = 1; i <= 12; i += 1) {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = String(i);
+      sel.appendChild(opt);
+    }
+  }
+  if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+  else sel.value = '';
+}
+
+function pedCalcRefresh() {
+  const ageSel = $('ped-calc-age');
+  const unitSel = $('ped-calc-unit');
+  const wEl = $('ped-calc-weight');
+  const nEl = $('ped-calc-sbp-norm');
+  const hEl = $('ped-calc-sbp-hypo');
+  const rrEl = $('ped-calc-rr');
+  const hrEl = $('ped-calc-hr');
+  const bglEl = $('ped-calc-bgl');
+  if (!ageSel || !unitSel) return;
+
+  const raw = ageSel.value;
+  const unit = unitSel.value;
+  const empty = raw === '';
+  const ageNum = empty ? 0 : parseFloat(raw, 10);
+  const ageInYears = empty ? 0 : (unit === 'months' ? ageNum / 12 : ageNum);
+
+  const dash = '—';
+  if (empty) {
+    if (wEl) wEl.textContent = dash;
+    if (nEl) nEl.textContent = dash;
+    if (hEl) hEl.textContent = dash;
+    if (rrEl) rrEl.textContent = dash;
+    if (hrEl) hrEl.textContent = dash;
+    if (bglEl) bglEl.textContent = dash;
+    return;
+  }
+
+  const weight = ageInYears * 2 + 10;
+  const sbpNorm = Math.round(90 + 2 * ageInYears);
+  const sbpHypo = Math.round(70 + 2 * ageInYears);
+  const hypoglycemia = ageInYears < 2 ? '< 3.0 mmol/L' : '< 4.0 mmol/L';
+  const vitals = pedCalcGetVitals(ageNum, unit);
+
+  if (wEl) {
+    wEl.textContent = Number.isInteger(weight) ? String(weight) : weight.toFixed(1);
+  }
+  if (nEl) nEl.textContent = `≥ ${sbpNorm}`;
+  if (hEl) hEl.textContent = `< ${sbpHypo}`;
+  if (rrEl) rrEl.textContent = vitals.rr;
+  if (hrEl) hrEl.textContent = vitals.hr;
+  if (bglEl) bglEl.textContent = hypoglycemia;
+}
+
+function pedCalcReset() {
+  const ageSel = $('ped-calc-age');
+  const unitSel = $('ped-calc-unit');
+  if (unitSel) unitSel.value = 'months';
+  pedCalcPopulateAgeOptions();
+  if (ageSel) ageSel.value = '';
+  pedCalcRefresh();
+}
+
+function initPedCalcTool() {
+  const root = $('view-ped-calc');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  pedCalcPopulateAgeOptions();
+
+  $('ped-calc-unit')?.addEventListener('change', () => {
+    $('ped-calc-age').value = '';
+    pedCalcPopulateAgeOptions();
+    pedCalcRefresh();
+  });
+
+  $('ped-calc-age')?.addEventListener('change', pedCalcRefresh);
+
+  $('ped-calc-reset-btn')?.addEventListener('click', pedCalcReset);
 }
 
 // ─── My Notes (localStorage) ───────────────────────────────────────────────
@@ -1059,6 +1171,7 @@ function buildCalculatorsView() {
     { title: 'Pre-Sepsis Tool', fn: () => showView('view-presepsis', 'Pre-Sepsis') },
     { title: 'Burn Calculator', fn: () => showView('view-burn', 'Burn Calculator') },
     { title: 'LAMS Calculator', fn: () => showView('view-lams', 'LAMS Calculator') },
+    { title: 'Pediatric Values Calculator', fn: () => showView('view-ped-calc', 'Pediatric Values Calculator') },
     { title: 'Glasgow Coma Scale (Calculator)', fn: () => renderCalculatorDetail('gcs') },
     { title: 'Pediatric Coma Scale (Calculator)', fn: () => renderCalculatorDetail('pcs') },
   ];
@@ -1363,7 +1476,7 @@ function buildSearchIndex() {
     id: 'calc-hub',
     title: 'Medical Calculators',
     catLabel: 'Tools',
-    text: 'medical calculators calculator pre-sepsis sepsis parahews burn rule of nines tbsa body surface glasgow coma pediatric pcs gcs lams stroke'.toLowerCase(),
+    text: 'medical calculators calculator pre-sepsis sepsis parahews burn rule of nines tbsa body surface glasgow coma pediatric pcs gcs lams stroke ped values weight'.toLowerCase(),
     type: 'calc-hub',
     data: null,
   });
@@ -1405,6 +1518,14 @@ function buildSearchIndex() {
     catLabel: 'Medical Calculators',
     text: 'lams los angeles motor scale stroke lvo large vessel occlusion facial droop arm drift grip ctas'.toLowerCase(),
     type: 'calc-lams',
+    data: null,
+  });
+  index.push({
+    id: 'calc-pediatric-values',
+    title: 'Pediatric Values Calculator',
+    catLabel: 'Medical Calculators',
+    text: 'pediatric values weight sbp hypotension normotension vitals heart rate respiratory hypoglycemia bgl child infant'.toLowerCase(),
+    type: 'calc-pediatric-values',
     data: null,
   });
   return index;
@@ -1920,6 +2041,7 @@ function init() {
         'view-calculators': 'Calculators',
         'view-burn': 'Burn Calculator',
         'view-lams': 'LAMS Calculator',
+        'view-ped-calc': 'Pediatric Values Calculator',
         'view-contact': 'MEDICAL DIRECTIVES',
         'view-destination': 'MEDICAL DIRECTIVES',
       };
@@ -2094,6 +2216,8 @@ function init() {
         renderCalculatorDetail('pcs');
       } else if (result.type === 'calc-lams') {
         showView('view-lams', 'LAMS Calculator');
+      } else if (result.type === 'calc-pediatric-values') {
+        showView('view-ped-calc', 'Pediatric Values Calculator');
       } else if (result.type === 'presepsis') {
         showView('view-presepsis', 'Pre-Sepsis');
       } else {
@@ -2110,6 +2234,8 @@ function init() {
   burnRefreshUI();
   initLamsTool();
   lamsRefreshUI();
+  initPedCalcTool();
+  pedCalcRefresh();
   initRefImageViewer();
 
   const activeView = document.querySelector('.view.active');
