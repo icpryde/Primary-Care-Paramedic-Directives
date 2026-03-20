@@ -77,6 +77,7 @@ function showView(viewId, title, pushHistory = true) {
 
   $('header-title').textContent = title || 'MEDICAL DIRECTIVES';
   updateBackButtonVisibility(viewId);
+  if (viewId === 'view-presepsis') presepsisRefreshUI();
 }
 
 function goBack() {
@@ -975,6 +976,14 @@ function buildSearchIndex() {
       });
     });
   }
+  index.push({
+    id: 'presepsis-tool',
+    title: 'Pre-Sepsis Tool',
+    catLabel: 'Tools',
+    text: 'pre-sepsis pre sepsis fast parahews parhews infection alert capnography hospital notify gwps hps rowps clinical suspicion'.toLowerCase(),
+    type: 'presepsis',
+    data: null
+  });
   return index;
 }
 
@@ -1009,6 +1018,215 @@ function performSearch(query, containerEl, onResultClick) {
   });
 }
 
+// ─── Pre-Sepsis Tool (FAST ParaHEWS) — ported from provided React reference ──
+const presepsisState = {
+  suspect: null,
+  scores: {},
+};
+
+const PRESEPSIS_PARA_DATA = [
+  {
+    id: 'hr',
+    name: 'Heart Rate / Pulse',
+    options: [
+      { label: '<41', value: 2, tier: 'o' },
+      { label: '41-50', value: 1, tier: 'y' },
+      { label: '51-100', value: 0, tier: 'g' },
+      { label: '101-110', value: 1, tier: 'y' },
+      { label: '111-130', value: 2, tier: 'o' },
+      { label: '≥131', value: 3, tier: 'r' },
+    ],
+  },
+  {
+    id: 'sbp',
+    name: 'Systolic BP',
+    options: [
+      { label: '<71', value: 3, tier: 'r' },
+      { label: '71-90', value: 2, tier: 'o' },
+      { label: '91-170', value: 0, tier: 'g' },
+      { label: '171-200', value: 2, tier: 'o' },
+      { label: '≥201', value: 3, tier: 'r' },
+    ],
+  },
+  {
+    id: 'rr',
+    name: 'Respiratory Rate',
+    options: [
+      { label: '<8', value: 3, tier: 'r' },
+      { label: '8-13', value: 2, tier: 'o' },
+      { label: '14-20', value: 0, tier: 'g' },
+      { label: '21-30', value: 2, tier: 'o' },
+      { label: '≥31', value: 3, tier: 'r' },
+    ],
+  },
+  {
+    id: 'temp',
+    name: 'Temperature (C)',
+    options: [
+      { label: '<35', value: 3, tier: 'r' },
+      { label: '35.0-36.0', value: 1, tier: 'y' },
+      { label: '36.1-37.9 (or N/A)', value: 0, tier: 'g' },
+      { label: '38.0-39.0', value: 1, tier: 'y' },
+      { label: '≥39.1', value: 2, tier: 'o' },
+    ],
+  },
+  {
+    id: 'o2sat',
+    name: 'O₂ Saturation',
+    options: [
+      { label: '<85', value: 3, tier: 'r' },
+      { label: '85-92', value: 1, tier: 'y' },
+      { label: '≥93', value: 0, tier: 'g' },
+    ],
+  },
+  {
+    id: 'o2therapy',
+    name: 'O₂ Therapy',
+    options: [
+      { label: 'Room Air', value: 0, tier: 'g' },
+      { label: 'O₂ via nasal prongs', value: 1, tier: 'y' },
+      { label: 'O₂ via face mask', value: 3, tier: 'r' },
+    ],
+  },
+  {
+    id: 'cns',
+    name: 'Change in CNS',
+    options: [
+      { label: 'New Confusion', value: 2, tier: 'o' },
+      { label: 'Alert or Usual Self', value: 0, tier: 'g' },
+      { label: 'Voice', value: 1, tier: 'y' },
+      { label: 'Pain', value: 2, tier: 'o' },
+      { label: 'Not responsive', value: 3, tier: 'r' },
+    ],
+  },
+];
+
+function presepsisEsc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function presepsisTotal() {
+  return Object.values(presepsisState.scores).reduce((sum, x) => sum + x.value, 0);
+}
+
+function renderPreSepsisParaRows() {
+  const root = $('presepsis-para-rows');
+  if (!root) return;
+  root.innerHTML = PRESEPSIS_PARA_DATA.map(param => {
+    const sel = presepsisState.scores[param.id];
+    const buttons = param.options.map((opt, oidx) => {
+      const on = sel && sel.label === opt.label;
+      const tierClass = on ? `presepsis-opt--on tier-${opt.tier}` : '';
+      const pts = on ? '' : `<span class="presepsis-opt-val">(${opt.value})</span>`;
+      return `<button type="button" class="presepsis-opt-btn ${tierClass}" data-param="${param.id}" data-oidx="${oidx}"><span>${presepsisEsc(opt.label)}</span>${pts}</button>`;
+    }).join('');
+    const scoreBadge = sel ? `<span class="presepsis-param-score">Score: ${sel.value}</span>` : '';
+    return `<div class="presepsis-param-block"><div class="presepsis-param-head"><h3>${presepsisEsc(param.name)}</h3>${scoreBadge}</div><div class="presepsis-opt-grid">${buttons}</div></div>`;
+  }).join('');
+}
+
+function updatePreSepsisFooter() {
+  const footer = $('presepsis-footer');
+  const view = $('view-presepsis');
+  const totalEl = $('presepsis-total');
+  const panel = $('presepsis-alert-panel');
+  const idle = $('presepsis-alert-idle');
+  const active = $('presepsis-alert-active');
+  if (!footer || !totalEl || !panel) return;
+
+  const showFooter = presepsisState.suspect === true;
+  footer.hidden = !showFooter;
+  if (view) view.classList.toggle('presepsis--footer-on', showFooter);
+
+  if (!showFooter) return;
+
+  const total = presepsisTotal();
+  totalEl.textContent = String(total);
+  const isAlert = total >= 5 && presepsisState.suspect === true;
+  panel.classList.toggle('presepsis-alert--on', isAlert);
+  if (idle) idle.hidden = isAlert;
+  if (active) active.hidden = !isAlert;
+}
+
+function presepsisSyncGateway() {
+  const yes = $('presepsis-yes');
+  const no = $('presepsis-no');
+  const msg = $('presepsis-not-indicated');
+  const para = $('presepsis-para-section');
+  if (yes) {
+    yes.classList.toggle('presepsis--selected-yes', presepsisState.suspect === true);
+  }
+  if (no) {
+    no.classList.toggle('presepsis--selected-no', presepsisState.suspect === false);
+  }
+  if (msg) msg.hidden = presepsisState.suspect !== false;
+  if (para) para.hidden = presepsisState.suspect !== true;
+}
+
+function presepsisRefreshUI() {
+  presepsisSyncGateway();
+  if (presepsisState.suspect === true) {
+    renderPreSepsisParaRows();
+  } else {
+    const root = $('presepsis-para-rows');
+    if (root) root.innerHTML = '';
+  }
+  updatePreSepsisFooter();
+}
+
+function initPreSepsisTool() {
+  const yes = $('presepsis-yes');
+  const no = $('presepsis-no');
+  const reset = $('presepsis-reset');
+  const rows = $('presepsis-para-rows');
+
+  if (yes) {
+    yes.addEventListener('click', () => {
+      presepsisState.suspect = true;
+      presepsisSyncGateway();
+      renderPreSepsisParaRows();
+      updatePreSepsisFooter();
+    });
+  }
+  if (no) {
+    no.addEventListener('click', () => {
+      presepsisState.suspect = false;
+      presepsisState.scores = {};
+      presepsisSyncGateway();
+      if (rows) rows.innerHTML = '';
+      updatePreSepsisFooter();
+    });
+  }
+  if (reset) {
+    reset.addEventListener('click', () => {
+      presepsisState.suspect = null;
+      presepsisState.scores = {};
+      presepsisSyncGateway();
+      if (rows) rows.innerHTML = '';
+      updatePreSepsisFooter();
+    });
+  }
+
+  if (rows) {
+    rows.addEventListener('click', e => {
+      const btn = e.target.closest('.presepsis-opt-btn');
+      if (!btn || btn.dataset.param == null) return;
+      const paramId = btn.dataset.param;
+      const oidx = Number(btn.dataset.oidx, 10);
+      const param = PRESEPSIS_PARA_DATA.find(p => p.id === paramId);
+      if (!param || param.options[oidx] == null) return;
+      const opt = param.options[oidx];
+      presepsisState.scores[paramId] = { label: opt.label, value: opt.value };
+      renderPreSepsisParaRows();
+      updatePreSepsisFooter();
+    });
+  }
+}
+
 // ─── Init ────────────────────────────────────────────────────────────────────
 function init() {
   // Home nav buttons
@@ -1021,6 +1239,7 @@ function init() {
         'view-special': 'MEDICAL DIRECTIVES',
         'view-companion': 'MEDICAL DIRECTIVES',
         'view-references': 'MEDICAL DIRECTIVES',
+        'view-presepsis': 'Pre-Sepsis',
         'view-contact': 'MEDICAL DIRECTIVES',
       };
       showView(viewId, labels[viewId] || 'MEDICAL DIRECTIVES');
@@ -1162,6 +1381,8 @@ function init() {
       } else if (result.type === 'contact') {
         renderContactDetail(result.data.id, result.data.title);
         showView('view-detail', headerTitleFromItem(result.data));
+      } else if (result.type === 'presepsis') {
+        showView('view-presepsis', 'Pre-Sepsis');
       } else {
         renderCompanionDetail(result.data);
         showView('view-detail', headerTitleFromItem(result.data));
@@ -1170,6 +1391,8 @@ function init() {
   });
 
   setupEdgeSwipeNavigation();
+
+  initPreSepsisTool();
 
   const activeView = document.querySelector('.view.active');
   if (activeView) updateBackButtonVisibility(activeView.id);
