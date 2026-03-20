@@ -3405,6 +3405,1439 @@ body.help-modal-open {
   background: #f1f5f9;
 }
 
+/* ── Weight converter (lbs ↔ kg) ───────────────────────── */
+.view.wt-calc-view {
+  background: #f8fafc;
+  min-height: calc(100vh - var(--header-h) - var(--safe-top));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.wt-calc-scroll {
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 12px 14px 24px;
+}
+.wt-calc-card {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  padding: 22px 18px 18px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+.wt-calc-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.wt-calc-head-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.wt-calc-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+.wt-calc-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+}
+@media (min-width: 480px) {
+  .wt-calc-row {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 12px;
+  }
+  .wt-calc-arrow {
+    padding-bottom: 10px;
+    flex-shrink: 0;
+  }
+  .wt-calc-arrow svg {
+    transform: rotate(0deg);
+  }
+}
+.wt-calc-col {
+  flex: 1;
+  min-width: 0;
+}
+.wt-calc-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 8px;
+}
+.wt-calc-input-wrap {
+  position: relative;
+}
+.wt-calc-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 48px 14px 14px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #0f172a;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  background: #fff;
+  -webkit-tap-highlight-color: transparent;
+}
+.wt-calc-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+.wt-calc-input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+.wt-calc-unit {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: 600;
+  color: #94a3b8;
+  pointer-events: none;
+}
+.wt-calc-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e1;
+  padding: 4px 0;
+}
+.wt-calc-arrow svg {
+  transform: rotate(90deg);
+}
+.wt-calc-formula {
+  margin: 20px 0 0;
+  padding: 14px 12px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 14px;
+}
+.wt-calc-reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.wt-calc-reset-btn:active {
+  background: #f1f5f9;
+}
+
+/* ── Medical dosage calculator ──────────────────────────── */
+.view.dosage-calc-view {
+  background: #f8fafc;
+  min-height: calc(100vh - var(--header-h) - var(--safe-top));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.dosage-calc-scroll {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 10px 14px 20px;
+}
+.dosage-calc-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.dosage-calc-header-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: #d1fae5;
+  color: #047857;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dosage-calc-h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.dosage-calc-lead {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+.dosage-calc-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .dosage-calc-grid {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .dosage-calc-col--inputs {
+    flex: 1 1 58%;
+    min-width: 0;
+  }
+  .dosage-calc-col--results {
+    flex: 1 1 38%;
+    min-width: 260px;
+  }
+}
+.dosage-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+.dosage-card:last-of-type {
+  margin-bottom: 0;
+}
+.dosage-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: #047857;
+}
+.dosage-card-head svg {
+  flex-shrink: 0;
+}
+.dosage-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.dosage-row-2 {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+.dosage-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dosage-field--grow {
+  flex: 1;
+  min-width: 0;
+}
+.dosage-field--unit {
+  width: 32%;
+  min-width: 5.5rem;
+  flex-shrink: 0;
+}
+.dosage-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+.dosage-input,
+.dosage-select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  -webkit-tap-highlight-color: transparent;
+}
+.dosage-input:focus,
+.dosage-select:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+.dosage-input--inline {
+  flex: 1;
+  min-width: 0;
+}
+.dosage-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.dosage-tab {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.dosage-tab--on {
+  background: #d1fae5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+.dosage-panels {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 14px 12px;
+}
+.dosage-panel[hidden] {
+  display: none !important;
+}
+.dosage-in-volume {
+  margin: 12px 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  background: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  display: block;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+.dosage-inline-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dosage-inline-hint {
+  font-size: 14px;
+  font-weight: 700;
+  color: #475569;
+  white-space: nowrap;
+}
+.dosage-inline-hint--lg {
+  font-size: 1.25rem;
+}
+.dosage-help {
+  margin: 8px 0 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #64748b;
+}
+.dosage-result-card {
+  background: linear-gradient(145deg, #059669 0%, #047857 100%);
+  color: #fff;
+  border-radius: 14px;
+  padding: 18px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+.dosage-result-label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+}
+.dosage-result-empty {
+  margin-top: 10px;
+}
+.dosage-result-empty p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.4;
+}
+.dosage-result-value {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.dosage-result-num {
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.dosage-result-unit {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  padding-bottom: 4px;
+}
+.dosage-tutor-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 14px;
+  margin-bottom: 12px;
+}
+.dosage-tutor-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #047857;
+}
+.dosage-tutor-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.dosage-tutor-placeholder {
+  text-align: center;
+  padding: 20px 8px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 600;
+}
+.dosage-tutor-placeholder[hidden],
+.dosage-tutor-steps[hidden] {
+  display: none !important;
+}
+.dosage-tutor-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.dosage-step {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+.dosage-step-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 28px;
+  flex-shrink: 0;
+}
+.dosage-step-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #d1fae5;
+  color: #047857;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dosage-step-line {
+  flex: 1;
+  width: 3px;
+  min-height: 8px;
+  margin: 4px 0;
+  background: #d1fae5;
+  border-radius: 2px;
+}
+.dosage-step-body {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 16px;
+}
+.dosage-step-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.dosage-step-desc {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #475569;
+}
+.dosage-tutor-tip {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 8px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #475569;
+}
+.dosage-tutor-tip[hidden] {
+  display: none !important;
+}
+.dosage-tutor-tip svg {
+  flex-shrink: 0;
+  color: #3b82f6;
+  margin-top: 2px;
+}
+.dosage-tutor-tip p {
+  margin: 0;
+}
+.dosage-reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.dosage-reset-btn:active {
+  background: #f1f5f9;
+}
+.dosage-disclaimer {
+  margin: 16px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #64748b;
+  text-align: center;
+}
+
+/* ── Parkland burn calculator ───────────────────────────── */
+.view.parkland-view {
+  background: #f8fafc;
+  min-height: calc(100vh - var(--header-h) - var(--safe-top));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.parkland-scroll {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 10px 14px 20px;
+}
+.parkland-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.parkland-header-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #dc2626;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+.parkland-h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.parkland-sub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+.parkland-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .parkland-grid {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .parkland-card--inputs {
+    flex: 0 0 38%;
+    max-width: 22rem;
+  }
+  .parkland-results-wrap {
+    flex: 1;
+    min-width: 0;
+  }
+}
+.parkland-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px 14px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+.parkland-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.parkland-card-title svg {
+  color: #dc2626;
+  flex-shrink: 0;
+}
+.parkland-field {
+  margin-bottom: 16px;
+}
+.parkland-field:last-child {
+  margin-bottom: 0;
+}
+.parkland-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+}
+.parkland-weight-row {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+}
+.parkland-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  -webkit-tap-highlight-color: transparent;
+}
+.parkland-input--grow {
+  flex: 1;
+  min-width: 0;
+  border-radius: 10px 0 0 10px;
+  border-right: 0;
+}
+.parkland-input:focus {
+  outline: none;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+.parkland-input-suffix {
+  position: relative;
+}
+.parkland-input-suffix .parkland-input {
+  border-radius: 10px;
+  padding-right: 40px;
+}
+.parkland-suffix {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 700;
+  color: #94a3b8;
+  pointer-events: none;
+}
+.parkland-select {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  background: #f1f5f9;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.parkland-select:focus {
+  outline: none;
+  border-color: #dc2626;
+}
+.parkland-select--unit {
+  flex-shrink: 0;
+  min-width: 4.5rem;
+  padding: 12px 10px;
+  border-radius: 0 10px 10px 0;
+  border-left: 0;
+}
+.parkland-select--full {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+.parkland-placeholder {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+}
+.parkland-placeholder[hidden] {
+  display: none !important;
+}
+.parkland-placeholder-icon {
+  color: #cbd5e1;
+  margin-bottom: 12px;
+}
+.parkland-placeholder-title {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #334155;
+}
+.parkland-placeholder-text {
+  margin: 0;
+  max-width: 22rem;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.45;
+}
+.parkland-results[hidden] {
+  display: none !important;
+}
+.parkland-results {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.parkland-total-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 18px 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+.parkland-total-label {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.parkland-weight-kg {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+.parkland-total-ml {
+  margin: 0;
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: #dc2626;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.parkland-total-unit {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #f87171;
+}
+.parkland-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 640px) {
+  .parkland-split {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.parkland-phase {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px 14px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+.parkland-phase--8 {
+  border-top: 4px solid #dc2626;
+}
+.parkland-phase--16 {
+  border-top: 4px solid #2563eb;
+}
+.parkland-phase-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #dc2626;
+}
+.parkland-phase-head--blue {
+  color: #2563eb;
+}
+.parkland-phase-head h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.parkland-stat-label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+.parkland-stat-val {
+  margin: 4px 0 12px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.parkland-stat-val--sm {
+  font-size: 1.2rem;
+}
+.parkland-stat-rate {
+  margin: 4px 0 12px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #2563eb;
+}
+.parkland-drip-box {
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 4px;
+}
+.parkland-drip-box--red {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+.parkland-drip-box--blue {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+.parkland-drip-label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #991b1b;
+}
+.parkland-drip-box--blue .parkland-drip-label {
+  color: #1e40af;
+}
+.parkland-drip-val {
+  margin: 0 0 8px;
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #dc2626;
+}
+.parkland-drip-val--blue {
+  color: #2563eb;
+}
+.parkland-drip-unit {
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+.parkland-drip-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: #7f1d1d;
+  margin-top: 4px;
+}
+.parkland-drip-box--blue .parkland-drip-meta {
+  color: #1e40af;
+}
+.parkland-drip-set {
+  margin: 10px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid #fecaca;
+  font-size: 11px;
+  font-weight: 600;
+  color: #f87171;
+}
+.parkland-drip-set--blue {
+  border-top-color: #bfdbfe;
+  color: #60a5fa;
+}
+.parkland-formula-ref {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #475569;
+}
+.parkland-formula-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #334155;
+}
+.parkland-formula-title svg {
+  color: #64748b;
+  flex-shrink: 0;
+}
+.parkland-formula-ref p {
+  margin: 0 0 6px;
+}
+.parkland-formula-ref p:last-child {
+  margin-bottom: 0;
+}
+.parkland-reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.parkland-reset-btn:active {
+  background: #f1f5f9;
+}
+.parkland-disclaimer {
+  margin: 14px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #64748b;
+  text-align: center;
+}
+
+/* ── IV Therapy calculator ───────────────────────────────── */
+.view.iv-calc-view {
+  background: #f8fafc;
+  min-height: calc(100vh - var(--header-h) - var(--safe-top));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.iv-calc-scroll {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 10px 14px 20px;
+}
+.iv-calc-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: center;
+  text-align: center;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.iv-calc-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.iv-calc-h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+.iv-calc-sub {
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+.iv-tab-bar {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+.iv-tab {
+  flex: 1;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.iv-tab--on {
+  background: #fff;
+  color: #1d4ed8;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+.iv-panel[hidden] {
+  display: none !important;
+}
+.iv-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 14px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+.iv-field {
+  margin-bottom: 16px;
+}
+.iv-field:last-child {
+  margin-bottom: 0;
+}
+.iv-field--df-wide {
+  margin-top: 4px;
+}
+.iv-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+}
+.iv-label-hint {
+  font-weight: 600;
+  font-size: 11px;
+  color: #94a3b8;
+}
+.iv-input,
+.iv-select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  -webkit-tap-highlight-color: transparent;
+}
+.iv-input:focus,
+.iv-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+/* Time row: global .iv-select { width:100% } would make the unit select as wide as
+   the whole row and overflow; constrain select to content / % of row. */
+.iv-time-row {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.iv-input--time {
+  flex: 1 1 0%;
+  min-width: 0;
+  width: auto;
+  max-width: 100%;
+  border-radius: 10px 0 0 10px;
+  border-right: 0;
+}
+.iv-select.iv-select--unit {
+  width: auto;
+  flex: 0 1 36%;
+  min-width: 4.75rem;
+  max-width: 6.75rem;
+  border-radius: 0 10px 10px 0;
+  border-left: 0;
+  background: #f1f5f9;
+}
+.iv-select--full {
+  width: 100%;
+}
+.iv-static-field {
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #f1f5f9;
+  font-size: 15px;
+  font-weight: 600;
+  color: #475569;
+}
+.iv-df-grid {
+  display: grid;
+  gap: 8px;
+}
+.iv-df-grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+.iv-df-grid--row {
+  grid-template-columns: repeat(4, 1fr);
+}
+.iv-std-df-btn,
+.iv-dir-df-btn {
+  padding: 10px 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  color: #334155;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.iv-std-df-btn.iv-drop-btn--on,
+.iv-dir-df-btn.iv-drop-btn--on {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+.iv-dir-df-btn.iv-drop-btn--on {
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+.iv-gen-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .iv-gen-grid {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 20px;
+  }
+  .iv-gen-inputs {
+    flex: 1;
+    min-width: 0;
+  }
+  .iv-gen-result {
+    flex: 1;
+    min-width: 220px;
+  }
+}
+.iv-gen-result {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.iv-result-title {
+  margin: 0 0 8px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e3a8a;
+}
+.iv-result-gtts {
+  margin: 0 0 16px;
+  text-align: center;
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: #1d4ed8;
+  line-height: 1;
+}
+.iv-result-gtts-unit {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #3b82f6;
+}
+.iv-result-sub-inner {
+  background: #fff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+.iv-sub-label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+}
+.iv-sub-big {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.iv-inline-unit {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.iv-sub-pill {
+  margin: 10px 0 0;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+.iv-dir-type-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+@media (min-width: 520px) {
+  .iv-dir-type-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.iv-dir-type-btn {
+  padding: 12px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+  line-height: 1.3;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.iv-dir-type-btn.iv-dir-type-btn--on {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  color: #fff;
+}
+.iv-dir-params {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 14px 12px;
+  margin: 16px 0;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+@media (min-width: 560px) {
+  .iv-dir-params {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.iv-dir-drip-setup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.iv-dir-results {
+  margin-top: 16px;
+  padding: 18px 14px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+}
+.iv-dir-results-top {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+@media (min-width: 560px) {
+  .iv-dir-results-top {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.iv-dir-target {
+  grid-column: 1 / -1;
+}
+@media (min-width: 560px) {
+  .iv-dir-target {
+    grid-column: span 1;
+  }
+  .iv-dir-bolus-meta {
+    grid-column: span 1;
+  }
+}
+.iv-dir-bolus-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-content: start;
+}
+.iv-dir-bolus-meta[hidden] {
+  display: none !important;
+}
+.iv-dir-stat-label {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+}
+.iv-dir-target-val {
+  margin: 0;
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: #1d4ed8;
+  line-height: 1.1;
+}
+.iv-dir-target-val span:last-child {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #3b82f6;
+}
+.iv-dir-stat-num {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.iv-dir-drip-block {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #bfdbfe;
+  align-items: center;
+  text-align: center;
+}
+@media (min-width: 560px) {
+  .iv-dir-drip-block {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+}
+.iv-dir-drip-big {
+  margin: 6px 0 0;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #1d4ed8;
+  line-height: 1;
+}
+.iv-dir-drip-big span:last-child {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #3b82f6;
+}
+.iv-dir-practical-card {
+  min-width: 180px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  text-align: center;
+}
+.iv-dir-notes {
+  margin-top: 16px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+}
+.iv-dir-notes[hidden] {
+  display: none !important;
+}
+.iv-note-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+  margin-bottom: 10px;
+}
+.iv-note-row:last-child {
+  margin-bottom: 0;
+}
+.iv-note-icon {
+  flex-shrink: 0;
+  color: #3b82f6;
+  margin-top: 2px;
+}
+.iv-note-icon--warn {
+  color: #d97706;
+}
+.iv-reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.iv-reset-btn:active {
+  background: #f1f5f9;
+}
+.iv-disclaimer {
+  margin: 12px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #64748b;
+  text-align: center;
+}
+
 /* ── Medical Calculators hub ───────────────────────────── */
 .calculators-top-banner {
   background: #115e59;
@@ -3421,7 +4854,7 @@ body.help-modal-open {
   font-size: 14px;
 }
 
-/* ── Burn Calculator ────────────────────────────────────── */
+/* ── Burn % Calculator (Rule of Nines) ─────────────────── */
 .view.burn-view {
   background: #f1f5f9;
   min-height: calc(100vh - var(--header-h) - var(--safe-top));

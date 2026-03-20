@@ -155,7 +155,7 @@
       <div class="burn-top-card">
         <div class="burn-top-row">
           <div>
-            <h2 class="burn-h2">Burn Calculator</h2>
+            <h2 class="burn-h2">Burn % Calculator</h2>
             <p class="burn-tagline">Rule of Nines Assessment</p>
           </div>
           <div class="burn-top-actions">
@@ -493,6 +493,495 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         Reset
       </button>
+    </div>
+  </div>
+
+  <!-- WEIGHT CONVERTER (lbs ↔ kg) -->
+  <div id="view-weight-convert" class="view wt-calc-view" hidden>
+    <div class="wt-calc-scroll">
+      <div class="wt-calc-card">
+        <div class="wt-calc-head">
+          <div class="wt-calc-head-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h2v4H4zM18 10h2v4h-2z"/><path d="M6 12h12M8 8v8M16 8v8"/></svg>
+          </div>
+          <h2 class="wt-calc-title">Weight Converter</h2>
+        </div>
+
+        <div class="wt-calc-row">
+          <div class="wt-calc-col">
+            <label class="wt-calc-label" for="wt-lbs">Pounds (lbs)</label>
+            <div class="wt-calc-input-wrap">
+              <input id="wt-lbs" class="wt-calc-input" type="number" inputmode="decimal" step="any" placeholder="0.00" autocomplete="off" />
+              <span class="wt-calc-unit" aria-hidden="true">lbs</span>
+            </div>
+          </div>
+
+          <div class="wt-calc-arrow" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4M7 4L3 8M7 4l4 4M17 8v12M17 20l4-4M17 20l-4-4"/></svg>
+          </div>
+
+          <div class="wt-calc-col">
+            <label class="wt-calc-label" for="wt-kg">Kilograms (kg)</label>
+            <div class="wt-calc-input-wrap">
+              <input id="wt-kg" class="wt-calc-input" type="number" inputmode="decimal" step="any" placeholder="0.00" autocomplete="off" />
+              <span class="wt-calc-unit" aria-hidden="true">kg</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="wt-calc-formula">1 kg = 2.20462 lbs</p>
+
+        <button type="button" class="wt-calc-reset-btn" id="wt-reset-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDICAL DOSAGE CALCULATOR -->
+  <div id="view-dosage-calc" class="view dosage-calc-view" hidden>
+    <div class="dosage-calc-scroll">
+      <header class="dosage-calc-header">
+        <div class="dosage-calc-header-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 11.8a7 7 0 1 1 12.8 3.8"/><path d="M8 12h.01M12 12h.01M16 12h.01"/><path d="M12 16v4M9 20h6"/></svg>
+        </div>
+        <div>
+          <h2 class="dosage-calc-h1">Medical Dosage Calculator</h2>
+          <p class="dosage-calc-lead">(Want ÷ Have) × volume → mL to administer</p>
+        </div>
+      </header>
+
+      <div class="dosage-calc-grid">
+        <div class="dosage-calc-col dosage-calc-col--inputs">
+          <section class="dosage-card">
+            <div class="dosage-card-head">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.5-2.5-5.5S14 6 12 3 9.5 5.5 7.5 9.5 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+              <h3 class="dosage-card-title">Dose ordered (what you want)</h3>
+            </div>
+            <div class="dosage-row-2">
+              <div class="dosage-field dosage-field--grow">
+                <label class="dosage-label" for="dosage-want-amount">Amount</label>
+                <input id="dosage-want-amount" class="dosage-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 7.5" autocomplete="off" />
+              </div>
+              <div class="dosage-field dosage-field--unit">
+                <label class="dosage-label" for="dosage-want-unit">Unit</label>
+                <select id="dosage-want-unit" class="dosage-select">
+                  <option value="g">g</option>
+                  <option value="mg" selected>mg</option>
+                  <option value="mcg">mcg</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section class="dosage-card">
+            <div class="dosage-card-head">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="8" width="18" height="10" rx="2"/><path d="M7 8V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/></svg>
+              <h3 class="dosage-card-title">Dose on hand (what you have)</h3>
+            </div>
+            <div class="dosage-tabs" role="tablist" aria-label="Concentration format">
+              <button type="button" class="dosage-tab dosage-tab--on" data-dosage-type="custom" role="tab" aria-selected="true">Custom</button>
+              <button type="button" class="dosage-tab" data-dosage-type="cr" role="tab" aria-selected="false">CR (mg/mL)</button>
+              <button type="button" class="dosage-tab" data-dosage-type="sd" role="tab" aria-selected="false">SD (1g/X mL)</button>
+              <button type="button" class="dosage-tab" data-dosage-type="spercent" role="tab" aria-selected="false">S% (g/100 mL)</button>
+            </div>
+            <div class="dosage-panels">
+              <div id="dosage-panel-custom" class="dosage-panel" role="tabpanel">
+                <div class="dosage-row-2">
+                  <div class="dosage-field dosage-field--grow">
+                    <label class="dosage-label" for="dosage-have-amount">Drug amount</label>
+                    <input id="dosage-have-amount" class="dosage-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 5" autocomplete="off" />
+                  </div>
+                  <div class="dosage-field dosage-field--unit">
+                    <label class="dosage-label" for="dosage-have-unit">Unit</label>
+                    <select id="dosage-have-unit" class="dosage-select">
+                      <option value="g">g</option>
+                      <option value="mg" selected>mg</option>
+                      <option value="mcg">mcg</option>
+                    </select>
+                  </div>
+                </div>
+                <p class="dosage-in-volume">in a volume of</p>
+                <div class="dosage-row-2">
+                  <div class="dosage-field dosage-field--grow">
+                    <label class="dosage-label" for="dosage-have-vol">Liquid volume</label>
+                    <input id="dosage-have-vol" class="dosage-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 2" autocomplete="off" />
+                  </div>
+                  <div class="dosage-field dosage-field--unit">
+                    <label class="dosage-label" for="dosage-have-vol-unit">Unit</label>
+                    <select id="dosage-have-vol-unit" class="dosage-select">
+                      <option value="mL" selected>mL</option>
+                      <option value="L">L</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div id="dosage-panel-cr" class="dosage-panel" role="tabpanel" hidden>
+                <label class="dosage-label" for="dosage-cr">Concentration ratio (CR)</label>
+                <div class="dosage-inline-row">
+                  <input id="dosage-cr" class="dosage-input dosage-input--inline" type="number" inputmode="decimal" step="any" placeholder="e.g. 2" autocomplete="off" />
+                  <span class="dosage-inline-hint">mg / 1 mL</span>
+                </div>
+                <p class="dosage-help">mg present in every 1 mL.</p>
+              </div>
+              <div id="dosage-panel-sd" class="dosage-panel" role="tabpanel" hidden>
+                <label class="dosage-label" for="dosage-sd-vol">Standard dilution (SD)</label>
+                <div class="dosage-inline-row">
+                  <span class="dosage-inline-hint">1 g /</span>
+                  <input id="dosage-sd-vol" class="dosage-input dosage-input--inline" type="number" inputmode="decimal" step="any" placeholder="e.g. 1000" autocomplete="off" />
+                  <span class="dosage-inline-hint">mL</span>
+                </div>
+                <p class="dosage-help">Volume (mL) that contains exactly 1 g.</p>
+              </div>
+              <div id="dosage-panel-spercent" class="dosage-panel" role="tabpanel" hidden>
+                <label class="dosage-label" for="dosage-s-percent">Solution percentage (S%)</label>
+                <div class="dosage-inline-row">
+                  <input id="dosage-s-percent" class="dosage-input dosage-input--inline" type="number" inputmode="decimal" step="any" placeholder="e.g. 5" autocomplete="off" />
+                  <span class="dosage-inline-hint dosage-inline-hint--lg">%</span>
+                </div>
+                <p class="dosage-help">Grams of drug per 100 mL.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="dosage-calc-col dosage-calc-col--results">
+          <div class="dosage-result-card">
+            <h3 class="dosage-result-label">Administer volume</h3>
+            <div id="dosage-result-empty" class="dosage-result-empty">
+              <p>Enter ordered dose and on-hand values to see mL.</p>
+            </div>
+            <div id="dosage-result-value" class="dosage-result-value" hidden>
+              <span id="dosage-result-num" class="dosage-result-num">0</span>
+              <span class="dosage-result-unit">mL</span>
+            </div>
+          </div>
+
+          <div class="dosage-tutor-card">
+            <div class="dosage-tutor-head">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+              <h3 class="dosage-tutor-title">Tutor breakdown</h3>
+            </div>
+            <div id="dosage-tutor-placeholder" class="dosage-tutor-placeholder">
+              <p>Fill the form for a step-by-step walkthrough.</p>
+            </div>
+            <div id="dosage-tutor-steps" class="dosage-tutor-steps" hidden></div>
+            <div id="dosage-tutor-tip" class="dosage-tutor-tip" hidden>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              <p><strong>Tip:</strong> Divide what you <em>want</em> by what you <em>have</em>, then multiply by the volume that “have” is dissolved in.</p>
+            </div>
+          </div>
+
+          <button type="button" class="dosage-reset-btn" id="dosage-reset-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <p class="dosage-disclaimer">Clinical decision support only — verify with protocol, double-check math, and follow scope.</p>
+    </div>
+  </div>
+
+  <!-- PARKLAND BURN FLUID CALCULATOR -->
+  <div id="view-parkland-burn" class="view parkland-view" hidden>
+    <div class="parkland-scroll">
+      <header class="parkland-header">
+        <div class="parkland-header-icon" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+        </div>
+        <div>
+          <h2 class="parkland-h1">Parkland Burn Calculator</h2>
+          <p class="parkland-sub">Fluid resuscitation &amp; IV drip rates</p>
+        </div>
+      </header>
+
+      <div class="parkland-grid">
+        <section class="parkland-card parkland-card--inputs">
+          <h3 class="parkland-card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Patient details
+          </h3>
+          <div class="parkland-field">
+            <label class="parkland-label" for="parkland-weight">Patient weight</label>
+            <div class="parkland-weight-row">
+              <input id="parkland-weight" class="parkland-input parkland-input--grow" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight" autocomplete="off" />
+              <select id="parkland-weight-unit" class="parkland-select parkland-select--unit" aria-label="Weight unit">
+                <option value="kg" selected>kg</option>
+                <option value="lbs">lbs</option>
+              </select>
+            </div>
+          </div>
+          <div class="parkland-field">
+            <label class="parkland-label" for="parkland-tbsa">Total body surface area burned</label>
+            <div class="parkland-input-suffix">
+              <input id="parkland-tbsa" class="parkland-input" type="number" inputmode="decimal" min="0" max="100" step="any" placeholder="0–100" autocomplete="off" />
+              <span class="parkland-suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="parkland-field">
+            <label class="parkland-label" for="parkland-drop-factor">IV drip set (drop factor)</label>
+            <select id="parkland-drop-factor" class="parkland-select parkland-select--full">
+              <option value="10" selected>10 gtts/mL (macrodrip)</option>
+              <option value="15">15 gtts/mL (macrodrip)</option>
+              <option value="20">20 gtts/mL (macrodrip)</option>
+              <option value="60">60 gtts/mL (microdrip)</option>
+            </select>
+          </div>
+        </section>
+
+        <div class="parkland-results-wrap">
+          <div id="parkland-placeholder" class="parkland-placeholder">
+            <div class="parkland-placeholder-icon" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+            </div>
+            <h3 class="parkland-placeholder-title">Awaiting patient data</h3>
+            <p class="parkland-placeholder-text">Enter weight and TBSA burned (1–100%) to estimate 24-hour fluid needs and drip timing.</p>
+          </div>
+
+          <div id="parkland-results" class="parkland-results" hidden>
+            <div class="parkland-total-card">
+              <h3 class="parkland-total-label">Total 24-hour fluid requirement</h3>
+              <p class="parkland-weight-kg" id="parkland-weight-kg-line"></p>
+              <p class="parkland-total-ml"><span id="parkland-total-ml">0</span> <span class="parkland-total-unit">mL</span></p>
+            </div>
+
+            <div class="parkland-split">
+              <div class="parkland-phase parkland-phase--8">
+                <div class="parkland-phase-head">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  <h4>First 8 hours</h4>
+                </div>
+                <p class="parkland-stat-label">Total volume to infuse</p>
+                <p class="parkland-stat-val" id="parkland-half-8">0</p>
+                <p class="parkland-stat-label">Hourly rate (pump)</p>
+                <p class="parkland-stat-rate" id="parkland-rate-8">0 mL/hr</p>
+                <div class="parkland-drip-box parkland-drip-box--red">
+                  <p class="parkland-drip-label">Manual drip rate</p>
+                  <p class="parkland-drip-val"><span id="parkland-drip-8">0</span> <span class="parkland-drip-unit">gtts/min</span></p>
+                  <div class="parkland-drip-meta">
+                    <span>Drops/sec</span><span id="parkland-dps-8">0</span>
+                  </div>
+                  <div class="parkland-drip-meta">
+                    <span>Timing</span><span id="parkland-timing-8">—</span>
+                  </div>
+                  <p class="parkland-drip-set" id="parkland-set-8"></p>
+                </div>
+              </div>
+
+              <div class="parkland-phase parkland-phase--16">
+                <div class="parkland-phase-head parkland-phase-head--blue">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  <h4>Next 16 hours</h4>
+                </div>
+                <p class="parkland-stat-label">Total volume to infuse</p>
+                <p class="parkland-stat-val parkland-stat-val--sm" id="parkland-half-16">0</p>
+                <p class="parkland-stat-label">Hourly rate (pump)</p>
+                <p class="parkland-stat-rate" id="parkland-rate-16">0 mL/hr</p>
+                <div class="parkland-drip-box parkland-drip-box--blue">
+                  <p class="parkland-drip-label">Manual drip rate</p>
+                  <p class="parkland-drip-val parkland-drip-val--blue"><span id="parkland-drip-16">0</span> <span class="parkland-drip-unit">gtts/min</span></p>
+                  <div class="parkland-drip-meta">
+                    <span>Drops/sec</span><span id="parkland-dps-16">0</span>
+                  </div>
+                  <div class="parkland-drip-meta">
+                    <span>Timing</span><span id="parkland-timing-16">—</span>
+                  </div>
+                  <p class="parkland-drip-set parkland-drip-set--blue" id="parkland-set-16"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="parkland-formula-ref">
+        <h3 class="parkland-formula-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          Formula reference
+        </h3>
+        <p><strong>Total vol:</strong> 4 mL × weight (kg) × TBSA (%)</p>
+        <p><strong>Drip rate:</strong> (mL/hr × drop factor) ÷ 60 → gtts/min</p>
+      </div>
+
+      <button type="button" class="parkland-reset-btn" id="parkland-reset-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset
+      </button>
+
+      <p class="parkland-disclaimer">Decision support only — follow local burn/trauma protocol, pediatric rules, and medical direction.</p>
+    </div>
+  </div>
+
+  <!-- IV THERAPY CALCULATOR -->
+  <div id="view-iv-therapy" class="view iv-calc-view" hidden>
+    <div class="iv-calc-scroll">
+      <header class="iv-calc-header">
+        <div class="iv-calc-header-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.7c2 4 6 6 6 10a6 6 0 1 1-12 0c0-4 4-6 6-10z"/></svg>
+        </div>
+        <div>
+          <h2 class="iv-calc-h1">IV Therapy Calculator</h2>
+          <p class="iv-calc-sub">Drip rates &amp; Ontario ALS PCS–style fluid targets</p>
+        </div>
+      </header>
+
+      <div class="iv-tab-bar" role="tablist" aria-label="Calculator mode">
+        <button type="button" class="iv-tab iv-tab--on" data-iv-tab="general" role="tab" aria-selected="true">General IV</button>
+        <button type="button" class="iv-tab" data-iv-tab="directive" role="tab" aria-selected="false">PCP directives</button>
+      </div>
+
+      <div id="iv-panel-general" class="iv-panel" role="tabpanel">
+        <div class="iv-card">
+          <div class="iv-gen-grid">
+            <div class="iv-gen-inputs">
+              <div class="iv-field">
+                <label class="iv-label" for="iv-std-vol">Volume to administer (mL)</label>
+                <input id="iv-std-vol" class="iv-input" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 1000" autocomplete="off" />
+              </div>
+              <div class="iv-field">
+                <label class="iv-label" for="iv-std-time">Time</label>
+                <div class="iv-time-row">
+                  <input id="iv-std-time" class="iv-input iv-input--time" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 60" autocomplete="off" />
+                  <select id="iv-std-time-unit" class="iv-select iv-select--unit" aria-label="Time unit">
+                    <option value="minutes" selected>Mins</option>
+                    <option value="hours">Hours</option>
+                  </select>
+                </div>
+              </div>
+              <div class="iv-field">
+                <span class="iv-label">Drop factor (gtts/mL)</span>
+                <div class="iv-df-grid iv-df-grid--4">
+                  <button type="button" class="iv-std-df-btn iv-drop-btn--on" data-df="10">10</button>
+                  <button type="button" class="iv-std-df-btn" data-df="15">15</button>
+                  <button type="button" class="iv-std-df-btn" data-df="20">20</button>
+                  <button type="button" class="iv-std-df-btn" data-df="60">60</button>
+                </div>
+              </div>
+            </div>
+            <div class="iv-gen-result">
+              <h3 class="iv-result-title">Drip rate</h3>
+              <p class="iv-result-gtts"><span id="iv-std-gtts">0</span> <span class="iv-result-gtts-unit">gtts/min</span></p>
+              <div class="iv-result-sub">
+                <div id="iv-std-sub-fast" class="iv-result-sub-inner" hidden>
+                  <p class="iv-sub-label">Drops per second</p>
+                  <p id="iv-std-dps-val" class="iv-sub-big">0</p>
+                  <p id="iv-std-dps-practical" class="iv-sub-pill"></p>
+                </div>
+                <div id="iv-std-sub-slow" class="iv-result-sub-inner">
+                  <p class="iv-sub-label">Seconds per drop</p>
+                  <p id="iv-std-spd-val" class="iv-sub-big">0</p>
+                  <p id="iv-std-spd-practical" class="iv-sub-pill" hidden></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="iv-panel-directive" class="iv-panel" role="tabpanel" hidden>
+        <div class="iv-card">
+          <div class="iv-field">
+            <span class="iv-label">Select directive</span>
+            <div class="iv-dir-type-grid">
+              <button type="button" class="iv-dir-type-btn iv-dir-type-btn--on" data-iv-preset="maintenance">Maintenance infusion</button>
+              <button type="button" class="iv-dir-type-btn" data-iv-preset="bolus_general">0.9% NaCl fluid bolus</button>
+              <button type="button" class="iv-dir-type-btn" data-iv-preset="bolus_cardio">Cardiogenic shock bolus</button>
+            </div>
+          </div>
+
+          <div class="iv-dir-params">
+            <div id="iv-dir-age-row" class="iv-field">
+              <label class="iv-label" for="iv-dir-age">Age group</label>
+              <select id="iv-dir-age" class="iv-select iv-select--full">
+                <option value="pediatric">2 years to &lt; 12 years</option>
+                <option value="adult" selected>≥ 12 years</option>
+              </select>
+            </div>
+            <div id="iv-dir-cardio-age" class="iv-field" hidden>
+              <span class="iv-label">Age group</span>
+              <div class="iv-static-field">≥ 18 years</div>
+            </div>
+            <div id="iv-dir-ped-age-row" class="iv-field" hidden>
+              <label class="iv-label" for="iv-dir-ped-age">Age (years) <span class="iv-label-hint">→ est. kg</span></label>
+              <input id="iv-dir-ped-age" class="iv-input" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 5" autocomplete="off" />
+            </div>
+            <div id="iv-dir-weight-row" class="iv-field" hidden>
+              <label class="iv-label" for="iv-dir-weight">Weight (kg)</label>
+              <input id="iv-dir-weight" class="iv-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight in kg" autocomplete="off" />
+            </div>
+            <div id="iv-dir-rate-row" class="iv-field">
+              <label class="iv-label" for="iv-dir-rate">Rate selection</label>
+              <select id="iv-dir-rate" class="iv-select iv-select--full">
+                <option value="30">30 mL/hr</option>
+                <option value="40">40 mL/hr</option>
+                <option value="50">50 mL/hr</option>
+                <option value="60">60 mL/hr</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="iv-dir-drip-setup">
+            <div id="iv-dir-admin-row" class="iv-field" hidden>
+              <label class="iv-label" for="iv-dir-admin-mins">Run bolus over (mins)</label>
+              <input id="iv-dir-admin-mins" class="iv-input" type="number" inputmode="decimal" min="1" step="any" value="60" placeholder="e.g. 15" autocomplete="off" />
+            </div>
+            <div class="iv-field iv-field--df-wide">
+              <span class="iv-label">Drop factor (gtts/mL)</span>
+              <div class="iv-df-grid iv-df-grid--row">
+                <button type="button" class="iv-dir-df-btn iv-drop-btn--on" data-df="10">10</button>
+                <button type="button" class="iv-dir-df-btn" data-df="15">15</button>
+                <button type="button" class="iv-dir-df-btn" data-df="20">20</button>
+                <button type="button" class="iv-dir-df-btn" data-df="60">60</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="iv-dir-results">
+            <div class="iv-dir-results-top">
+              <div class="iv-dir-target">
+                <p class="iv-dir-stat-label">Target volume</p>
+                <p class="iv-dir-target-val"><span id="iv-dir-vol">0</span> <span>mL</span></p>
+              </div>
+              <div id="iv-dir-bolus-meta" class="iv-dir-bolus-meta" hidden>
+                <div>
+                  <p class="iv-dir-stat-label">Reassess every</p>
+                  <p class="iv-dir-stat-num"><span id="iv-dir-reassess">0</span> mL</p>
+                </div>
+                <div>
+                  <p class="iv-dir-stat-label">Max volume</p>
+                  <p class="iv-dir-stat-num"><span id="iv-dir-max">0</span> mL</p>
+                </div>
+              </div>
+            </div>
+            <div class="iv-dir-drip-block">
+              <div>
+                <p class="iv-dir-stat-label">Calculated drip rate</p>
+                <p class="iv-dir-drip-big"><span id="iv-dir-gtts">0</span> <span>gtts/min</span></p>
+              </div>
+              <div class="iv-dir-practical-card">
+                <p class="iv-sub-label">Practical guide</p>
+                <div id="iv-dir-practical-fast" hidden>
+                  <p class="iv-sub-big"><span id="iv-dir-dps">0</span> <span class="iv-inline-unit">drops/sec</span></p>
+                  <p id="iv-dir-dps-pill" class="iv-sub-pill"></p>
+                </div>
+                <div id="iv-dir-practical-slow">
+                  <p class="iv-sub-big">1 drop / <span id="iv-dir-spd">0</span>s</p>
+                  <p id="iv-dir-spd-pill" class="iv-sub-pill" hidden></p>
+                </div>
+              </div>
+            </div>
+            <div id="iv-dir-notes" class="iv-dir-notes" hidden></div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="iv-reset-btn" id="iv-reset-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset
+      </button>
+      <p class="iv-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
     </div>
   </div>
 

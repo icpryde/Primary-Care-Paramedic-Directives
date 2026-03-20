@@ -102,6 +102,9 @@ function showView(viewId, title, pushHistory = true) {
   if (viewId === 'view-lams') lamsRefreshUI();
   if (viewId === 'view-ped-calc') pedCalcRefresh();
   if (viewId === 'view-o2-duration') o2DurationRefresh();
+  if (viewId === 'view-dosage-calc') dosageRefresh();
+  if (viewId === 'view-parkland-burn') parklandRefresh();
+  if (viewId === 'view-iv-therapy') ivTherapyRefresh();
 }
 
 function goBack() {
@@ -814,6 +817,784 @@ function initO2DurationTool() {
   o2DurationRefresh();
 }
 
+// ─── Weight converter (lbs ↔ kg) ───────────────────────────────────────────
+const WT_LB_PER_KG = 2.20462;
+
+function wtFromLbs() {
+  const lbsEl = $('wt-lbs');
+  const kgEl = $('wt-kg');
+  if (!lbsEl || !kgEl) return;
+  const raw = lbsEl.value.trim();
+  if (raw === '') {
+    kgEl.value = '';
+    return;
+  }
+  const n = parseFloat(raw);
+  if (Number.isNaN(n)) {
+    kgEl.value = '';
+    return;
+  }
+  kgEl.value = (n / WT_LB_PER_KG).toFixed(2);
+}
+
+function wtFromKg() {
+  const lbsEl = $('wt-lbs');
+  const kgEl = $('wt-kg');
+  if (!lbsEl || !kgEl) return;
+  const raw = kgEl.value.trim();
+  if (raw === '') {
+    lbsEl.value = '';
+    return;
+  }
+  const n = parseFloat(raw);
+  if (Number.isNaN(n)) {
+    lbsEl.value = '';
+    return;
+  }
+  lbsEl.value = (n * WT_LB_PER_KG).toFixed(2);
+}
+
+function wtReset() {
+  const lbsEl = $('wt-lbs');
+  const kgEl = $('wt-kg');
+  if (lbsEl) lbsEl.value = '';
+  if (kgEl) kgEl.value = '';
+}
+
+function initWeightConvertTool() {
+  const root = $('view-weight-convert');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+  $('wt-lbs')?.addEventListener('input', wtFromLbs);
+  $('wt-kg')?.addEventListener('input', wtFromKg);
+  $('wt-reset-btn')?.addEventListener('click', wtReset);
+}
+
+// ─── Medical dosage calculator (Want ÷ Have) × Vol ───────────────────────────
+function dosageFmt(num) {
+  return Math.round(num * 1000) / 1000;
+}
+
+function dosageGetActiveType() {
+  const on = document.querySelector('.dosage-tab--on');
+  return (on && on.dataset.dosageType) || 'custom';
+}
+
+function dosageSetTab(type) {
+  document.querySelectorAll('.dosage-tab').forEach(btn => {
+    const on = btn.dataset.dosageType === type;
+    btn.classList.toggle('dosage-tab--on', on);
+    btn.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  const panels = {
+    custom: $('dosage-panel-custom'),
+    cr: $('dosage-panel-cr'),
+    sd: $('dosage-panel-sd'),
+    spercent: $('dosage-panel-spercent'),
+  };
+  Object.entries(panels).forEach(([key, el]) => {
+    if (el) el.hidden = key !== type;
+  });
+}
+
+function dosageReadState() {
+  return {
+    wantAmount: $('dosage-want-amount')?.value ?? '',
+    wantUnit: $('dosage-want-unit')?.value ?? 'mg',
+    calcType: dosageGetActiveType(),
+    haveAmount: $('dosage-have-amount')?.value ?? '',
+    haveUnit: $('dosage-have-unit')?.value ?? 'mg',
+    haveVolume: $('dosage-have-vol')?.value ?? '',
+    haveVolumeUnit: $('dosage-have-vol-unit')?.value ?? 'mL',
+    crAmount: $('dosage-cr')?.value ?? '',
+    sdVolume: $('dosage-sd-vol')?.value ?? '',
+    sPercent: $('dosage-s-percent')?.value ?? '',
+  };
+}
+
+function dosageCompute(state) {
+  const want = parseFloat(state.wantAmount);
+  if (Number.isNaN(want) || want <= 0) return null;
+
+  let workHave = 0;
+  let actualHaveUnit = 'mg';
+  let workVol = 0;
+  const typeSteps = [];
+
+  if (state.calcType === 'custom') {
+    workHave = parseFloat(state.haveAmount);
+    actualHaveUnit = state.haveUnit;
+    workVol = parseFloat(state.haveVolume);
+    const actualVolUnit = state.haveVolumeUnit;
+    if (Number.isNaN(workHave) || workHave <= 0 || Number.isNaN(workVol) || workVol <= 0) return null;
+    if (actualVolUnit === 'L') workVol *= 1000;
+  } else if (state.calcType === 'cr') {
+    workHave = parseFloat(state.crAmount);
+    actualHaveUnit = 'mg';
+    workVol = 1;
+    if (Number.isNaN(workHave) || workHave <= 0) return null;
+    typeSteps.push({
+      title: 'Decode concentration ratio (CR)',
+      desc: `A ratio of ${dosageFmt(workHave)} mg/mL means there are ${dosageFmt(workHave)} mg of medication in every 1 mL of fluid.`,
+    });
+  } else if (state.calcType === 'sd') {
+    workHave = 1;
+    actualHaveUnit = 'g';
+    workVol = parseFloat(state.sdVolume);
+    if (Number.isNaN(workVol) || workVol <= 0) return null;
+    typeSteps.push({
+      title: 'Decode standard dilution (SD)',
+      desc: `A 1:${dosageFmt(workVol)} dilution means there is 1 g of medication in every ${dosageFmt(workVol)} mL of fluid.`,
+    });
+  } else if (state.calcType === 'spercent') {
+    workHave = parseFloat(state.sPercent);
+    actualHaveUnit = 'g';
+    workVol = 100;
+    if (Number.isNaN(workHave) || workHave <= 0) return null;
+    typeSteps.push({
+      title: 'Decode solution percentage (S%)',
+      desc: `A ${dosageFmt(workHave)}% solution means there are ${dosageFmt(workHave)} g of medication in every 100 mL of fluid.`,
+    });
+  } else {
+    return null;
+  }
+
+  let workWant = want;
+  let conversionStep = null;
+  if (state.wantUnit !== actualHaveUnit) {
+    if (state.wantUnit === 'g' && actualHaveUnit === 'mg') workWant = want * 1000;
+    if (state.wantUnit === 'g' && actualHaveUnit === 'mcg') workWant = want * 1000000;
+    if (state.wantUnit === 'mg' && actualHaveUnit === 'g') workWant = want / 1000;
+    if (state.wantUnit === 'mg' && actualHaveUnit === 'mcg') workWant = want * 1000;
+    if (state.wantUnit === 'mcg' && actualHaveUnit === 'g') workWant = want / 1000000;
+    if (state.wantUnit === 'mcg' && actualHaveUnit === 'mg') workWant = want / 1000;
+    conversionStep = {
+      title: 'Unit conversion',
+      desc: `Convert dose ordered so units match dose on hand: ${want} ${state.wantUnit} = ${dosageFmt(workWant)} ${actualHaveUnit}`,
+    };
+  }
+
+  const divisionResult = workWant / workHave;
+  const finalVolume = divisionResult * workVol;
+
+  const steps = [
+    ...typeSteps,
+    ...(conversionStep ? [conversionStep] : []),
+    { title: 'The formula', desc: '(Dose ordered ÷ Dose on hand) × volume' },
+    {
+      title: 'Plug in the values',
+      desc: `(${dosageFmt(workWant)} ${actualHaveUnit} ÷ ${dosageFmt(workHave)} ${actualHaveUnit}) × ${dosageFmt(workVol)} mL`,
+    },
+    {
+      title: 'Calculate',
+      desc: `${dosageFmt(divisionResult)} × ${dosageFmt(workVol)} mL = ${dosageFmt(finalVolume)} mL`,
+    },
+  ];
+
+  return { finalVolume: dosageFmt(finalVolume), steps };
+}
+
+function dosageRenderTutor(steps) {
+  const placeholder = $('dosage-tutor-placeholder');
+  const mount = $('dosage-tutor-steps');
+  const tip = $('dosage-tutor-tip');
+  if (!mount || !placeholder || !tip) return;
+  if (!steps || !steps.length) {
+    placeholder.hidden = false;
+    mount.hidden = true;
+    tip.hidden = true;
+    mount.innerHTML = '';
+    return;
+  }
+  placeholder.hidden = true;
+  mount.hidden = false;
+  tip.hidden = false;
+  let html = '';
+  steps.forEach((step, idx) => {
+    const last = idx === steps.length - 1;
+    html += `<div class="dosage-step">
+      <div class="dosage-step-rail">
+        <span class="dosage-step-badge">${idx + 1}</span>
+        ${last ? '' : '<span class="dosage-step-line" aria-hidden="true"></span>'}
+      </div>
+      <div class="dosage-step-body">
+        <h4 class="dosage-step-title">${escapeHtml(step.title)}</h4>
+        <p class="dosage-step-desc">${escapeHtml(step.desc)}</p>
+      </div>
+    </div>`;
+  });
+  mount.innerHTML = html;
+}
+
+function dosageRefresh() {
+  const calc = dosageCompute(dosageReadState());
+  const empty = $('dosage-result-empty');
+  const valWrap = $('dosage-result-value');
+  const numEl = $('dosage-result-num');
+  if (!empty || !valWrap || !numEl) return;
+  if (!calc) {
+    empty.hidden = false;
+    valWrap.hidden = true;
+    dosageRenderTutor(null);
+    return;
+  }
+  empty.hidden = true;
+  valWrap.hidden = false;
+  numEl.textContent = String(calc.finalVolume);
+  dosageRenderTutor(calc.steps);
+}
+
+function dosageReset() {
+  const w = $('dosage-want-amount');
+  const wu = $('dosage-want-unit');
+  if (w) w.value = '';
+  if (wu) wu.value = 'mg';
+  dosageSetTab('custom');
+  const ha = $('dosage-have-amount');
+  const hu = $('dosage-have-unit');
+  const hv = $('dosage-have-vol');
+  const hvu = $('dosage-have-vol-unit');
+  if (ha) ha.value = '';
+  if (hu) hu.value = 'mg';
+  if (hv) hv.value = '';
+  if (hvu) hvu.value = 'mL';
+  const cr = $('dosage-cr');
+  const sd = $('dosage-sd-vol');
+  const sp = $('dosage-s-percent');
+  if (cr) cr.value = '';
+  if (sd) sd.value = '';
+  if (sp) sp.value = '';
+  dosageRefresh();
+}
+
+function initDosageCalcTool() {
+  const root = $('view-dosage-calc');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  document.querySelectorAll('.dosage-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = btn.dataset.dosageType;
+      if (!t) return;
+      dosageSetTab(t);
+      dosageRefresh();
+    });
+  });
+
+  const onInput = () => dosageRefresh();
+  [
+    'dosage-want-amount', 'dosage-want-unit',
+    'dosage-have-amount', 'dosage-have-unit', 'dosage-have-vol', 'dosage-have-vol-unit',
+    'dosage-cr', 'dosage-sd-vol', 'dosage-s-percent',
+  ].forEach(id => {
+    const el = $(id);
+    if (!el) return;
+    el.addEventListener('input', onInput);
+    el.addEventListener('change', onInput);
+  });
+
+  $('dosage-reset-btn')?.addEventListener('click', dosageReset);
+  dosageSetTab(dosageGetActiveType());
+  dosageRefresh();
+}
+
+// ─── Parkland burn fluid calculator ──────────────────────────────────────────
+function parklandFormatTiming(dripsPerMin) {
+  if (!dripsPerMin || dripsPerMin <= 0) return '—';
+  const dropsPerSec = dripsPerMin / 60;
+  if (dropsPerSec >= 1) {
+    return `~${Math.round(dropsPerSec)} drops every second`;
+  }
+  const secPerDrop = 60 / dripsPerMin;
+  return `1 drop every ${Math.round(secPerDrop)} sec`;
+}
+
+function parklandCompute() {
+  const w = parseFloat(($('parkland-weight')?.value ?? '').trim());
+  const bsa = parseFloat(($('parkland-tbsa')?.value ?? '').trim());
+  const gtts = parseFloat($('parkland-drop-factor')?.value ?? '10');
+  const unit = $('parkland-weight-unit')?.value ?? 'kg';
+
+  if (Number.isNaN(w) || Number.isNaN(bsa) || Number.isNaN(gtts) || w <= 0 || bsa <= 0 || bsa > 100) {
+    return null;
+  }
+
+  const weightInKg = unit === 'lbs' ? w / 2.2 : w;
+  const totalVolume = 4 * weightInKg * bsa;
+  const halfVolume = totalVolume / 2;
+  const rateFirst8 = halfVolume / 8;
+  const rateNext16 = halfVolume / 16;
+  const dripFirst8 = (rateFirst8 * gtts) / 60;
+  const dripNext16 = (rateNext16 * gtts) / 60;
+  const dropsPerSecFirst8 = dripFirst8 / 60;
+  const dropsPerSecNext16 = dripNext16 / 60;
+
+  return {
+    weightKg: weightInKg,
+    totalVolume,
+    halfVolume,
+    rateFirst8,
+    rateNext16,
+    dripFirst8,
+    dripNext16,
+    dropsPerSecFirst8,
+    dropsPerSecNext16,
+    gtts,
+  };
+}
+
+function parklandRefresh() {
+  const placeholder = $('parkland-placeholder');
+  const resultsEl = $('parkland-results');
+  if (!placeholder || !resultsEl) return;
+
+  const r = parklandCompute();
+  if (!r) {
+    placeholder.hidden = false;
+    resultsEl.hidden = true;
+    return;
+  }
+
+  placeholder.hidden = true;
+  resultsEl.hidden = false;
+
+  const wkg = $('parkland-weight-kg-line');
+  if (wkg) wkg.textContent = `Patient weight: ${r.weightKg.toFixed(1)} kg`;
+
+  const totalEl = $('parkland-total-ml');
+  if (totalEl) totalEl.textContent = Math.round(r.totalVolume).toLocaleString();
+
+  const halfStr = `${Math.round(r.halfVolume).toLocaleString()} mL`;
+  const h8 = $('parkland-half-8');
+  const h16 = $('parkland-half-16');
+  if (h8) h8.textContent = halfStr;
+  if (h16) h16.textContent = halfStr;
+
+  const rate8 = $('parkland-rate-8');
+  const rate16 = $('parkland-rate-16');
+  if (rate8) rate8.textContent = `${Math.round(r.rateFirst8)} mL/hr`;
+  if (rate16) rate16.textContent = `${Math.round(r.rateNext16)} mL/hr`;
+
+  const d8 = $('parkland-drip-8');
+  const d16 = $('parkland-drip-16');
+  if (d8) d8.textContent = String(Math.round(r.dripFirst8));
+  if (d16) d16.textContent = String(Math.round(r.dripNext16));
+
+  const dps8 = $('parkland-dps-8');
+  const dps16 = $('parkland-dps-16');
+  if (dps8) dps8.textContent = r.dropsPerSecFirst8.toFixed(2);
+  if (dps16) dps16.textContent = r.dropsPerSecNext16.toFixed(2);
+
+  const t8 = $('parkland-timing-8');
+  const t16 = $('parkland-timing-16');
+  if (t8) t8.textContent = parklandFormatTiming(r.dripFirst8);
+  if (t16) t16.textContent = parklandFormatTiming(r.dripNext16);
+
+  const setNote = g => `Using ${g} gtts/mL set`;
+  const s8 = $('parkland-set-8');
+  const s16 = $('parkland-set-16');
+  if (s8) s8.textContent = setNote(r.gtts);
+  if (s16) s16.textContent = setNote(r.gtts);
+}
+
+function parklandReset() {
+  const pw = $('parkland-weight');
+  const pu = $('parkland-weight-unit');
+  const pt = $('parkland-tbsa');
+  const pd = $('parkland-drop-factor');
+  if (pw) pw.value = '';
+  if (pu) pu.value = 'kg';
+  if (pt) pt.value = '';
+  if (pd) pd.value = '10';
+  parklandRefresh();
+}
+
+function initParklandBurnTool() {
+  const root = $('view-parkland-burn');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  const onChange = () => parklandRefresh();
+  ['parkland-weight', 'parkland-tbsa'].forEach(id => {
+    $(id)?.addEventListener('input', onChange);
+  });
+  $('parkland-weight-unit')?.addEventListener('change', onChange);
+  $('parkland-drop-factor')?.addEventListener('change', onChange);
+
+  $('parkland-reset-btn')?.addEventListener('click', parklandReset);
+  parklandRefresh();
+}
+
+// ─── IV Therapy Calculator (general + PCP-style directives) ────────────────
+function ivGetStdDf() {
+  const b = document.querySelector('.iv-std-df-btn.iv-drop-btn--on');
+  return b?.dataset?.df || '10';
+}
+
+function ivGetDirDf() {
+  const b = document.querySelector('.iv-dir-df-btn.iv-drop-btn--on');
+  return b?.dataset?.df || '10';
+}
+
+function ivGetDirType() {
+  const b = document.querySelector('.iv-dir-type-btn.iv-dir-type-btn--on');
+  return b?.dataset?.ivPreset || 'maintenance';
+}
+
+function ivSetStdDf(df) {
+  document.querySelectorAll('.iv-std-df-btn').forEach(btn => {
+    btn.classList.toggle('iv-drop-btn--on', btn.dataset.df === String(df));
+  });
+}
+
+function ivSetDirDf(df) {
+  document.querySelectorAll('.iv-dir-df-btn').forEach(btn => {
+    btn.classList.toggle('iv-drop-btn--on', btn.dataset.df === String(df));
+  });
+}
+
+function ivSetDirType(type) {
+  document.querySelectorAll('.iv-dir-type-btn').forEach(btn => {
+    btn.classList.toggle('iv-dir-type-btn--on', btn.dataset.ivPreset === type);
+  });
+  const ageSel = $('iv-dir-age');
+  if (type === 'maintenance' || type === 'bolus_cardio') {
+    if (ageSel) ageSel.value = 'adult';
+  }
+}
+
+function ivSetTab(tab) {
+  document.querySelectorAll('.iv-tab').forEach(btn => {
+    const on = btn.dataset.ivTab === tab;
+    btn.classList.toggle('iv-tab--on', on);
+    btn.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  const g = $('iv-panel-general');
+  const d = $('iv-panel-directive');
+  if (g) g.hidden = tab !== 'general';
+  if (d) d.hidden = tab !== 'directive';
+}
+
+function ivDirSyncForm() {
+  const type = ivGetDirType();
+  const age = $('iv-dir-age')?.value || 'adult';
+
+  const ageRow = $('iv-dir-age-row');
+  const cardioAge = $('iv-dir-cardio-age');
+  const pedAgeRow = $('iv-dir-ped-age-row');
+  const weightRow = $('iv-dir-weight-row');
+  const rateRow = $('iv-dir-rate-row');
+  const adminRow = $('iv-dir-admin-row');
+  const bolusMeta = $('iv-dir-bolus-meta');
+
+  const isBolus = type === 'bolus_general' || type === 'bolus_cardio';
+
+  if (type === 'bolus_cardio') {
+    if (ageRow) ageRow.hidden = true;
+    if (cardioAge) cardioAge.hidden = false;
+    if (pedAgeRow) pedAgeRow.hidden = true;
+  } else {
+    if (ageRow) ageRow.hidden = false;
+    if (cardioAge) cardioAge.hidden = true;
+    if (pedAgeRow) pedAgeRow.hidden = !(age === 'pediatric' && type === 'bolus_general');
+  }
+
+  if (weightRow) weightRow.hidden = !isBolus;
+  if (rateRow) rateRow.hidden = !(type === 'maintenance' && age === 'adult');
+  if (adminRow) adminRow.hidden = !isBolus;
+  if (bolusMeta) bolusMeta.hidden = !isBolus;
+}
+
+function ivStdRefresh() {
+  const vol = parseFloat(($('iv-std-vol')?.value ?? '').trim());
+  const tRaw = parseFloat(($('iv-std-time')?.value ?? '').trim());
+  const unit = $('iv-std-time-unit')?.value ?? 'minutes';
+  const df = parseFloat(ivGetStdDf());
+
+  const gttsEl = $('iv-std-gtts');
+  const subFast = $('iv-std-sub-fast');
+  const subSlow = $('iv-std-sub-slow');
+  const dpsVal = $('iv-std-dps-val');
+  const dpsPrac = $('iv-std-dps-practical');
+  const spdVal = $('iv-std-spd-val');
+  const spdPrac = $('iv-std-spd-practical');
+
+  const valid = vol > 0 && tRaw > 0;
+  if (!valid) {
+    if (gttsEl) gttsEl.textContent = '0';
+    if (subFast) subFast.hidden = true;
+    if (subSlow) subSlow.hidden = false;
+    if (dpsVal) dpsVal.textContent = '0';
+    if (dpsPrac) dpsPrac.textContent = '';
+    if (spdVal) spdVal.textContent = '0';
+    if (spdPrac) { spdPrac.textContent = ''; spdPrac.hidden = true; }
+    return;
+  }
+
+  let timeInMins = tRaw;
+  if (unit === 'hours') timeInMins = tRaw * 60;
+
+  const gttsPerMin = (vol * df) / timeInMins;
+  const gttsMin = Math.round(gttsPerMin);
+  const gttsSec = (gttsPerMin / 60).toFixed(2);
+  const secGtt = (60 / gttsPerMin).toFixed(1);
+
+  if (gttsEl) gttsEl.textContent = String(gttsMin);
+
+  if (gttsMin >= 60) {
+    if (subFast) subFast.hidden = false;
+    if (subSlow) subSlow.hidden = true;
+    if (dpsVal) dpsVal.textContent = gttsSec;
+    if (dpsPrac) dpsPrac.textContent = `~${Math.round(parseFloat(gttsSec))} drops/sec`;
+  } else {
+    if (subFast) subFast.hidden = true;
+    if (subSlow) subSlow.hidden = false;
+    if (spdVal) spdVal.textContent = parseFloat(secGtt) > 0 ? secGtt : '0';
+    if (spdPrac) {
+      if (parseFloat(secGtt) > 0) {
+        spdPrac.textContent = `~1 drop every ${Math.round(parseFloat(secGtt))} sec`;
+        spdPrac.hidden = false;
+      } else {
+        spdPrac.textContent = '';
+        spdPrac.hidden = true;
+      }
+    }
+  }
+}
+
+function ivDirCompute() {
+  let volume = 0;
+  let max = 0;
+  let reassess = 0;
+  const notes = [];
+
+  const dirType = ivGetDirType();
+  const dirAge = $('iv-dir-age')?.value || 'adult';
+  const weight = parseFloat(($('iv-dir-weight')?.value ?? '').trim()) || 0;
+  const adminTimeMins = parseFloat(($('iv-dir-admin-mins')?.value ?? '').trim()) || 1;
+  const df = parseFloat(ivGetDirDf());
+  const rateChoice = parseFloat($('iv-dir-rate')?.value ?? '30');
+
+  if (dirType === 'maintenance') {
+    if (dirAge === 'pediatric') {
+      volume = 15;
+      notes.push('Maintenance rate for 2 to <12 years is 15 mL/hr.');
+      notes.push('Microdrips (60 gtts/mL) or volume control should be considered for patients <12 years.');
+    } else {
+      volume = rateChoice;
+      notes.push('Maintenance rate for ≥12 years is 30–60 mL/hr.');
+    }
+  } else if (dirType === 'bolus_general') {
+    if (dirAge === 'pediatric') {
+      volume = Math.min(weight * 20, 2000);
+      max = 2000;
+      reassess = 100;
+      notes.push('Fluid Bolus (2 to <12 yrs): 20 mL/kg. Max 2,000 mL.');
+      notes.push('Microdrips (60 gtts/mL) or volume control should be considered for patients <12 years.');
+    } else {
+      volume = Math.min(weight * 20, 2000);
+      max = 2000;
+      reassess = 250;
+      notes.push('Fluid Bolus (≥12 yrs): 20 mL/kg. Max 2,000 mL.');
+    }
+  } else if (dirType === 'bolus_cardio') {
+    volume = Math.min(weight * 10, 1000);
+    max = 1000;
+    reassess = 250;
+    notes.push('Cardiogenic Shock Bolus (≥18 yrs): 10 mL/kg. Max 1,000 mL.');
+    notes.push('Condition: Chest auscultation must be clear.');
+    notes.push('Contraindication: SBP ≥ 90 mmHg or Fluid overload.');
+  }
+
+  let gttsPerMin = 0;
+  let gttsPerSec = 0;
+  let secPerGtt = 0;
+
+  if (volume > 0) {
+    const timeToUse = dirType === 'maintenance' ? 60 : adminTimeMins;
+    gttsPerMin = (volume * df) / timeToUse;
+    gttsPerSec = gttsPerMin / 60;
+    secPerGtt = 60 / gttsPerMin;
+  }
+
+  const secGttStr = secPerGtt === Infinity || Number.isNaN(secPerGtt) ? '0' : secPerGtt.toFixed(1);
+
+  return {
+    volumeToAdminister: Math.round(volume),
+    maxVolume: max,
+    reassessVolume: reassess,
+    gttsMin: Math.round(gttsPerMin),
+    gttsSec: gttsPerSec.toFixed(2),
+    secGtt: secGttStr,
+    notes,
+    dirType,
+  };
+}
+
+function ivDirRefresh() {
+  ivDirSyncForm();
+  const r = ivDirCompute();
+
+  const volEl = $('iv-dir-vol');
+  const reEl = $('iv-dir-reassess');
+  const maxEl = $('iv-dir-max');
+  const gttsEl = $('iv-dir-gtts');
+  const notesEl = $('iv-dir-notes');
+
+  if (volEl) volEl.textContent = String(r.volumeToAdminister);
+  if (reEl) reEl.textContent = String(r.reassessVolume);
+  if (maxEl) maxEl.textContent = String(r.maxVolume);
+  if (gttsEl) gttsEl.textContent = String(r.gttsMin);
+
+  const pf = $('iv-dir-practical-fast');
+  const ps = $('iv-dir-practical-slow');
+  const dps = $('iv-dir-dps');
+  const dpsPill = $('iv-dir-dps-pill');
+  const spd = $('iv-dir-spd');
+  const spdPill = $('iv-dir-spd-pill');
+
+  if (r.gttsMin >= 60) {
+    if (pf) pf.hidden = false;
+    if (ps) ps.hidden = true;
+    if (dps) dps.textContent = r.gttsSec;
+    if (dpsPill) dpsPill.textContent = `~${Math.round(parseFloat(r.gttsSec))} drops/sec`;
+  } else {
+    if (pf) pf.hidden = true;
+    if (ps) ps.hidden = false;
+    const sg = parseFloat(r.secGtt);
+    if (spd) spd.textContent = sg > 0 ? r.secGtt : '0';
+    if (spdPill) {
+      if (sg > 0) {
+        spdPill.textContent = `~1 drop / ${Math.round(sg)}s`;
+        spdPill.hidden = false;
+      } else {
+        spdPill.textContent = '';
+        spdPill.hidden = true;
+      }
+    }
+  }
+
+  if (notesEl) {
+    if (r.notes.length === 0) {
+      notesEl.hidden = true;
+      notesEl.innerHTML = '';
+    } else {
+      notesEl.hidden = false;
+      notesEl.innerHTML = r.notes.map(note => {
+        const warn = note.includes('Contraindication') || note.includes('Microdrips');
+        const icon = warn
+          ? '<svg class="iv-note-icon iv-note-icon--warn" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>'
+          : '<svg class="iv-note-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+        return `<div class="iv-note-row">${icon}<span>${escapeHtml(note)}</span></div>`;
+      }).join('');
+    }
+  }
+}
+
+function ivTherapyRefresh() {
+  const tab = document.querySelector('.iv-tab.iv-tab--on')?.dataset.ivTab || 'general';
+  if (tab === 'general') ivStdRefresh();
+  else ivDirRefresh();
+}
+
+function ivPedAgeToWeight() {
+  const val = ($('iv-dir-ped-age')?.value ?? '').trim();
+  const w = $('iv-dir-weight');
+  if (!w) return;
+  const ageNum = parseFloat(val);
+  if (!Number.isNaN(ageNum)) {
+    w.value = String(ageNum * 2 + 10);
+  } else if (val === '') {
+    w.value = '';
+  }
+}
+
+function ivTherapyReset() {
+  ivSetTab('general');
+  const v = $('iv-std-vol');
+  const t = $('iv-std-time');
+  const tu = $('iv-std-time-unit');
+  if (v) v.value = '';
+  if (t) t.value = '';
+  if (tu) tu.value = 'minutes';
+  ivSetStdDf('10');
+
+  ivSetDirType('maintenance');
+  const age = $('iv-dir-age');
+  const pedA = $('iv-dir-ped-age');
+  const wt = $('iv-dir-weight');
+  const adm = $('iv-dir-admin-mins');
+  const rate = $('iv-dir-rate');
+  if (age) age.value = 'adult';
+  if (pedA) pedA.value = '';
+  if (wt) wt.value = '';
+  if (adm) adm.value = '60';
+  if (rate) rate.value = '30';
+  ivSetDirDf('10');
+
+  ivTherapyRefresh();
+}
+
+function initIvTherapyTool() {
+  const root = $('view-iv-therapy');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  document.querySelectorAll('.iv-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.ivTab;
+      if (!tab) return;
+      ivSetTab(tab);
+      ivTherapyRefresh();
+    });
+  });
+
+  document.querySelectorAll('.iv-std-df-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      ivSetStdDf(btn.dataset.df);
+      ivTherapyRefresh();
+    });
+  });
+
+  document.querySelectorAll('.iv-dir-df-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      ivSetDirDf(btn.dataset.df);
+      ivTherapyRefresh();
+    });
+  });
+
+  document.querySelectorAll('.iv-dir-type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const typ = btn.dataset.ivPreset;
+      if (!typ) return;
+      ivSetDirType(typ);
+      ivDirSyncForm();
+      ivTherapyRefresh();
+    });
+  });
+
+  ['iv-std-vol', 'iv-std-time'].forEach(id => {
+    $(id)?.addEventListener('input', ivTherapyRefresh);
+  });
+  $('iv-std-time-unit')?.addEventListener('change', ivTherapyRefresh);
+
+  $('iv-dir-age')?.addEventListener('change', () => {
+    ivDirSyncForm();
+    ivTherapyRefresh();
+  });
+  $('iv-dir-ped-age')?.addEventListener('input', () => {
+    ivPedAgeToWeight();
+    ivTherapyRefresh();
+  });
+  ['iv-dir-weight', 'iv-dir-admin-mins', 'iv-dir-rate'].forEach(id => {
+    $(id)?.addEventListener('input', ivTherapyRefresh);
+    $(id)?.addEventListener('change', ivTherapyRefresh);
+  });
+
+  $('iv-reset-btn')?.addEventListener('click', ivTherapyReset);
+  ivTherapyRefresh();
+}
+
 // ─── My Notes (localStorage) ───────────────────────────────────────────────
 function getNote(directiveId) {
   try { return localStorage.getItem('notes-' + directiveId) || ''; } catch(e) { return ''; }
@@ -1295,10 +2076,14 @@ function buildCalculatorsView() {
   if (!container) return;
   const items = [
     { title: 'Pre-Sepsis Tool', fn: () => showView('view-presepsis', 'Pre-Sepsis') },
-    { title: 'Burn Calculator', fn: () => showView('view-burn', 'Burn Calculator') },
+    { title: 'Burn % Calculator', fn: () => showView('view-burn', 'Burn %') },
+    { title: 'Parkland Burn Calculator', fn: () => showView('view-parkland-burn', 'Parkland') },
     { title: 'LAMS Calculator', fn: () => showView('view-lams', 'LAMS Calculator') },
     { title: 'Pediatric Values Calculator', fn: () => showView('view-ped-calc', 'Pediatric Values Calculator') },
     { title: 'Oxygen Tank Duration', fn: () => showView('view-o2-duration', 'O₂ Duration') },
+    { title: 'Weight Converter', fn: () => showView('view-weight-convert', 'Weight Converter') },
+    { title: 'Medical Dosage Calculator', fn: () => showView('view-dosage-calc', 'Dosage Calc') },
+    { title: 'IV Therapy Calculator', fn: () => showView('view-iv-therapy', 'IV Therapy') },
     { title: 'Glasgow Coma Scale (Calculator)', fn: () => renderCalculatorDetail('gcs') },
     { title: 'Pediatric Coma Scale (Calculator)', fn: () => renderCalculatorDetail('pcs') },
   ];
@@ -1603,7 +2388,7 @@ function buildSearchIndex() {
     id: 'calc-hub',
     title: 'Medical Calculators',
     catLabel: 'Tools',
-    text: 'medical calculators calculator pre-sepsis sepsis parahews burn rule of nines tbsa body surface glasgow coma pediatric pcs gcs lams stroke ped values weight oxygen o2 tank cylinder duration psi lpm'.toLowerCase(),
+    text: 'medical calculators calculator pre-sepsis sepsis parahews burn rule of nines tbsa body surface parkland fluid resuscitation iv therapy drip gtts bolus maintenance glasgow coma pediatric pcs gcs lams stroke ped values weight converter lbs kg pounds kilograms oxygen o2 tank cylinder duration psi lpm dosage dose medication ml concentration'.toLowerCase(),
     type: 'calc-hub',
     data: null,
   });
@@ -1617,10 +2402,18 @@ function buildSearchIndex() {
   });
   index.push({
     id: 'calc-burn',
-    title: 'Burn Calculator',
+    title: 'Burn % Calculator',
     catLabel: 'Medical Calculators',
-    text: 'burn calculator rule of nines tbsa thermal bls dressing cooling pediatric adult groin'.toLowerCase(),
+    text: 'burn percent calculator rule of nines tbsa thermal bls dressing cooling pediatric adult groin body surface'.toLowerCase(),
     type: 'calc-burn',
+    data: null,
+  });
+  index.push({
+    id: 'calc-parkland',
+    title: 'Parkland Burn Calculator',
+    catLabel: 'Medical Calculators',
+    text: 'parkland burn calculator fluid resuscitation lactated ringers lr 4ml tbsa drip rate gtts macrodrip microdrip iv'.toLowerCase(),
+    type: 'calc-parkland',
     data: null,
   });
   index.push({
@@ -1661,6 +2454,30 @@ function buildSearchIndex() {
     catLabel: 'Medical Calculators',
     text: 'oxygen o2 tank duration cylinder psi lpm flow d-tank m-tank e-tank cannula nasal residual gauge factor'.toLowerCase(),
     type: 'calc-o2-duration',
+    data: null,
+  });
+  index.push({
+    id: 'calc-weight-convert',
+    title: 'Weight Converter',
+    catLabel: 'Medical Calculators',
+    text: 'weight converter pounds lbs kilograms kg lb to kg kg to lb mass imperial metric'.toLowerCase(),
+    type: 'calc-weight-convert',
+    data: null,
+  });
+  index.push({
+    id: 'calc-dosage',
+    title: 'Medical Dosage Calculator',
+    catLabel: 'Medical Calculators',
+    text: 'medical dosage calculator dose medication mg mcg g ml concentration ratio cr dilution sd percent solution want have volume administer'.toLowerCase(),
+    type: 'calc-dosage',
+    data: null,
+  });
+  index.push({
+    id: 'calc-iv-therapy',
+    title: 'IV Therapy Calculator',
+    catLabel: 'Medical Calculators',
+    text: 'iv therapy calculator drip rate gtts ml hour bolus fluid maintenance 0.9 saline nacl cardiogenic shock macrodrip microdrip'.toLowerCase(),
+    type: 'calc-iv-therapy',
     data: null,
   });
   return index;
@@ -2174,10 +2991,14 @@ function init() {
         'view-companion': 'MEDICAL DIRECTIVES',
         'view-references': 'MEDICAL DIRECTIVES',
         'view-calculators': 'Calculators',
-        'view-burn': 'Burn Calculator',
+        'view-burn': 'Burn %',
         'view-lams': 'LAMS Calculator',
         'view-ped-calc': 'Pediatric Values Calculator',
         'view-o2-duration': 'O₂ Duration',
+        'view-weight-convert': 'Weight Converter',
+        'view-dosage-calc': 'Dosage Calc',
+        'view-iv-therapy': 'IV Therapy',
+        'view-parkland-burn': 'Parkland',
         'view-contact': 'MEDICAL DIRECTIVES',
         'view-destination': 'MEDICAL DIRECTIVES',
       };
@@ -2338,7 +3159,11 @@ function init() {
       } else if (result.type === 'calc-hub') {
         showView('view-calculators', 'Calculators');
       } else if (result.type === 'calc-burn') {
-        showView('view-burn', 'Burn Calculator');
+        showView('view-burn', 'Burn %');
+      } else if (result.type === 'calc-iv-therapy') {
+        showView('view-iv-therapy', 'IV Therapy');
+      } else if (result.type === 'calc-parkland') {
+        showView('view-parkland-burn', 'Parkland');
       } else if (result.type === 'calc-gcs') {
         renderCalculatorDetail('gcs');
       } else if (result.type === 'calc-pcs') {
@@ -2349,6 +3174,10 @@ function init() {
         showView('view-ped-calc', 'Pediatric Values Calculator');
       } else if (result.type === 'calc-o2-duration') {
         showView('view-o2-duration', 'O₂ Duration');
+      } else if (result.type === 'calc-weight-convert') {
+        showView('view-weight-convert', 'Weight Converter');
+      } else if (result.type === 'calc-dosage') {
+        showView('view-dosage-calc', 'Dosage Calc');
       } else if (result.type === 'presepsis') {
         showView('view-presepsis', 'Pre-Sepsis');
       } else {
@@ -2368,6 +3197,10 @@ function init() {
   initPedCalcTool();
   pedCalcRefresh();
   initO2DurationTool();
+  initWeightConvertTool();
+  initDosageCalcTool();
+  initParklandBurnTool();
+  initIvTherapyTool();
   initRefImageViewer();
 
   const activeView = document.querySelector('.view.active');
