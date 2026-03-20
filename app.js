@@ -676,6 +676,10 @@ function buildCategoryList(containerEl, items_fn, onClickFn) {
       itemsEl.appendChild(row);
     });
 
+    /* Start collapsed — tap category bar to expand */
+    itemsEl.classList.add('collapsed');
+    header.classList.add('collapsed');
+
     section.appendChild(header);
     section.appendChild(itemsEl);
     containerEl.appendChild(section);
@@ -1021,6 +1025,9 @@ function buildSpecialView() {
     });
     itemsEl.appendChild(row);
   });
+
+  itemsEl.classList.add('collapsed');
+  header.classList.add('collapsed');
 
   section.appendChild(header);
   section.appendChild(itemsEl);
@@ -1971,8 +1978,14 @@ function init() {
     const q = e.target.value;
     if (!q.trim()) {
       $('pcp-list').querySelectorAll('.directive-row').forEach(r => { r.style.display = ''; });
-      $('pcp-list').querySelectorAll('.cat-items').forEach(el => { el.classList.remove('collapsed'); });
-      $('pcp-list').querySelectorAll('.cat-header').forEach(el => { el.classList.remove('collapsed'); });
+      $('pcp-list').querySelectorAll('.cat-items').forEach(el => {
+        el.style.display = '';
+        el.classList.add('collapsed');
+      });
+      $('pcp-list').querySelectorAll('.cat-header').forEach(el => {
+        el.style.display = '';
+        el.classList.add('collapsed');
+      });
       return;
     }
     const lq = q.toLowerCase();
@@ -2002,8 +2015,14 @@ function init() {
     const q = e.target.value;
     if (!q.trim()) {
       $('companion-list').querySelectorAll('.directive-row').forEach(r => { r.style.display = ''; });
-      $('companion-list').querySelectorAll('.cat-items').forEach(el => { el.classList.remove('collapsed'); });
-      $('companion-list').querySelectorAll('.cat-header').forEach(el => { el.classList.remove('collapsed'); });
+      $('companion-list').querySelectorAll('.cat-items').forEach(el => {
+        el.style.display = '';
+        el.classList.add('collapsed');
+      });
+      $('companion-list').querySelectorAll('.cat-header').forEach(el => {
+        el.style.display = '';
+        el.classList.add('collapsed');
+      });
       return;
     }
     const lq = q.toLowerCase();
