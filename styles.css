@@ -1059,6 +1059,16 @@ body.help-modal-open {
   text-align: left;
 }
 
+.special-care-banner {
+  background: #6b7280;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 14px 18px;
+  text-align: center;
+}
+
 /* ── Reference Detail ────────────────────────────────── */
 .ref-detail { padding: var(--page-gutter); }
 
@@ -3178,6 +3188,220 @@ body.help-modal-open {
   -webkit-tap-highlight-color: transparent;
 }
 .ped-calc-reset-btn:active {
+  background: #f1f5f9;
+}
+
+/* ── Oxygen tank duration calculator ─────────────────────── */
+.view.o2-calc-view {
+  background: #f8fafc;
+  min-height: calc(100vh - var(--header-h) - var(--safe-top));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.o2-calc-scroll {
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 12px 14px 24px;
+}
+.o2-calc-header {
+  background: linear-gradient(135deg, #0d9488 0%, #115e59 100%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 20px 18px;
+  margin-bottom: 14px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(17, 94, 89, 0.28);
+}
+.o2-calc-header-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  opacity: 0.95;
+}
+.o2-calc-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.o2-calc-sub {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.35;
+}
+.o2-calc-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 18px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+.o2-calc-field {
+  margin-bottom: 18px;
+}
+.o2-calc-field:last-child {
+  margin-bottom: 0;
+}
+.o2-calc-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+}
+.o2-calc-input-suffix {
+  position: relative;
+}
+.o2-calc-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 44px 12px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  background: #fff;
+  -webkit-tap-highlight-color: transparent;
+}
+.o2-calc-input:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+}
+.o2-calc-suffix {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  pointer-events: none;
+}
+.o2-calc-flow-row {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+}
+.o2-calc-input--flow {
+  flex: 1;
+  min-width: 0;
+  border-radius: 10px 0 0 10px;
+  padding-right: 12px;
+  border-right: 0;
+}
+.o2-calc-select {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.o2-calc-select:focus {
+  outline: none;
+  border-color: #0d9488;
+}
+.o2-calc-select--unit {
+  flex-shrink: 0;
+  min-width: 7.5rem;
+  padding: 12px 10px;
+  border-radius: 0 10px 10px 0;
+}
+.o2-calc-select--full {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+.o2-calc-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0d9488;
+}
+.o2-calc-results {
+  background: #f1f5f9;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 18px 16px 16px;
+  margin-bottom: 12px;
+}
+.o2-calc-results-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: #115e59;
+}
+.o2-calc-results-head svg {
+  flex-shrink: 0;
+}
+.o2-calc-results-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.o2-calc-result-box {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+.o2-calc-result-empty {
+  color: #94a3b8;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 8px 0;
+}
+.o2-calc-mins {
+  margin: 0;
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #0d9488;
+  line-height: 1.1;
+}
+.o2-calc-mins-unit {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #64748b;
+}
+.o2-calc-formatted {
+  margin: 8px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #475569;
+}
+.o2-calc-formula {
+  margin: 14px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #64748b;
+  text-align: center;
+}
+.o2-calc-reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.o2-calc-reset-btn:active {
   background: #f1f5f9;
 }
 

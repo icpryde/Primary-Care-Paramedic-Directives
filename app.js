@@ -59,6 +59,26 @@ function headerTitleFromItem(obj) {
   return trimHeaderTitle(t, 24);
 }
 
+/** Sticky search: filter a flat list of `.directive-row` by `.directive-row-title`. */
+function bindFlatListSearch(inputId, listId) {
+  const input = $(inputId);
+  const list = $(listId);
+  if (!input || !list || input.dataset.bound) return;
+  input.dataset.bound = '1';
+  input.addEventListener('input', e => {
+    const q = e.target.value.trim();
+    if (!q) {
+      list.querySelectorAll('.directive-row').forEach(r => { r.style.display = ''; });
+      return;
+    }
+    const lq = q.toLowerCase();
+    list.querySelectorAll('.directive-row').forEach(row => {
+      const title = row.querySelector('.directive-row-title')?.textContent.toLowerCase() || '';
+      row.style.display = title.includes(lq) ? '' : 'none';
+    });
+  });
+}
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 function showView(viewId, title, pushHistory = true) {
   const current = document.querySelector('.view.active');
@@ -81,6 +101,7 @@ function showView(viewId, title, pushHistory = true) {
   if (viewId === 'view-burn') burnRefreshUI();
   if (viewId === 'view-lams') lamsRefreshUI();
   if (viewId === 'view-ped-calc') pedCalcRefresh();
+  if (viewId === 'view-o2-duration') o2DurationRefresh();
 }
 
 function goBack() {
@@ -644,7 +665,7 @@ function pedCalcRefresh() {
 function pedCalcReset() {
   const ageSel = $('ped-calc-age');
   const unitSel = $('ped-calc-unit');
-  if (unitSel) unitSel.value = 'months';
+  if (unitSel) unitSel.value = 'years';
   pedCalcPopulateAgeOptions();
   if (ageSel) ageSel.value = '';
   pedCalcRefresh();
@@ -666,6 +687,131 @@ function initPedCalcTool() {
   $('ped-calc-age')?.addEventListener('change', pedCalcRefresh);
 
   $('ped-calc-reset-btn')?.addEventListener('click', pedCalcReset);
+}
+
+// ─── Oxygen tank duration (psi × factor ÷ L/min) ───────────────────────────
+function o2DurationFormatTime(totalMinutes) {
+  if (totalMinutes === null) return '—';
+  if (totalMinutes === 0) return '0 minutes (tank empty / too low)';
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours > 0) return `${hours} hr ${minutes} min`;
+  return `${minutes} minutes`;
+}
+
+function o2DurationRefresh() {
+  const gaugeEl = $('o2-gauge');
+  const residualEl = $('o2-residual');
+  const flowEl = $('o2-flow');
+  const unitEl = $('o2-flow-unit');
+  const cylEl = $('o2-cylinder');
+  const customEl = $('o2-custom');
+  const hintEl = $('o2-lpm-hint');
+  const emptyEl = $('o2-result-empty');
+  const valuesEl = $('o2-result-values');
+  const minsEl = $('o2-duration-mins');
+  const fmtEl = $('o2-duration-formatted');
+  if (!gaugeEl || !residualEl || !flowEl || !unitEl || !cylEl) return;
+
+  const gaugePressure = gaugeEl.value;
+  const safeResidual = residualEl.value;
+  const flowRateStr = flowEl.value;
+  const flowUnit = unitEl.value;
+  const cylinderFactorVal = cylEl.value;
+  const customFactorStr = customEl?.value ?? '';
+
+  const p = parseFloat(gaugePressure);
+  const r = parseFloat(safeResidual);
+  let f = parseFloat(flowRateStr);
+
+  if (flowUnit === 'percent' && !Number.isNaN(f)) {
+    f = (f - 20) / 4;
+  }
+
+  let c = parseFloat(cylinderFactorVal);
+  if (cylinderFactorVal === 'custom') {
+    c = parseFloat(customFactorStr);
+  }
+
+  if (hintEl) {
+    if (flowUnit === 'percent' && flowRateStr !== '' && !Number.isNaN(parseFloat(flowRateStr))) {
+      const lpm = Math.max(0, (parseFloat(flowRateStr) - 20) / 4);
+      hintEl.textContent = `Calculated as ${lpm.toFixed(1)} L/min`;
+      hintEl.hidden = false;
+    } else {
+      hintEl.hidden = true;
+    }
+  }
+
+  let duration = null;
+  if (!Number.isNaN(p) && !Number.isNaN(r) && !Number.isNaN(f) && !Number.isNaN(c) && f > 0 && p > r && c > 0) {
+    duration = Math.floor(((p - r) * c) / f);
+  } else if (p <= r && !Number.isNaN(p) && !Number.isNaN(r) && gaugePressure !== '') {
+    duration = 0;
+  }
+
+  if (duration !== null) {
+    if (emptyEl) emptyEl.hidden = true;
+    if (valuesEl) valuesEl.hidden = false;
+    if (minsEl) minsEl.textContent = String(duration);
+    if (fmtEl) fmtEl.textContent = o2DurationFormatTime(duration);
+  } else {
+    if (emptyEl) emptyEl.hidden = false;
+    if (valuesEl) valuesEl.hidden = true;
+  }
+}
+
+function o2DurationReset() {
+  const gaugeEl = $('o2-gauge');
+  const residualEl = $('o2-residual');
+  const flowEl = $('o2-flow');
+  const unitEl = $('o2-flow-unit');
+  const cylEl = $('o2-cylinder');
+  const customEl = $('o2-custom');
+  const wrap = $('o2-custom-wrap');
+  if (gaugeEl) gaugeEl.value = '';
+  if (residualEl) residualEl.value = '500';
+  if (flowEl) flowEl.value = '';
+  if (unitEl) unitEl.value = 'lpm';
+  if (cylEl) cylEl.value = '0.16';
+  if (customEl) customEl.value = '';
+  if (wrap) wrap.hidden = true;
+  o2DurationUpdateFlowPlaceholder();
+  o2DurationRefresh();
+}
+
+function o2DurationUpdateFlowPlaceholder() {
+  const flow = $('o2-flow');
+  const unit = $('o2-flow-unit');
+  if (flow && unit) flow.placeholder = unit.value === 'percent' ? 'e.g. 32' : 'e.g. 15';
+}
+
+function initO2DurationTool() {
+  const root = $('view-o2-duration');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  const onChange = () => o2DurationRefresh();
+  ['o2-gauge', 'o2-residual', 'o2-flow', 'o2-custom'].forEach(id => {
+    $(id)?.addEventListener('input', onChange);
+  });
+  $('o2-flow-unit')?.addEventListener('change', () => {
+    o2DurationUpdateFlowPlaceholder();
+    onChange();
+  });
+  o2DurationUpdateFlowPlaceholder();
+  $('o2-cylinder')?.addEventListener('change', () => {
+    const wrap = $('o2-custom-wrap');
+    const cyl = $('o2-cylinder');
+    if (wrap && cyl) wrap.hidden = cyl.value !== 'custom';
+    onChange();
+  });
+  $('o2-reset-btn')?.addEventListener('click', o2DurationReset);
+
+  const wrap = $('o2-custom-wrap');
+  const cyl = $('o2-cylinder');
+  if (wrap && cyl) wrap.hidden = cyl.value !== 'custom';
+  o2DurationRefresh();
 }
 
 // ─── My Notes (localStorage) ───────────────────────────────────────────────
@@ -1101,23 +1247,10 @@ function renderPalliativePreamble() {
 // ─── Build Special Care View ──────────────────────────────────────────────────
 function buildSpecialView() {
   const container = $('special-list');
+  if (!container) return;
   container.innerHTML = '';
 
-  const section = document.createElement('div');
-  section.className = 'cat-section';
-
-  const header = document.createElement('div');
-  header.className = 'cat-header bg-gray';
-  header.innerHTML = `<span class="cat-header-title">PCP Palliative Care Medical Directive</span><span class="cat-chevron"></span>`;
-  header.addEventListener('click', () => {
-    itemsEl.classList.toggle('collapsed');
-    header.classList.toggle('collapsed');
-  });
-
-  const itemsEl = document.createElement('div');
-  itemsEl.className = 'cat-items';
-
-  // Overview / Introduction row
+  // Flat list (like Medical References) — always visible, not collapsible
   const overviewRow = document.createElement('div');
   overviewRow.className = 'directive-row';
   overviewRow.innerHTML = `<span class="directive-row-title" style="font-weight:600;">Overview / Introduction</span><span class="directive-row-chevron"></span>`;
@@ -1125,7 +1258,7 @@ function buildSpecialView() {
     renderPalliativePreamble();
     showView('view-detail', 'Palliative overview');
   });
-  itemsEl.appendChild(overviewRow);
+  container.appendChild(overviewRow);
 
   PALLIATIVE_DIRECTIVES.forEach(d => {
     const row = document.createElement('div');
@@ -1135,15 +1268,8 @@ function buildSpecialView() {
       renderPalliativeDetail(d);
       showView('view-detail', headerTitleFromItem(d));
     });
-    itemsEl.appendChild(row);
+    container.appendChild(row);
   });
-
-  itemsEl.classList.add('collapsed');
-  header.classList.add('collapsed');
-
-  section.appendChild(header);
-  section.appendChild(itemsEl);
-  container.appendChild(section);
 }
 
 // ─── Build Medical References View ───────────────────────────────────────────
@@ -1172,6 +1298,7 @@ function buildCalculatorsView() {
     { title: 'Burn Calculator', fn: () => showView('view-burn', 'Burn Calculator') },
     { title: 'LAMS Calculator', fn: () => showView('view-lams', 'LAMS Calculator') },
     { title: 'Pediatric Values Calculator', fn: () => showView('view-ped-calc', 'Pediatric Values Calculator') },
+    { title: 'Oxygen Tank Duration', fn: () => showView('view-o2-duration', 'O₂ Duration') },
     { title: 'Glasgow Coma Scale (Calculator)', fn: () => renderCalculatorDetail('gcs') },
     { title: 'Pediatric Coma Scale (Calculator)', fn: () => renderCalculatorDetail('pcs') },
   ];
@@ -1476,7 +1603,7 @@ function buildSearchIndex() {
     id: 'calc-hub',
     title: 'Medical Calculators',
     catLabel: 'Tools',
-    text: 'medical calculators calculator pre-sepsis sepsis parahews burn rule of nines tbsa body surface glasgow coma pediatric pcs gcs lams stroke ped values weight'.toLowerCase(),
+    text: 'medical calculators calculator pre-sepsis sepsis parahews burn rule of nines tbsa body surface glasgow coma pediatric pcs gcs lams stroke ped values weight oxygen o2 tank cylinder duration psi lpm'.toLowerCase(),
     type: 'calc-hub',
     data: null,
   });
@@ -1526,6 +1653,14 @@ function buildSearchIndex() {
     catLabel: 'Medical Calculators',
     text: 'pediatric values weight sbp hypotension normotension vitals heart rate respiratory hypoglycemia bgl child infant'.toLowerCase(),
     type: 'calc-pediatric-values',
+    data: null,
+  });
+  index.push({
+    id: 'calc-o2-duration',
+    title: 'Oxygen Tank Duration',
+    catLabel: 'Medical Calculators',
+    text: 'oxygen o2 tank duration cylinder psi lpm flow d-tank m-tank e-tank cannula nasal residual gauge factor'.toLowerCase(),
+    type: 'calc-o2-duration',
     data: null,
   });
   return index;
@@ -2042,6 +2177,7 @@ function init() {
         'view-burn': 'Burn Calculator',
         'view-lams': 'LAMS Calculator',
         'view-ped-calc': 'Pediatric Values Calculator',
+        'view-o2-duration': 'O₂ Duration',
         'view-contact': 'MEDICAL DIRECTIVES',
         'view-destination': 'MEDICAL DIRECTIVES',
       };
@@ -2169,19 +2305,12 @@ function init() {
     });
   });
 
-  // References search
-  $('ref-search').addEventListener('input', e => {
-    const q = e.target.value;
-    if (!q.trim()) {
-      $('references-list').querySelectorAll('.directive-row').forEach(r => { r.style.display = ''; });
-      return;
-    }
-    const lq = q.toLowerCase();
-    $('references-list').querySelectorAll('.directive-row').forEach(row => {
-      const title = row.querySelector('.directive-row-title').textContent.toLowerCase();
-      row.style.display = title.includes(lq) ? '' : 'none';
-    });
-  });
+  bindFlatListSearch('ref-search', 'references-list');
+  bindFlatListSearch('special-event-search', 'special-event-list');
+  bindFlatListSearch('special-search', 'special-list');
+  bindFlatListSearch('calculators-search', 'calculators-list');
+  bindFlatListSearch('contact-search', 'contact-list');
+  bindFlatListSearch('destination-search', 'destination-list');
 
   // Global search on home
   $('global-search').addEventListener('input', e => {
@@ -2218,6 +2347,8 @@ function init() {
         showView('view-lams', 'LAMS Calculator');
       } else if (result.type === 'calc-pediatric-values') {
         showView('view-ped-calc', 'Pediatric Values Calculator');
+      } else if (result.type === 'calc-o2-duration') {
+        showView('view-o2-duration', 'O₂ Duration');
       } else if (result.type === 'presepsis') {
         showView('view-presepsis', 'Pre-Sepsis');
       } else {
@@ -2236,6 +2367,7 @@ function init() {
   lamsRefreshUI();
   initPedCalcTool();
   pedCalcRefresh();
+  initO2DurationTool();
   initRefImageViewer();
 
   const activeView = document.querySelector('.view.active');

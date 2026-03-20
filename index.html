@@ -119,6 +119,15 @@
 
   <!-- SPECIAL EVENT DIRECTIVES LIST -->
   <div id="view-special-event" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="special-event-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
     <div class="specialevent-banner">SPECIAL EVENT DIRECTIVES</div>
     <p class="view-intro">PCP auxiliary directives for authorized mass-gathering events (ALS PCS Section 3). Use only when authorized by your RBHP.</p>
     <div id="special-event-list" class="category-list flat-list"></div>
@@ -126,6 +135,15 @@
 
   <!-- MEDICAL CALCULATORS (menu) -->
   <div id="view-calculators" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="calculators-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
     <div class="calculators-top-banner">MEDICAL CALCULATORS</div>
     <p class="view-intro">Interactive scoring and decision-support tools. Reference charts (GCS, PCS, LAMS) are under <strong>Medical References</strong>.</p>
     <div id="calculators-list" class="category-list flat-list"></div>
@@ -326,7 +344,7 @@
             </select>
             <select id="ped-calc-unit" class="ped-calc-select" aria-label="Age unit">
               <option value="months">Months</option>
-              <option value="years">Years</option>
+              <option value="years" selected>Years</option>
             </select>
           </div>
         </div>
@@ -404,8 +422,91 @@
     </div>
   </div>
 
+  <!-- OXYGEN TANK DURATION CALCULATOR -->
+  <div id="view-o2-duration" class="view o2-calc-view" hidden>
+    <div class="o2-calc-scroll">
+      <div class="o2-calc-header">
+        <div class="o2-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h2 class="o2-calc-title">O₂ Tank Duration</h2>
+        <p class="o2-calc-sub">Pressure, flow, and cylinder factor</p>
+      </div>
+
+      <div class="o2-calc-card">
+        <div class="o2-calc-field">
+          <label class="o2-calc-label" for="o2-gauge">Gauge pressure (psi)</label>
+          <div class="o2-calc-input-suffix">
+            <input id="o2-gauge" class="o2-calc-input" type="number" inputmode="decimal" placeholder="e.g. 2000" autocomplete="off" />
+            <span class="o2-calc-suffix" aria-hidden="true">psi</span>
+          </div>
+        </div>
+        <div class="o2-calc-field">
+          <label class="o2-calc-label" for="o2-residual">Safe residual pressure (psi)</label>
+          <div class="o2-calc-input-suffix">
+            <input id="o2-residual" class="o2-calc-input" type="number" inputmode="decimal" value="500" placeholder="e.g. 500" autocomplete="off" />
+            <span class="o2-calc-suffix" aria-hidden="true">psi</span>
+          </div>
+        </div>
+        <div class="o2-calc-field">
+          <label class="o2-calc-label" for="o2-flow">Flow rate</label>
+          <div class="o2-calc-flow-row">
+            <input id="o2-flow" class="o2-calc-input o2-calc-input--flow" type="number" inputmode="decimal" placeholder="e.g. 15" autocomplete="off" aria-label="Flow rate value" />
+            <select id="o2-flow-unit" class="o2-calc-select o2-calc-select--unit" aria-label="Flow unit">
+              <option value="lpm">L/min</option>
+              <option value="percent">% (cannula)</option>
+            </select>
+          </div>
+          <p id="o2-lpm-hint" class="o2-calc-hint" hidden></p>
+        </div>
+        <div class="o2-calc-field">
+          <label class="o2-calc-label" for="o2-cylinder">Cylinder type / factor</label>
+          <select id="o2-cylinder" class="o2-calc-select o2-calc-select--full">
+            <option value="0.16">D-tank (0.16)</option>
+            <option value="1.56">M-tank (1.56)</option>
+            <option value="0.28">E-tank (0.28)</option>
+            <option value="custom">Custom factor</option>
+          </select>
+        </div>
+        <div id="o2-custom-wrap" class="o2-calc-field" hidden>
+          <label class="o2-calc-label" for="o2-custom">Custom factor</label>
+          <input id="o2-custom" class="o2-calc-input" type="number" inputmode="decimal" step="0.01" placeholder="e.g. 0.28" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="o2-calc-results">
+        <div class="o2-calc-results-head">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <h3 class="o2-calc-results-title">Estimated duration</h3>
+        </div>
+        <div class="o2-calc-result-box">
+          <div id="o2-result-empty" class="o2-calc-result-empty">Enter tank values to see duration</div>
+          <div id="o2-result-values" class="o2-calc-result-values" hidden>
+            <p class="o2-calc-mins"><span id="o2-duration-mins">0</span> <span class="o2-calc-mins-unit">mins</span></p>
+            <p id="o2-duration-formatted" class="o2-calc-formatted"></p>
+          </div>
+        </div>
+        <p class="o2-calc-formula">Formula: ((gauge − safe residual) × factor) ÷ flow rate. Always monitor the patient and physical gauge.</p>
+      </div>
+
+      <button type="button" class="o2-calc-reset-btn" id="o2-reset-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset
+      </button>
+    </div>
+  </div>
+
   <!-- CONTACT MENU -->
   <div id="view-contact" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="contact-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
     <div class="contact-top-banner">CONTACT</div>
     <p class="view-intro">Regional contacts, OMC patch, and reference tools. Tap any phone number to call.</p>
     <div id="contact-list" class="category-list flat-list"></div>
@@ -413,6 +514,15 @@
 
   <!-- DESTINATION GUIDELINES -->
   <div id="view-destination" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="destination-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
     <div class="destination-top-banner">DESTINATION GUIDELINES</div>
     <p class="view-intro">Ontario BLS PCS destination standards, prompt cards, and regional operational references. Confirm all details with your service.</p>
     <div id="destination-list" class="category-list flat-list"></div>
@@ -420,7 +530,17 @@
 
   <!-- SPECIAL CARE DIRECTIVES LIST -->
   <div id="view-special" class="view" hidden>
-    <div id="special-list" class="category-list"></div>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="special-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div class="special-care-banner">SPECIAL CARE DIRECTIVES</div>
+    <div id="special-list" class="category-list flat-list"></div>
   </div>
 
   <!-- COMPANION DOCUMENT LIST -->
