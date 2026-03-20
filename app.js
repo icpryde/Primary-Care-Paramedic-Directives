@@ -79,6 +79,7 @@ function showView(viewId, title, pushHistory = true) {
   updateBackButtonVisibility(viewId);
   if (viewId === 'view-presepsis') presepsisRefreshUI();
   if (viewId === 'view-burn') burnRefreshUI();
+  if (viewId === 'view-lams') lamsRefreshUI();
 }
 
 function goBack() {
@@ -233,6 +234,174 @@ function openFlowchartPdf(pdfUrl) {
   window.open(pdfUrl, '_blank');
 }
 
+// ─── Reference image viewer (pinch zoom + pan, in-app for PWA) ───────────────
+const refImgViewer = {
+  scale: 1,
+  tx: 0,
+  ty: 0,
+  panStart: null,
+  lastPinchDist: 0,
+};
+
+function refImgViewerApply() {
+  const stage = $('ref-image-viewer-stage');
+  if (!stage) return;
+  stage.style.transform = `translate(${refImgViewer.tx}px, ${refImgViewer.ty}px) scale(${refImgViewer.scale})`;
+}
+
+function refImgViewerLayoutFit() {
+  const img = $('ref-image-viewer-img');
+  if (!img || !img.naturalWidth) return;
+  const pad = 12;
+  const chrome = 120;
+  const vw = window.innerWidth - pad * 2;
+  const vh = window.innerHeight - chrome;
+  const nw = img.naturalWidth;
+  const nh = img.naturalHeight;
+  const r = Math.min(vw / nw, vh / nh, 1);
+  img.style.width = `${nw * r}px`;
+  img.style.height = 'auto';
+  refImgViewer.scale = 1;
+  refImgViewer.tx = 0;
+  refImgViewer.ty = 0;
+  refImgViewerApply();
+}
+
+function openRefImageViewer(src, alt) {
+  const modal = $('ref-image-viewer');
+  const img = $('ref-image-viewer-img');
+  if (!modal || !img) {
+    window.open(src, '_blank');
+    return;
+  }
+  refImgViewer.scale = 1;
+  refImgViewer.tx = 0;
+  refImgViewer.ty = 0;
+  refImgViewer.panStart = null;
+  img.alt = alt || '';
+  img.src = src;
+  const done = () => refImgViewerLayoutFit();
+  img.onload = done;
+  if (img.complete && img.naturalWidth) done();
+  modal.hidden = false;
+  modal.setAttribute('aria-hidden', 'false');
+  document.documentElement.classList.add('ref-image-viewer-open');
+  document.body.classList.add('ref-image-viewer-open');
+}
+
+function closeRefImageViewer() {
+  const modal = $('ref-image-viewer');
+  const img = $('ref-image-viewer-img');
+  if (modal) {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+  }
+  if (img) {
+    img.src = '';
+    img.removeAttribute('src');
+  }
+  document.documentElement.classList.remove('ref-image-viewer-open');
+  document.body.classList.remove('ref-image-viewer-open');
+}
+
+function refImgTouchDist(a, b) {
+  const dx = a.clientX - b.clientX;
+  const dy = a.clientY - b.clientY;
+  return Math.hypot(dx, dy) || 1;
+}
+
+function initRefImageViewer() {
+  const outer = $('ref-image-viewer-outer');
+  const modal = $('ref-image-viewer');
+  if (!outer || !modal || outer.dataset.bound) return;
+  outer.dataset.bound = '1';
+
+  outer.addEventListener(
+    'touchstart',
+    e => {
+      if (e.touches.length === 1) {
+        refImgViewer.lastPinchDist = 0;
+        refImgViewer.panStart = {
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY,
+          tx: refImgViewer.tx,
+          ty: refImgViewer.ty,
+        };
+      } else if (e.touches.length === 2) {
+        refImgViewer.panStart = null;
+        refImgViewer.lastPinchDist = refImgTouchDist(e.touches[0], e.touches[1]);
+      }
+    },
+    { passive: true }
+  );
+
+  outer.addEventListener(
+    'touchmove',
+    e => {
+      if (e.touches.length === 1 && refImgViewer.panStart) {
+        e.preventDefault();
+        refImgViewer.tx =
+          refImgViewer.panStart.tx + (e.touches[0].clientX - refImgViewer.panStart.x);
+        refImgViewer.ty =
+          refImgViewer.panStart.ty + (e.touches[0].clientY - refImgViewer.panStart.y);
+        refImgViewerApply();
+      } else if (e.touches.length === 2 && refImgViewer.lastPinchDist > 0) {
+        e.preventDefault();
+        const d = refImgTouchDist(e.touches[0], e.touches[1]);
+        const ratio = d / refImgViewer.lastPinchDist;
+        refImgViewer.lastPinchDist = d;
+        refImgViewer.scale = Math.min(6, Math.max(0.35, refImgViewer.scale * ratio));
+        refImgViewerApply();
+      }
+    },
+    { passive: false }
+  );
+
+  outer.addEventListener('touchend', e => {
+    refImgViewer.panStart = null;
+    if (e.touches.length < 2) refImgViewer.lastPinchDist = 0;
+  });
+
+  outer.addEventListener(
+    'wheel',
+    e => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.08 : 0.92;
+      refImgViewer.scale = Math.min(6, Math.max(0.35, refImgViewer.scale * factor));
+      refImgViewerApply();
+    },
+    { passive: false }
+  );
+
+  let drag = null;
+  outer.addEventListener('mousedown', e => {
+    if (e.button !== 0) return;
+    drag = { x: e.clientX, y: e.clientY, tx: refImgViewer.tx, ty: refImgViewer.ty };
+  });
+  window.addEventListener('mousemove', e => {
+    if (!drag) return;
+    refImgViewer.tx = drag.tx + (e.clientX - drag.x);
+    refImgViewer.ty = drag.ty + (e.clientY - drag.y);
+    refImgViewerApply();
+  });
+  window.addEventListener('mouseup', () => {
+    drag = null;
+  });
+
+  outer.addEventListener('dblclick', e => {
+    e.preventDefault();
+    refImgViewerLayoutFit();
+  });
+
+  const img = $('ref-image-viewer-img');
+  if (img) img.addEventListener('dragstart', e => e.preventDefault());
+
+  modal.querySelector('.ref-image-viewer-backdrop')?.addEventListener('click', closeRefImageViewer);
+  modal.querySelector('.ref-image-viewer-close')?.addEventListener('click', closeRefImageViewer);
+  $('ref-image-viewer-fit')?.addEventListener('click', () => refImgViewerLayoutFit());
+}
+
 // ─── GCS / Coma Scale Calculator ─────────────────────────────────────────────
 function gcsSelect(el) {
   const group = el.dataset.group;
@@ -264,6 +433,127 @@ function gcsReset(prefix) {
   });
   const scoreEl = document.getElementById(`${prefix}-score`);
   if (scoreEl) scoreEl.textContent = '--';
+}
+
+// ─── LAMS Calculator (Los Angeles Motor Scale) ─────────────────────────────
+const lamsState = {
+  facial: null,
+  arm: null,
+  grip: null,
+  criteriaOpen: false,
+};
+
+const LAMS_SVG_ALERT = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+const LAMS_SVG_INFO = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+
+function lamsRefreshUI() {
+  const root = $('view-lams');
+  if (!root) return;
+
+  root.querySelectorAll('.lams-opt').forEach(btn => {
+    const field = btn.dataset.lamsField;
+    const v = parseInt(btn.dataset.value, 10);
+    const tone = btn.dataset.tone;
+    const on = lamsState[field] === v;
+    btn.classList.remove('lams-opt--on-green', 'lams-opt--on-yellow', 'lams-opt--on-red');
+    if (on) {
+      if (tone === 'green') btn.classList.add('lams-opt--on-green');
+      else if (tone === 'yellow') btn.classList.add('lams-opt--on-yellow');
+      else if (tone === 'red') btn.classList.add('lams-opt--on-red');
+    }
+  });
+
+  const f = lamsState.facial;
+  const a = lamsState.arm;
+  const g = lamsState.grip;
+  const total = (f !== null ? f : 0) + (a !== null ? a : 0) + (g !== null ? g : 0);
+  const complete = f !== null && a !== null && g !== null;
+
+  const numEl = $('lams-total-num');
+  const sevEl = $('lams-severity-text');
+  const guide = $('lams-guidance');
+  const listEl = $('lams-guidance-list');
+  const inner = root.querySelector('.lams-guidance-inner');
+  const iconEl = $('lams-guidance-icon');
+  const critList = $('lams-criteria-list');
+  const critBtn = $('lams-criteria-toggle');
+
+  if (numEl) numEl.textContent = String(total);
+
+  if (!complete) {
+    if (sevEl) {
+      sevEl.textContent = 'Complete all fields';
+      sevEl.className = 'lams-severity lams-severity--muted';
+    }
+    if (guide) guide.hidden = true;
+    return;
+  }
+
+  if (sevEl) {
+    sevEl.className = 'lams-severity ' + (total >= 4 ? 'lams-severity--lvo' : 'lams-severity--std');
+    sevEl.textContent = total >= 4 ? 'High Probability of LVO' : 'Standard Stroke Protocol';
+  }
+
+  if (guide) guide.hidden = false;
+  if (inner) {
+    inner.classList.remove('lams-guidance--high', 'lams-guidance--std');
+    inner.classList.add(total >= 4 ? 'lams-guidance--high' : 'lams-guidance--std');
+  }
+  if (iconEl) iconEl.innerHTML = total >= 4 ? LAMS_SVG_ALERT : LAMS_SVG_INFO;
+
+  if (listEl) {
+    if (total >= 4) {
+      listEl.innerHTML =
+        '<li><span class="lams-g-li-num">1.</span> Classify patient as <strong>CTAS 2</strong>.</li>' +
+        '<li><span class="lams-g-li-num">2.</span> Inform receiving hospital: <strong>“LVO Clinical Screen is positive”</strong>.</li>' +
+        '<li><span class="lams-g-li-num">3.</span> Consider redirect to closest EVT centre (if within 6 hours of onset, in select regions).</li>';
+    } else {
+      listEl.innerHTML =
+        '<li><span class="lams-g-li-num">1.</span> Inform receiving hospital: <strong>“LVO Clinical Screen is negative”</strong>.</li>' +
+        '<li><span class="lams-g-li-num">2.</span> Transport to the closest or most appropriate Designated Stroke Centre (DSC).</li>';
+    }
+  }
+
+  if (critList) critList.hidden = !lamsState.criteriaOpen;
+  if (critBtn) {
+    critBtn.setAttribute('aria-expanded', lamsState.criteriaOpen ? 'true' : 'false');
+    critBtn.classList.toggle('lams-criteria-toggle--open', lamsState.criteriaOpen);
+  }
+}
+
+function lamsReset() {
+  lamsState.facial = lamsState.arm = lamsState.grip = null;
+  lamsState.criteriaOpen = false;
+  const critList = $('lams-criteria-list');
+  const critBtn = $('lams-criteria-toggle');
+  if (critList) critList.hidden = true;
+  if (critBtn) {
+    critBtn.setAttribute('aria-expanded', 'false');
+    critBtn.classList.remove('lams-criteria-toggle--open');
+  }
+  lamsRefreshUI();
+}
+
+function initLamsTool() {
+  const root = $('view-lams');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  root.querySelectorAll('.lams-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const field = btn.dataset.lamsField;
+      const value = parseInt(btn.dataset.value, 10);
+      lamsState[field] = value;
+      lamsRefreshUI();
+    });
+  });
+
+  $('lams-reset-btn')?.addEventListener('click', lamsReset);
+
+  $('lams-criteria-toggle')?.addEventListener('click', () => {
+    lamsState.criteriaOpen = !lamsState.criteriaOpen;
+    lamsRefreshUI();
+  });
 }
 
 // ─── My Notes (localStorage) ───────────────────────────────────────────────
@@ -761,6 +1051,7 @@ function buildCalculatorsView() {
   const items = [
     { title: 'Pre-Sepsis Tool', fn: () => showView('view-presepsis', 'Pre-Sepsis') },
     { title: 'Burn Calculator', fn: () => showView('view-burn', 'Burn Calculator') },
+    { title: 'LAMS Calculator', fn: () => showView('view-lams', 'LAMS Calculator') },
     { title: 'Glasgow Coma Scale (Calculator)', fn: () => renderCalculatorDetail('gcs') },
     { title: 'Pediatric Coma Scale (Calculator)', fn: () => renderCalculatorDetail('pcs') },
   ];
@@ -920,6 +1211,18 @@ function renderContactDetail(pageId, pageTitle) {
   $('detail-content').innerHTML = html;
 }
 
+function renderDestinationDetail(pageId, pageTitle) {
+  let html = '';
+
+  html += `<div class="detail-scope-banner bg-red">PRIMARY CARE PARAMEDIC</div>`;
+  html += `<div class="detail-cat-banner destination-guidelines-banner">Destination Guidelines</div>`;
+  html += `<div class="detail-title destination-detail-title">${pageTitle}</div>`;
+  html += renderMyNotesAnchor();
+  html += typeof buildDestinationDetailHtml === 'function' ? buildDestinationDetailHtml(pageId) : '';
+  html += renderMyNotesSection('destination-' + pageId);
+  $('detail-content').innerHTML = html;
+}
+
 function buildSpecialEventView() {
   const container = $('special-event-list');
   if (!container || typeof SPECIAL_EVENT_DIRECTIVES === 'undefined') return;
@@ -946,6 +1249,22 @@ function buildContactView() {
     row.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="directive-row-chevron"></span>`;
     row.addEventListener('click', () => {
       renderContactDetail(item.id, item.title);
+      showView('view-detail', headerTitleFromItem(item));
+    });
+    container.appendChild(row);
+  });
+}
+
+function buildDestinationView() {
+  const container = $('destination-list');
+  if (!container || typeof DESTINATION_MENU === 'undefined') return;
+  container.innerHTML = '';
+  DESTINATION_MENU.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'directive-row';
+    row.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="directive-row-chevron"></span>`;
+    row.addEventListener('click', () => {
+      renderDestinationDetail(item.id, item.title);
       showView('view-detail', headerTitleFromItem(item));
     });
     container.appendChild(row);
@@ -1020,11 +1339,24 @@ function buildSearchIndex() {
       });
     });
   }
+  if (typeof DESTINATION_MENU !== 'undefined') {
+    DESTINATION_MENU.forEach(d => {
+      const kw = (d.keywords || '').toLowerCase();
+      index.push({
+        id: d.id,
+        title: d.title,
+        catLabel: 'Destination Guidelines',
+        text: [d.title, d.id, kw].join(' ').toLowerCase(),
+        type: 'destination',
+        data: d
+      });
+    });
+  }
   index.push({
     id: 'calc-hub',
     title: 'Medical Calculators',
     catLabel: 'Tools',
-    text: 'medical calculators calculator pre-sepsis sepsis parahews burn rule of nines tbsa body surface glasgow coma pediatric pcs gcs'.toLowerCase(),
+    text: 'medical calculators calculator pre-sepsis sepsis parahews burn rule of nines tbsa body surface glasgow coma pediatric pcs gcs lams stroke'.toLowerCase(),
     type: 'calc-hub',
     data: null,
   });
@@ -1058,6 +1390,14 @@ function buildSearchIndex() {
     catLabel: 'Medical Calculators',
     text: 'pediatric coma scale pcs calculator child infant babbles'.toLowerCase(),
     type: 'calc-pcs',
+    data: null,
+  });
+  index.push({
+    id: 'calc-lams',
+    title: 'LAMS Calculator',
+    catLabel: 'Medical Calculators',
+    text: 'lams los angeles motor scale stroke lvo large vessel occlusion facial droop arm drift grip ctas'.toLowerCase(),
+    type: 'calc-lams',
     data: null,
   });
   return index;
@@ -1572,7 +1912,9 @@ function init() {
         'view-references': 'MEDICAL DIRECTIVES',
         'view-calculators': 'Calculators',
         'view-burn': 'Burn Calculator',
+        'view-lams': 'LAMS Calculator',
         'view-contact': 'MEDICAL DIRECTIVES',
+        'view-destination': 'MEDICAL DIRECTIVES',
       };
       showView(viewId, labels[viewId] || 'MEDICAL DIRECTIVES');
     });
@@ -1591,9 +1933,13 @@ function init() {
     helpModal.querySelector('.help-modal-close')?.addEventListener('click', closeInstallHelpModal);
   }
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && helpModal && !helpModal.hidden) {
-      closeInstallHelpModal();
+    if (e.key !== 'Escape') return;
+    const rv = $('ref-image-viewer');
+    if (rv && !rv.hidden) {
+      closeRefImageViewer();
+      return;
     }
+    if (helpModal && !helpModal.hidden) closeInstallHelpModal();
   });
 
   // Build PCP list
@@ -1618,6 +1964,7 @@ function init() {
 
   buildSpecialEventView();
   buildContactView();
+  buildDestinationView();
 
   // PCP search
   $('pcp-search').addEventListener('input', e => {
@@ -1715,6 +2062,9 @@ function init() {
       } else if (result.type === 'contact') {
         renderContactDetail(result.data.id, result.data.title);
         showView('view-detail', headerTitleFromItem(result.data));
+      } else if (result.type === 'destination') {
+        renderDestinationDetail(result.data.id, result.data.title);
+        showView('view-detail', headerTitleFromItem(result.data));
       } else if (result.type === 'calc-hub') {
         showView('view-calculators', 'Calculators');
       } else if (result.type === 'calc-burn') {
@@ -1723,6 +2073,8 @@ function init() {
         renderCalculatorDetail('gcs');
       } else if (result.type === 'calc-pcs') {
         renderCalculatorDetail('pcs');
+      } else if (result.type === 'calc-lams') {
+        showView('view-lams', 'LAMS Calculator');
       } else if (result.type === 'presepsis') {
         showView('view-presepsis', 'Pre-Sepsis');
       } else {
@@ -1737,6 +2089,9 @@ function init() {
   initPreSepsisTool();
   initBurnCalculator();
   burnRefreshUI();
+  initLamsTool();
+  lamsRefreshUI();
+  initRefImageViewer();
 
   const activeView = document.querySelector('.view.active');
   if (activeView) updateBackButtonVisibility(activeView.id);

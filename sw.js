@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pcp-directives-v21';
+const CACHE_NAME = 'pcp-directives-v28';
 const BASE = (self.location && self.location.hostname === 'icpryde.github.io')
   ? '/Primary-Care-Paramedic-Directives'
   : '';
@@ -12,6 +12,7 @@ const ASSETS = [
   BASE + '/data/references.js',
   BASE + '/data/specialEvent.js',
   BASE + '/data/contact.js',
+  BASE + '/data/destinationGuidelines.js',
   BASE + '/data/calculators-content.js',
   BASE + '/manifest.json',
   BASE + '/icons/icon-192.png',
@@ -35,7 +36,14 @@ const ASSETS = [
   BASE + '/assets/cpap-step1.png',
   BASE + '/assets/cpap-step2.png',
   BASE + '/assets/cpap-step3.png',
-  BASE + '/assets/omc-patch.png'
+  BASE + '/assets/omc-patch.png',
+  BASE + '/assets/fast-sepsis-prealert-chart.png',
+  BASE + '/assets/field-trauma-triage-prompt-card.pdf',
+  BASE + '/assets/field-trauma-triage-flowchart-thumb.png',
+  BASE + '/assets/spinal-motion-restriction-prompt-card.pdf',
+  BASE + '/assets/spinal-motion-restriction-prompt-card-thumb.png',
+  BASE + '/assets/12-lead-acs-process-flowchart.png',
+  BASE + '/assets/radio-channel-selector.png'
 ];
 
 self.addEventListener('install', event => {

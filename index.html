@@ -97,6 +97,7 @@
       <button class="home-nav-btn cat-reference" data-view="view-references">Medical References</button>
       <button class="home-nav-btn cat-calculators" data-view="view-calculators">Medical Calculators</button>
       <button class="home-nav-btn cat-contact" data-view="view-contact">Contact</button>
+      <button class="home-nav-btn cat-destination" data-view="view-destination">Destination Guidelines</button>
     </nav>
     <div id="search-results" class="search-results" hidden></div>
     <footer class="home-footer">ABOUT THE ONTARIO PARAMEDIC CLINICAL GUIDE<br>ALS PCS 5.4 2025-06-02</footer>
@@ -126,7 +127,7 @@
   <!-- MEDICAL CALCULATORS (menu) -->
   <div id="view-calculators" class="view" hidden>
     <div class="calculators-top-banner">MEDICAL CALCULATORS</div>
-    <p class="view-intro">Interactive scoring and decision-support tools. Reference charts for Glasgow / Pediatric Coma scales remain under <strong>Medical References</strong>.</p>
+    <p class="view-intro">Interactive scoring and decision-support tools. Reference charts (GCS, PCS, LAMS) are under <strong>Medical References</strong>.</p>
     <div id="calculators-list" class="category-list flat-list"></div>
   </div>
 
@@ -226,11 +227,96 @@
     </div>
   </div>
 
+  <!-- LAMS SCORE CALCULATOR -->
+  <div id="view-lams" class="view lams-view" hidden>
+    <div class="lams-scroll">
+      <div class="lams-header-card">
+        <div class="lams-header-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div>
+          <h2 class="lams-title">LAMS Score</h2>
+          <p class="lams-subtitle">Los Angeles Motor Scale</p>
+        </div>
+      </div>
+
+      <section class="lams-section" aria-labelledby="lams-facial-h">
+        <h3 id="lams-facial-h" class="lams-section-title">Facial Droop</h3>
+        <div class="lams-options">
+          <button type="button" class="lams-opt" data-lams-field="facial" data-value="0" data-tone="green"><span>Absent</span><span class="lams-opt-val">0</span></button>
+          <button type="button" class="lams-opt" data-lams-field="facial" data-value="1" data-tone="red"><span>Present</span><span class="lams-opt-val">1</span></button>
+        </div>
+      </section>
+      <section class="lams-section" aria-labelledby="lams-arm-h">
+        <h3 id="lams-arm-h" class="lams-section-title">Arm Drift</h3>
+        <div class="lams-options">
+          <button type="button" class="lams-opt" data-lams-field="arm" data-value="0" data-tone="green"><span>Absent</span><span class="lams-opt-val">0</span></button>
+          <button type="button" class="lams-opt" data-lams-field="arm" data-value="1" data-tone="yellow"><span>Drifts Down</span><span class="lams-opt-val">1</span></button>
+          <button type="button" class="lams-opt" data-lams-field="arm" data-value="2" data-tone="red"><span>Falls Rapidly</span><span class="lams-opt-val">2</span></button>
+        </div>
+      </section>
+      <section class="lams-section" aria-labelledby="lams-grip-h">
+        <h3 id="lams-grip-h" class="lams-section-title">Grip Strength</h3>
+        <div class="lams-options">
+          <button type="button" class="lams-opt" data-lams-field="grip" data-value="0" data-tone="green"><span>Normal</span><span class="lams-opt-val">0</span></button>
+          <button type="button" class="lams-opt" data-lams-field="grip" data-value="1" data-tone="yellow"><span>Weak grip</span><span class="lams-opt-val">1</span></button>
+          <button type="button" class="lams-opt" data-lams-field="grip" data-value="2" data-tone="red"><span>No Grip</span><span class="lams-opt-val">2</span></button>
+        </div>
+      </section>
+
+      <div id="lams-guidance" class="lams-guidance" hidden>
+        <div class="lams-guidance-inner">
+          <div class="lams-guidance-head">
+            <span class="lams-guidance-icon" id="lams-guidance-icon" aria-hidden="true"></span>
+            <h3 class="lams-guidance-title" id="lams-guidance-title">Acute Stroke Protocol Guidance</h3>
+          </div>
+          <ul class="lams-guidance-list" id="lams-guidance-list"></ul>
+          <div class="lams-criteria-block">
+            <button type="button" class="lams-criteria-toggle" id="lams-criteria-toggle" aria-expanded="false">
+              <span>View Bypass Contraindications</span>
+              <svg class="lams-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <ul class="lams-criteria-list" id="lams-criteria-list" hidden>
+              <li>CTAS 1 and/or uncorrected ABC problem</li>
+              <li>Symptoms resolved prior to paramedic arrival</li>
+              <li>Blood sugar &lt; 3 mmol/L (unless symptoms persist after correction)</li>
+              <li>Seizure at onset of symptoms</li>
+              <li>Glasgow Coma Scale &lt; 10</li>
+              <li>Terminally ill or palliative care patient</li>
+              <li>Transport out of hospital will exceed 2 hours</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p class="lams-disclaimer">Decision support only — apply BLS PCS, ALS PCS, and CACC direction.</p>
+      <div class="lams-scroll-spacer" aria-hidden="true"></div>
+    </div>
+    <footer class="lams-footer">
+      <div class="lams-footer-left">
+        <p class="lams-total-label">Total Score</p>
+        <p class="lams-total-row"><span id="lams-total-num">0</span><span class="lams-total-denom">/ 5</span></p>
+        <p class="lams-severity" id="lams-severity-text">Complete all fields</p>
+      </div>
+      <button type="button" class="lams-reset-btn" id="lams-reset-btn" aria-label="Reset LAMS calculator">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset
+      </button>
+    </footer>
+  </div>
+
   <!-- CONTACT MENU -->
   <div id="view-contact" class="view" hidden>
     <div class="contact-top-banner">CONTACT</div>
     <p class="view-intro">Regional contacts, OMC patch, and reference tools. Tap any phone number to call.</p>
     <div id="contact-list" class="category-list flat-list"></div>
+  </div>
+
+  <!-- DESTINATION GUIDELINES -->
+  <div id="view-destination" class="view" hidden>
+    <div class="destination-top-banner">DESTINATION GUIDELINES</div>
+    <p class="view-intro">Ontario BLS PCS destination standards, prompt cards, and regional operational references. Confirm all details with your service.</p>
+    <div id="destination-list" class="category-list flat-list"></div>
   </div>
 
   <!-- SPECIAL CARE DIRECTIVES LIST -->
@@ -273,11 +359,27 @@
     <div id="detail-content" class="detail-content"></div>
   </div>
 
+  <!-- Reference image: pinch-zoom + pan (Medical References charts) -->
+  <div id="ref-image-viewer" class="ref-image-viewer" hidden aria-hidden="true">
+    <div class="ref-image-viewer-backdrop" tabindex="-1"></div>
+    <div class="ref-image-viewer-topbar">
+      <button type="button" class="ref-image-viewer-fit" id="ref-image-viewer-fit" aria-label="Fit to screen">Fit</button>
+      <button type="button" class="ref-image-viewer-close" aria-label="Close">&times;</button>
+    </div>
+    <div id="ref-image-viewer-outer" class="ref-image-viewer-outer">
+      <div id="ref-image-viewer-stage" class="ref-image-viewer-stage">
+        <img id="ref-image-viewer-img" src="" alt="" draggable="false" />
+      </div>
+    </div>
+    <p class="ref-image-viewer-hint">Pinch to zoom · drag to pan · <strong>Fit</strong> resets view</p>
+  </div>
+
   <script src="data/directives.js"></script>
   <script src="data/companion.js"></script>
   <script src="data/references.js"></script>
   <script src="data/specialEvent.js"></script>
   <script src="data/contact.js"></script>
+  <script src="data/destinationGuidelines.js"></script>
   <script src="data/calculators-content.js"></script>
   <script src="app.js"></script>
 </body>

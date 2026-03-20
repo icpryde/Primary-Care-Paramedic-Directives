@@ -60,6 +60,76 @@ const REFERENCES = [
     `
   },
 
+   {
+    id: 'ref-fast-sepsis-prealert-chart',
+    title: 'FAST Sepsis Pre-Alert Chart',
+    content: `
+      <p class="ref-body-text">ParaHEWS reference for <strong>GWPS, HPS, and ROWPS</strong>. If you suspect infection, score ParaHEWS; if total <strong>≥ 5</strong>, notify the receiving hospital of a <strong>Sepsis Pre-Alert</strong> and apply capnography per protocol. For an interactive calculator, use <strong>Medical Calculators</strong> → Pre-Sepsis Tool.</p>
+      <div class="ref-image-wrap">
+        <img src="assets/fast-sepsis-prealert-chart.png" alt="FAST Sepsis Pre-Alert Chart" onclick="openRefImageViewer('assets/fast-sepsis-prealert-chart.png', 'FAST Sepsis Pre-Alert Chart')" />
+      </div>
+      <p class="ref-body-text" style="font-size:13px;color:#666;">Tap the chart for a fullscreen viewer — pinch to zoom, drag to pan, or use <strong>Fit</strong> to reset.</p>
+    `
+  },
+
+  {
+    id: 'ref-lams-chart',
+    title: 'LAMS Score Chart',
+    content: `
+      <p class="ref-body-text">Los Angeles Motor Scale (LAMS) — used as a secondary screen for large vessel occlusion (LVO) in probable stroke. Total score <strong>0–5</strong>. A score <strong>≥ 4</strong> supports classifying as CTAS 2 and reporting a positive LVO clinical screen per your acute stroke protocol. For an interactive tool, use <strong>Medical Calculators</strong> → LAMS Calculator.</p>
+
+      <div class="table-scroll-wrap lams-chart-wrap">
+        <table class="lams-chart-table" aria-label="LAMS scoring chart">
+          <thead>
+            <tr>
+              <th scope="col" class="lams-chart-th-cat">Category</th>
+              <th scope="col" class="lams-chart-th-score">Score</th>
+              <th scope="col">Finding</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="lams-chart-rowspan">
+              <th scope="rowgroup" rowspan="2" class="lams-chart-cat-cell">Facial Droop</th>
+              <td class="lams-score-cell lams-bg-green">0</td>
+              <td class="lams-bg-green">Absent</td>
+            </tr>
+            <tr>
+              <td class="lams-score-cell lams-bg-red">1</td>
+              <td class="lams-bg-red">Present</td>
+            </tr>
+            <tr class="lams-chart-rowspan">
+              <th scope="rowgroup" rowspan="3" class="lams-chart-cat-cell">Arm Drift</th>
+              <td class="lams-score-cell lams-bg-green">0</td>
+              <td class="lams-bg-green">Absent</td>
+            </tr>
+            <tr>
+              <td class="lams-score-cell lams-bg-yellow">1</td>
+              <td class="lams-bg-yellow">Drifts down</td>
+            </tr>
+            <tr>
+              <td class="lams-score-cell lams-bg-red">2</td>
+              <td class="lams-bg-red">Falls rapidly</td>
+            </tr>
+            <tr class="lams-chart-rowspan">
+              <th scope="rowgroup" rowspan="3" class="lams-chart-cat-cell">Grip Strength</th>
+              <td class="lams-score-cell lams-bg-green">0</td>
+              <td class="lams-bg-green">Normal</td>
+            </tr>
+            <tr>
+              <td class="lams-score-cell lams-bg-yellow">1</td>
+              <td class="lams-bg-yellow">Weak grip</td>
+            </tr>
+            <tr>
+              <td class="lams-score-cell lams-bg-red">2</td>
+              <td class="lams-bg-red">No grip</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="ref-body-text" style="font-size:13px;color:#666;"><strong>Green</strong> = 0 points · <strong>Yellow</strong> = 1 point (arm/grip) · <strong>Red</strong> = higher points / positive facial finding.</p>
+    `
+  },
+
   {
     id: 'ref-defib-joules',
     title: 'Adult Defibrillation Joule Settings',
