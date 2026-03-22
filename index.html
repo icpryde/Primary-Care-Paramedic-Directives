@@ -98,14 +98,17 @@
 
   <!-- HOME -->
   <div id="view-home" class="view active">
-    <div class="search-bar-wrap home-search-bar">
-      <div class="search-bar">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
-          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <input id="global-search" type="search" placeholder="Search" autocomplete="off" />
+    <div class="home-search-stack">
+      <div class="search-bar-wrap home-search-bar">
+        <div class="search-bar">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+            <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input id="global-search" type="search" placeholder="Search" autocomplete="off" />
+        </div>
       </div>
+      <div id="search-results" class="search-results" hidden></div>
     </div>
     <nav class="home-nav">
       <button class="home-nav-btn cat-pcp" data-view="view-pcp">Primary Care Paramedic</button>
@@ -118,7 +121,6 @@
       <button class="home-nav-btn cat-contact" data-view="view-contact">Contact</button>
       <button class="home-nav-btn cat-destination" data-view="view-destination">Destination Guidelines</button>
     </nav>
-    <div id="search-results" class="search-results" hidden></div>
     <footer class="home-footer">
       <div class="home-footer-title">ABOUT THE ONTARIO PARAMEDIC CLINICAL GUIDE</div>
       <div class="home-footer-versions" role="list">

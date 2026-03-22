@@ -103,6 +103,17 @@ function showView(viewId, title, pushHistory = true) {
   next.classList.add('active');
   window.scrollTo(0, 0);
 
+  if (viewId !== 'view-home') {
+    const home = $('view-home');
+    if (home) {
+      home.classList.remove('home-searching');
+      const sr = $('search-results');
+      if (sr) sr.hidden = true;
+      const gs = $('global-search');
+      if (gs) gs.value = '';
+    }
+  }
+
   $('header-title').textContent = title || DEFAULT_HEADER_TITLE;
   updateBackButtonVisibility(viewId);
   if (viewId === 'view-presepsis') presepsisRefreshUI();
@@ -2864,17 +2875,25 @@ function buildSearchIndex() {
 
 let searchIndex = null;
 
+function setHomeSearchOverlay(active) {
+  const home = $('view-home');
+  if (home) home.classList.toggle('home-searching', !!active);
+}
+
 function performSearch(query, containerEl, onResultClick) {
   if (!searchIndex) searchIndex = buildSearchIndex();
   const q = query.trim().toLowerCase();
+  const isGlobalHome = containerEl && containerEl.id === 'search-results';
 
   if (!q) {
     containerEl.hidden = true;
+    if (isGlobalHome) setHomeSearchOverlay(false);
     return;
   }
 
   const results = searchIndex.filter(item => item.text.includes(q) || item.title.toLowerCase().includes(q));
   containerEl.hidden = false;
+  if (isGlobalHome) setHomeSearchOverlay(true);
 
   if (!results.length) {
     containerEl.innerHTML = '<div class="search-result-item"><div class="search-result-title">No results</div></div>';
@@ -3526,6 +3545,7 @@ function init() {
     performSearch(e.target.value, $('search-results'), result => {
       $('global-search').value = '';
       $('search-results').hidden = true;
+      setHomeSearchOverlay(false);
       if (result.type === 'directive') {
         renderDirectiveDetail(result.data);
         showView('view-detail', headerTitleFromItem(result.data));
