@@ -9,6 +9,12 @@ const state = {
   forwardStack: [],
 };
 
+const DEFAULT_HEADER_TITLE = 'Medical Directives';
+const LOGO_STORAGE_KEY = 'pcpHeaderLogoV1';
+/** @type {{ file: string, label?: string }[]} */
+let logoManifestLogos = [];
+let logoPickerScrollY = 0;
+
 /** Short labels for the top bar — full titles stay on the page body. */
 const HEADER_TITLE_ALIASES = {
   'Moderate to Severe Allergic Reaction': 'Severe allergic reaction',
@@ -49,14 +55,14 @@ function trimHeaderTitle(str, max = 22) {
 
 /** Object with optional .navTitle / .title, or a plain string. */
 function headerTitleFromItem(obj) {
-  if (obj == null) return 'MEDICAL DIRECTIVES';
+  if (obj == null) return DEFAULT_HEADER_TITLE;
   if (typeof obj === 'string') {
     if (HEADER_TITLE_ALIASES[obj]) return HEADER_TITLE_ALIASES[obj];
     return trimHeaderTitle(obj, 24);
   }
   if (obj.navTitle) return obj.navTitle;
   const t = obj.title;
-  if (!t) return 'MEDICAL DIRECTIVES';
+  if (!t) return DEFAULT_HEADER_TITLE;
   if (HEADER_TITLE_ALIASES[t]) return HEADER_TITLE_ALIASES[t];
   return trimHeaderTitle(t, 24);
 }
@@ -97,7 +103,7 @@ function showView(viewId, title, pushHistory = true) {
   next.classList.add('active');
   window.scrollTo(0, 0);
 
-  $('header-title').textContent = title || 'MEDICAL DIRECTIVES';
+  $('header-title').textContent = title || DEFAULT_HEADER_TITLE;
   updateBackButtonVisibility(viewId);
   if (viewId === 'view-presepsis') presepsisRefreshUI();
   if (viewId === 'view-burn') burnRefreshUI();
@@ -154,8 +160,171 @@ function updateBackButtonVisibility(activeViewId) {
   document.body.classList.toggle('app-on-home', onHome);
   const back = $('back-btn');
   if (back) back.hidden = onHome || state.history.length === 0;
+  const brand = $('header-paramedic-brand');
+  if (brand) brand.hidden = !onHome;
+  const logoBtn = $('header-logo-btn');
+  if (logoBtn) logoBtn.hidden = !onHome;
   const helpBtn = $('header-help-btn');
   if (helpBtn) helpBtn.hidden = false;
+}
+
+function applyHeaderLogo() {
+  const img = $('header-logo-img');
+  const placeholder = $('header-logo-placeholder');
+  const logoBtn = $('header-logo-btn');
+  if (!img || !placeholder) return;
+
+  let stored = '';
+  try {
+    stored = localStorage.getItem(LOGO_STORAGE_KEY) || '';
+  } catch (_) {
+    stored = '';
+  }
+
+  const entry = stored && logoManifestLogos.find(l => l && l.file === stored);
+  if (!entry) {
+    img.removeAttribute('src');
+    img.hidden = true;
+    img.alt = '';
+    placeholder.hidden = false;
+    if (logoBtn) logoBtn.classList.remove('header-logo-btn--custom');
+    return;
+  }
+
+  if (logoBtn) logoBtn.classList.add('header-logo-btn--custom');
+
+  img.onerror = () => {
+    try {
+      localStorage.removeItem(LOGO_STORAGE_KEY);
+    } catch (_) { /* ignore */ }
+    img.removeAttribute('src');
+    img.hidden = true;
+    img.alt = '';
+    placeholder.hidden = false;
+    if (logoBtn) logoBtn.classList.remove('header-logo-btn--custom');
+  };
+
+  img.src = entry.file;
+  img.alt = entry.label || 'Service logo';
+  img.hidden = false;
+  placeholder.hidden = true;
+}
+
+function buildLogoPickerGrid() {
+  const grid = $('logo-picker-grid');
+  const emptyMsg = $('logo-picker-empty');
+  if (!grid || !emptyMsg) return;
+  grid.innerHTML = '';
+
+  if (!logoManifestLogos.length) {
+    emptyMsg.hidden = false;
+    return;
+  }
+  emptyMsg.hidden = true;
+
+  logoManifestLogos.forEach((item, idx) => {
+    if (!item || !item.file) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'logo-picker-choice';
+    btn.setAttribute('aria-label', item.label || `Logo ${idx + 1}`);
+    const thumb = document.createElement('img');
+    thumb.src = item.file;
+    thumb.alt = '';
+    thumb.decoding = 'async';
+    btn.appendChild(thumb);
+    if (item.label) {
+      const cap = document.createElement('span');
+      cap.className = 'logo-picker-choice-label';
+      cap.textContent = item.label;
+      btn.appendChild(cap);
+    }
+    btn.addEventListener('click', () => {
+      try {
+        localStorage.setItem(LOGO_STORAGE_KEY, item.file);
+      } catch (_) { /* ignore */ }
+      applyHeaderLogo();
+      closeLogoPickerModal();
+    });
+    grid.appendChild(btn);
+  });
+}
+
+function logoPickerOnTouchMove(e) {
+  const modal = $('logo-picker-modal');
+  if (!modal || modal.hidden) return;
+  const scrollBody = modal.querySelector('.logo-picker-body');
+  if (scrollBody && (e.target === scrollBody || scrollBody.contains(e.target))) {
+    return;
+  }
+  e.preventDefault();
+}
+
+function openLogoPickerModal() {
+  const helpM = $('install-help-modal');
+  if (helpM && !helpM.hidden) closeInstallHelpModal();
+  const modal = $('logo-picker-modal');
+  if (!modal) return;
+  logoPickerScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${logoPickerScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+
+  modal.hidden = false;
+  modal.setAttribute('aria-hidden', 'false');
+  document.documentElement.classList.add('help-modal-open');
+  document.body.classList.add('help-modal-open');
+  document.addEventListener('touchmove', logoPickerOnTouchMove, { passive: false });
+
+  buildLogoPickerGrid();
+  const closeBtn = modal.querySelector('.logo-picker-close');
+  if (closeBtn) closeBtn.focus();
+}
+
+function closeLogoPickerModal() {
+  const modal = $('logo-picker-modal');
+  if (!modal) return;
+  document.removeEventListener('touchmove', logoPickerOnTouchMove, { passive: false });
+
+  modal.hidden = true;
+  modal.setAttribute('aria-hidden', 'true');
+  document.documentElement.classList.remove('help-modal-open');
+  document.body.classList.remove('help-modal-open');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, logoPickerScrollY);
+
+  const logoBtn = $('header-logo-btn');
+  if (logoBtn && !logoBtn.hidden) logoBtn.focus();
+}
+
+function initLogoPicker() {
+  const logoBtn = $('header-logo-btn');
+  const modal = $('logo-picker-modal');
+  if (!logoBtn || !modal || modal.dataset.bound) return;
+  modal.dataset.bound = '1';
+
+  logoBtn.addEventListener('click', () => openLogoPickerModal());
+  modal.querySelector('.logo-picker-backdrop')?.addEventListener('click', closeLogoPickerModal);
+  modal.querySelector('.logo-picker-close')?.addEventListener('click', closeLogoPickerModal);
+
+  fetch('data/logos.json')
+    .then(r => (r.ok ? r.json() : { logos: [] }))
+    .then(data => {
+      logoManifestLogos = Array.isArray(data.logos) ? data.logos : [];
+      buildLogoPickerGrid();
+      applyHeaderLogo();
+    })
+    .catch(() => {
+      logoManifestLogos = [];
+      buildLogoPickerGrid();
+      applyHeaderLogo();
+    });
 }
 
 let helpModalScrollY = 0;
@@ -171,6 +340,8 @@ function helpModalOnTouchMove(e) {
 }
 
 function openInstallHelpModal() {
+  const logoM = $('logo-picker-modal');
+  if (logoM && !logoM.hidden) closeLogoPickerModal();
   const modal = $('install-help-modal');
   if (!modal) return;
   helpModalScrollY = window.scrollY || document.documentElement.scrollTop || 0;
@@ -2987,11 +3158,11 @@ function init() {
     btn.addEventListener('click', () => {
       const viewId = btn.dataset.view;
       const labels = {
-        'view-pcp': 'MEDICAL DIRECTIVES',
-        'view-special-event': 'MEDICAL DIRECTIVES',
-        'view-special': 'MEDICAL DIRECTIVES',
-        'view-companion': 'MEDICAL DIRECTIVES',
-        'view-references': 'MEDICAL DIRECTIVES',
+        'view-pcp': DEFAULT_HEADER_TITLE,
+        'view-special-event': DEFAULT_HEADER_TITLE,
+        'view-special': DEFAULT_HEADER_TITLE,
+        'view-companion': DEFAULT_HEADER_TITLE,
+        'view-references': DEFAULT_HEADER_TITLE,
         'view-calculators': 'Calculators',
         'view-burn': 'Burn %',
         'view-lams': 'LAMS Calculator',
@@ -3001,10 +3172,10 @@ function init() {
         'view-dosage-calc': 'Dosage Calc',
         'view-iv-therapy': 'IV Therapy',
         'view-parkland-burn': 'Parkland',
-        'view-contact': 'MEDICAL DIRECTIVES',
-        'view-destination': 'MEDICAL DIRECTIVES',
+        'view-contact': DEFAULT_HEADER_TITLE,
+        'view-destination': DEFAULT_HEADER_TITLE,
       };
-      showView(viewId, labels[viewId] || 'MEDICAL DIRECTIVES');
+      showView(viewId, labels[viewId] || DEFAULT_HEADER_TITLE);
     });
   });
 
@@ -3020,11 +3191,18 @@ function init() {
     helpModal.querySelector('.help-modal-backdrop')?.addEventListener('click', closeInstallHelpModal);
     helpModal.querySelector('.help-modal-close')?.addEventListener('click', closeInstallHelpModal);
   }
+
+  initLogoPicker();
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     const rv = $('ref-image-viewer');
     if (rv && !rv.hidden) {
       closeRefImageViewer();
+      return;
+    }
+    const logoModal = $('logo-picker-modal');
+    if (logoModal && !logoModal.hidden) {
+      closeLogoPickerModal();
       return;
     }
     if (helpModal && !helpModal.hidden) closeInstallHelpModal();

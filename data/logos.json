@@ -1,0 +1,14 @@
+{
+  "logos": [
+    { "file": "assets/logos/region-waterloo-paramedic.png", "label": "Region of Waterloo Paramedic Services" },
+    { "file": "assets/logos/halton-paramedic.png", "label": "Halton Region Paramedic Services" },
+    { "file": "assets/logos/niagara-ems.png", "label": "Niagara EMS" },
+    { "file": "assets/logos/hamilton-paramedic.png", "label": "Hamilton Paramedic" },
+    { "file": "assets/logos/brant-brantford-paramedic.png", "label": "Brant County–Brantford Paramedic" },
+    { "file": "assets/logos/york-region-paramedic.png", "label": "York Region Paramedic Services" },
+    { "file": "assets/logos/peel-paramedic.png", "label": "Peel Regional Paramedic Services" },
+    { "file": "assets/logos/oxford-county-paramedic.png", "label": "Oxford County Paramedic Services" },
+    { "file": "assets/logos/guelph-wellington-paramedic.png", "label": "Guelph–Wellington Paramedic" },
+    { "file": "assets/logos/toronto-paramedic.png", "label": "Toronto Paramedic Services" }
+  ]
+}

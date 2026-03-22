@@ -272,9 +272,7 @@ If a patient's vital signs fall outside the directive's parameters (e.g., hypote
 In STEMI with confirmed right ventricular involvement (positive V4R): NO nitroglycerin is to be administered.
 
 Nitroglycerin is a symptom relief medication that has not demonstrated changes in patient morbidity or mortality and should be used with caution in patients presenting with tachycardia or SBP close to 100 mmHg.`,
-    references: [
-      'Ontario Base Hospital Group. (2025). ALS-PCS v5.4 Companion Document (PDF). https://ontariobasehospitalgroup.ca/wp-content/uploads/2025/06/ALS-PCS-v5.4-Companion-Document.pdf',
-    ],
+    references: null,
   },
 
   {

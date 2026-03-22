@@ -13,23 +13,31 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="app-on-home">
 
   <!-- ── HEADER ─────────────────────────────────────────── -->
   <header id="app-header">
-    <div class="header-cell header-cell-left">
-      <button id="back-btn" class="header-back" aria-label="Back" hidden>
-        <svg width="11" height="18" viewBox="0 0 11 18" fill="none">
-          <path d="M10 1L2 9L10 17" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+    <button id="back-btn" class="header-back header-back-slot" aria-label="Back" hidden>
+      <svg width="11" height="18" viewBox="0 0 11 18" fill="none">
+        <path d="M10 1L2 9L10 17" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="header-brand-stack">
+      <h1 id="header-title">Medical Directives</h1>
+      <div id="header-paramedic-brand" class="header-paramedic-brand">
+        <span class="header-paramedic-line">PARAMEDIC</span>
+        <span class="header-paramedic-line">SERVICES</span>
+      </div>
     </div>
-    <div class="header-cell header-cell-center">
-      <h1 id="header-title">MEDICAL DIRECTIVES</h1>
+    <div class="header-tools-slot">
+      <div class="header-right-tools">
+        <button type="button" id="header-logo-btn" class="header-logo-btn" aria-label="Choose service logo" title="Choose logo">
+          <img id="header-logo-img" class="header-logo-img" alt="" width="96" height="96" decoding="async" hidden />
+          <span id="header-logo-placeholder" class="header-logo-placeholder">Tap to choose logo</span>
+        </button>
+      </div>
     </div>
-    <div class="header-cell header-cell-right">
-      <button type="button" id="header-help-btn" class="header-help" aria-label="Help: install app and updates" title="Help">?</button>
-    </div>
+    <button type="button" id="header-help-btn" class="header-help header-help-corner" aria-label="Help: install app and updates" title="Help">?</button>
   </header>
 
   <div id="install-help-modal" class="help-modal" hidden aria-hidden="true">
@@ -72,15 +80,25 @@
     </div>
   </div>
 
+  <div id="logo-picker-modal" class="help-modal logo-picker-modal" hidden aria-hidden="true">
+    <div class="help-modal-backdrop logo-picker-backdrop" tabindex="-1"></div>
+    <div class="help-modal-panel logo-picker-panel" role="dialog" aria-modal="true" aria-labelledby="logo-picker-title">
+      <div class="help-modal-header">
+        <h2 id="logo-picker-title">Choose logo</h2>
+        <button type="button" class="help-modal-close logo-picker-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="help-modal-body logo-picker-body">
+        <p id="logo-picker-empty" class="logo-picker-empty" hidden>No logos bundled yet. Add image files under <code>assets/logos/</code> and register them in <code>data/logos.json</code>.</p>
+        <div id="logo-picker-grid" class="logo-picker-grid"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── VIEWS ──────────────────────────────────────────── -->
 
   <!-- HOME -->
   <div id="view-home" class="view active">
-    <div class="home-branding">
-      <h2 class="home-title">ALS BLS MEDICAL DIRECTIVES<br>PARAMEDIC SERVICES</h2>
-      <div class="home-subtitle">ALS PCS v5.4 – 2025</div>
-    </div>
-    <div class="search-bar-wrap">
+    <div class="search-bar-wrap home-search-bar">
       <div class="search-bar">
         <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
           <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
@@ -100,7 +118,14 @@
       <button class="home-nav-btn cat-destination" data-view="view-destination">Destination Guidelines</button>
     </nav>
     <div id="search-results" class="search-results" hidden></div>
-    <footer class="home-footer">ABOUT THE ONTARIO PARAMEDIC CLINICAL GUIDE<br>ALS PCS 5.4 2025-06-02</footer>
+    <footer class="home-footer">
+      <div class="home-footer-title">ABOUT THE ONTARIO PARAMEDIC CLINICAL GUIDE</div>
+      <div class="home-footer-versions" role="list">
+        <span class="home-footer-tag" role="listitem">ALS PCS 5.4 · 2025-06-02</span>
+        <span class="home-footer-tag" role="listitem">BLS PCS 3.4 · 2023-03-10</span>
+        <span class="home-footer-tag" role="listitem">Companion 5.4 · 2025-06</span>
+      </div>
+    </footer>
   </div>
 
   <!-- PCP DIRECTIVES LIST -->

@@ -431,7 +431,7 @@ function buildDestinationDetailHtml(id) {
         </ol>
         <p>Use <strong>Medical References</strong> for additional lead placement (V4R, V7–V9) when indicated.</p>
         <div class="destination-action-row destination-action-row--padded">
-          <button type="button" class="destination-action-btn" onclick="showView('view-references', 'MEDICAL DIRECTIVES')">Medical References</button>
+          <button type="button" class="destination-action-btn" onclick="showView('view-references', 'Medical Directives')">Medical References</button>
         </div>
       </div></div>`;
     html += `<div class="flowchart-wrap destination-flowchart-wrap">
