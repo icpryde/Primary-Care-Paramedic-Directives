@@ -32,6 +32,8 @@ const HEADER_TITLE_ALIASES = {
   'Physician On-Scene Reference': 'On-scene physician',
   'Croup Medical Directive': 'Croup',
   'Hallucinations or Agitation': 'Hallucination / agitation',
+  'Acute Stroke Protocol - Prompt Card': 'Stroke prompt',
+  'Spinal Motion Restriction Standard': 'SMR standard',
   'Terminal Congested Breathing': 'Terminal congestion',
   'Suspected Adrenal Crisis': 'Adrenal crisis',
   'Lateral Patellar Dislocation': 'Patellar dislocation',

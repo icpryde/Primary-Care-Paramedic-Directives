@@ -22,8 +22,8 @@ const DESTINATION_MENU = [
   },
   {
     id: 'prompt-acute-stroke',
-    title: 'Paramedic Prompt Card for Acute Stroke Protocol',
-    keywords: 'stroke dsc lvo lams ctas bypass evt telestroke',
+    title: 'Acute Stroke Protocol - Prompt Card',
+    keywords: 'stroke dsc lvo lams ctas bypass evt telestroke acute stroke protocol prompt card',
   },
   {
     id: 'radio-channel-change',
@@ -52,8 +52,8 @@ const DESTINATION_MENU = [
   },
   {
     id: 'prompt-spinal-motion-restriction',
-    title: 'Prompt Card – Spinal Motion Restriction Standard',
-    keywords: 'smr spinal motion restriction collar penetrating moi',
+    title: 'Spinal Motion Restriction Standard',
+    keywords: 'smr spinal motion restriction standard collar penetrating moi prompt card',
   },
 ];
 
@@ -240,7 +240,7 @@ function buildDestinationDetailHtml(id) {
 
   if (id === 'prompt-acute-stroke') {
     html += `<div class="section-card destination-guidelines-page">
-      <h2 class="destination-page-title">Paramedic Prompt Card for Acute Stroke Protocol</h2>
+      <h2 class="destination-page-title">Acute Stroke Protocol - Prompt Card</h2>
       <div class="destination-prose">
         <p class="destination-lead">Quick reference for the Acute Stroke Protocol in BLS PCS. See BLS PCS for the full standard.</p>
 
@@ -283,6 +283,11 @@ function buildDestinationDetailHtml(id) {
         <p class="destination-footnote">*** If symptoms improve significantly or resolve during transport, continue to a DSC.</p>
         <p class="destination-footnote">**** If symptoms persist after glucose correction, not contraindicated.</p>
         <p>CACC/ACS authorizes transport once notified of need for redirect/transport under this protocol.</p>
+
+        <div class="destination-tool-callout">
+          <p class="destination-tool-callout-text"><strong>LAMS scoring:</strong> Use the <strong>LAMS Calculator</strong> under <strong>Medical Calculators</strong> to score facial droop, arm drift, and grip — it shows total LAMS, CTAS / LVO screen messaging, and bypass contraindications.</p>
+          <button type="button" class="destination-action-btn destination-action-btn--secondary" onclick="showView('view-lams', 'LAMS Calculator')">Open LAMS calculator</button>
+        </div>
       </div></div>`;
     html += blsSourceFooter();
     return html;
@@ -525,7 +530,7 @@ function buildDestinationDetailHtml(id) {
 
   if (id === 'prompt-spinal-motion-restriction') {
     html += `<div class="section-card destination-guidelines-page">
-      <h2 class="destination-page-title">Spinal Motion Restriction (SMR) — Prompt Card</h2>
+      <h2 class="destination-page-title">Spinal Motion Restriction Standard</h2>
       <div class="destination-prose destination-lead">
         <p>Official Ontario flowchart below (PDF). A text summary follows for quick scrolling on mobile — see BLS PCS for the full standard.</p>
       </div></div>`;
