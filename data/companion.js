@@ -258,11 +258,13 @@ Regardless of the amount of fluid administered prior to ROSC, if chest auscultat
 
 In the event the 12-lead ECG identifies an inferior STEMI, a minimum V4R must be completed to rule in or out a right ventricular infarction (RVI) when considering nitroglycerin. These patients are often preload dependent and nitroglycerin may cause significant hypotension.
 
-ASA Administration: ASA has a wide therapeutic index. Apply the cardiac ischemia directive as if no care had been rendered prior to your arrival (i.e., administer ASA regardless of prior ASA intake).
+ASA Administration: ASA has a wide therapeutic index (the effective dose without side effects can be from 80 – 1500 mg). Apply the cardiac ischemia directive as if no care had been rendered prior to your arrival (i.e., administer ASA regardless of prior ASA intake).
+
+CHF and STEMI overlap: Many patients at risk for myocardial infarction also have a history of congestive heart failure (CHF), and it can be difficult to tell which process is driving the presentation. Acute STEMI often causes or exacerbates CHF. Following the Cardiac Ischemia Medical Directive remains appropriate: nitroglycerin is limited to a maximum of 3 doses (0.3 mg or 0.4 mg per dose per the directive) when STEMI is present. That lower cap in STEMI reduces adverse outcomes linked to liberal nitroglycerin use. Continuous positive airway pressure (CPAP) is appropriate when the patient meets criteria in the Continuous Positive Airway Pressure Medical Directive.
 
 Nitroglycerin: The conditions specify "a prior history OR an established IV." IV must be initiated prior to nitroglycerin administration in first-time suspected cardiac ischemia patients. This applies only to PCPs with Autonomous IV Certification.
 
-Phosphodiesterase (PDE-5) inhibitors include: Viagra, Levitra, Cialis, Revatio, Sildenafil, Tadalafil, Vardenafil, Udenafil, Avanafil – and others. This may not be an exhaustive list.`,
+Phosphodiesterase (PDE-5) inhibitors: These agents (e.g. erectile dysfunction or pulmonary hypertension drugs) block breakdown of cyclic GMP and add to nitroglycerin's vasodilation—risk of profound hypotension. Nitroglycerin is contraindicated if a phosphodiesterase inhibitor was taken within the previous 48 hours (per the Cardiac Ischemia directive). Common examples include sildenafil (Viagra, Revatio), tadalafil (Cialis), vardenafil (Levitra), avanafil, udenafil, and related products; the list is not exhaustive. Take a careful medication and timing history when possible. The ALS PCS Companion Document expands on agents, trade names, and clinical pearls.`,
     interventions: `Morphine is only to be considered following the third dose of nitroglycerin (unless nitroglycerin is contraindicated) and where pain is severe.
 
 If a patient's vital signs fall outside the directive's parameters (e.g., hypotension), the patient can no longer receive that medication even if vital signs return to acceptable ranges – given risk for recurrent decompensation.
@@ -270,7 +272,9 @@ If a patient's vital signs fall outside the directive's parameters (e.g., hypote
 In STEMI with confirmed right ventricular involvement (positive V4R): NO nitroglycerin is to be administered.
 
 Nitroglycerin is a symptom relief medication that has not demonstrated changes in patient morbidity or mortality and should be used with caution in patients presenting with tachycardia or SBP close to 100 mmHg.`,
-    references: null,
+    references: [
+      'Ontario Base Hospital Group. (2025). ALS-PCS v5.4 Companion Document (PDF). https://ontariobasehospitalgroup.ca/wp-content/uploads/2025/06/ALS-PCS-v5.4-Companion-Document.pdf',
+    ],
   },
 
   {
@@ -504,7 +508,7 @@ Treat any associated hypoglycemia, hypotension, and other conditions per applica
 
 Acetaminophen and ibuprofen should be utilized as first-line analgesia for patients who can tolerate oral medication. Co-administration of acetaminophen and ibuprofen can provide analgesia similar to low-dose opioids without the euphoric effect.
 
-Suspected renal colic patients should routinely be considered for NSAID (ibuprofen or ketorolac) administration because of the anti-inflammatory action and smooth muscle relaxation they provide. NSAIDs reduce the glomerular filtration rate, which reduces renal pelvic pressure and stimulation of stretch receptors.
+Suspected renal colic patients should routinely be considered for NSAID (ibuprofen or ketorolac) administration because of the anti-inflammatory action and smooth muscle relaxation they provide. NSAIDs reduce the glomerular filtration rate, which reduces renal pelvic pressure and stimulation of stretch receptors. They also reduce local inflammation through the inhibition of prostaglandin production.
 
 Ketorolac should NOT be administered with ibuprofen – both are NSAIDs, and co-administration increases adverse effects.
 
