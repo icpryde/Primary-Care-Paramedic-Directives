@@ -314,26 +314,62 @@ The clinical consideration 'contact BHP if patient is bradycardic' is intended t
   },
 
   {
+    id: 'hyperkalemia',
+    title: 'Hyperkalemia',
+    category: 'cardiac',
+    introduction: `Severe hyperkalemia is a life-threatening electrolyte emergency that can progress to lethal dysrhythmias. Prehospital care emphasizes rapid recognition from risk factors, clinical presentation, and ECG changes, and targeted stabilization and redistribution therapies.`,
+    essentials: `Recognition of hyperkalemia can be improved by considering:
+
+Patients most at risk:
+• Patients unable to excrete potassium—for example, the chronic kidney disease patient on dialysis who may have missed treatment(s).
+• Conditions that may precipitate extracellular potassium shift such as crush syndrome, acid-base disturbances, prolonged status seizures, major burns, or prolonged immobilization.
+
+Signs and symptoms:
+• CNS: muscle twitches, cramps, or paresthesia.
+• GI: abdominal cramps, diarrhea, or nausea/vomiting.
+• CVS: progression to hypotension, decreased LOA, bradycardia, or ECG changes.
+
+ECG changes consistent with severe hyperkalemia:
+• Peaked T-waves, flattened P-waves, lengthened PR interval, or widened QRS.
+• Progressive widening of QRS or bizarre QRS morphology such as sine-wave appearance.
+• Not all severe hyperkalemia manifests with all possible ECG changes. Consider the overall patient condition and risk factors and include these findings in your patch to the BHP.`,
+    interventions: `Prehospital goals in hyperkalemia treatment are focused on:
+
+Electrophysiological stabilization: Excessive extracellular potassium affects the myocardium. Calcium gluconate stabilizes cardiac cell membranes and may prevent life-threatening dysrhythmias. In severe hyperkalemia such as cardiac arrest, multiple administrations may be indicated. In the unstable hyperkalemia patient, calcium gluconate should always be the priority treatment. Routine treatments common in medical cardiac arrest management may not respond until calcium is administered.
+
+Redistribution: Salbutamol in large doses may temporarily enhance potassium cellular uptake.
+
+Considerations: Sodium bicarbonate is not a very effective agent for hyperkalemia and should not be routinely administered. This would be a patch point for discussion with a BHP.
+
+Safety: Ensure the IV line is patent and flowing well—calcium gluconate may cause necrosis if it extravasates.
+
+12-lead ECG: Acquisition and interpretation are listed both before and after treatment with calcium gluconate and salbutamol. This is intentional to measure ECG changes. This applies only to the patient NOT in cardiac arrest.`,
+    references: null,
+  },
+
+  {
     id: 'iv-fluid',
     title: 'Intravenous and Fluid Therapy',
     category: 'cardiac',
     introduction: `Intravenous access is a critical skill in prehospital care that allows paramedics to administer medications and fluids directly into the bloodstream. Fluid therapy is indicated when a patient is hypotensive or at risk of becoming hypotensive, with the goal of restoring adequate circulating volume to maintain perfusion to vital organs.`,
-    essentials: `The contraindication of a suspected fracture at the cannulation site may not seem obvious, but a lack of integrity in a bone may jeopardize the integrity of the associated vascular structures and may result in extravasation.
+    essentials: `Site Selection and Contraindications: The contraindication of a suspected fracture at the cannulation site is crucial because a lack of bone integrity may jeopardize the associated vascular structures and result in extravasation. Also, "consider IV cannulation" can encompass both upper and lower extremity veins depending entirely on your specific Base Hospital authorization.
 
-Pulmonary edema is a sign of fluid overload secondary to a fluid bolus. Frequent chest assessments are required.
+Indications and Transport: The indication "Actual or potential need for intravenous medication OR fluid therapy" applies to both prehospital and in-hospital purposes (e.g., Acute Stroke Protocol, STEMI Bypass Protocol). However, initiation for these purposes should NEVER delay transport and should only be attempted en route. Note that hospital partners may prefer specific gauge needles and access sites for these bypass protocols.
 
-The Indications state: "Actual or potential need for intravenous medication OR fluid therapy." These indications apply to not only prehospital use but also for in-hospital purposes (e.g., Acute Stroke Protocol, STEMI Bypass Protocol). Initiation for these purposes should NEVER delay transport.
+Fluid Overload Monitoring: Pulmonary edema is a sign of fluid overload secondary to a fluid bolus. Frequent chest assessments are required.
 
-Prior to initiating a fluid bolus, two blood pressures (at least one manual) indicating hypotension are required.
+Assessment Requirements: Prior to initiating a fluid bolus, two blood pressures (at least one manually obtained) indicating hypotension are required.
 
-Once a bolus is initiated, a minimum volume of 100 mL in pediatrics and 250 mL in adults may be administered before discontinuing if the patient becomes normotensive.`,
-    interventions: `Mandatory patch point: Required before fluid bolus for a patient <12 years suspected of being in ketoacidosis. A physician is needed to carefully control volume to prevent cerebral edema.
+Minimum Volumes: Once a bolus is initiated, a minimum volume of 100 mL in pediatrics and 250 mL in adults may be administered before discontinuing if the patient becomes normotensive.`,
+    interventions: `Mandatory Patch Point: You must patch before administering a fluid bolus to a patient under 12 years old who is suspected of being in ketoacidosis. A physician is needed to carefully control the volume to prevent cerebral edema.
 
-For cardiogenic shock and ROSC: maximum NaCl volume is 10 mL/kg or 1,000 mL.
+Pediatric Rate Control: Some form of rate control must be utilized for all patients less than 12 years of age to prevent accidental fluid overload.
 
-Hypotension in pediatric patients (up to 10 years old): SBP = 70 + (2 × age). Formulas for pediatric normotension/hypotension are used until the calculation meets or exceeds the adult definitions.
+Pediatric Blood Pressure: Hypotension in pediatric patients (up to 10 years old) is calculated as SBP = 70 + (2 × age). These formulas are used until the calculation meets or exceeds the adult definitions. For example, at 6 years of age, the pediatric calculation for normotension results in 102 mmHg; therefore you must cap it and use the adult value of 100 mmHg.
 
-External jugular access, while not stated in the directives, remains in the ACP scope of practice and is typically reserved for cardiac arrest.`,
+Cardiogenic Shock and ROSC: The maximum NaCl volume is strictly lower in these settings, capped at 10 mL/kg or 1,000 mL.
+
+External Jugular Access: While not explicitly stated in the directives, this remains in the ACP scope of practice and is typically reserved for cardiac arrest.`,
     references: null,
   },
 
@@ -539,29 +575,31 @@ For peritoneal dialysis (CAPD/CCPD/APD): clamp the transfer set on the patient s
     id: 'emergency-childbirth',
     title: 'Emergency Childbirth',
     category: 'procedural',
-    introduction: `Emergency childbirth in the prehospital setting requires paramedics to safely assist with delivery, manage common complications, and care for both the mother and newborn. While most deliveries are uncomplicated, paramedics must be prepared for complications including shoulder dystocia, breech presentation, nuchal cord, prolapsed cord, and post-partum hemorrhage.`,
-    essentials: `The condition of "Age – Childbearing years" for Delivery, Umbilical Cord Management, and External Uterine Massage refers to the approximate ages of 14–50 years.
+    introduction: `Emergency childbirth in the prehospital setting requires paramedics to safely assist with delivery, manage common complications, and care for both the mother and newborn. While most deliveries are uncomplicated, you must be prepared for high acuity situations including shoulder dystocia, breech presentation, nuchal cord, prolapsed cord, and postpartum hemorrhage.`,
+    essentials: `Age Criteria: The condition of "Age Childbearing years" for delivery and related interventions refers to approximately 14 to 50 years.
 
-Paramedics are NOT authorized to perform internal vaginal exams to determine cervical dilation.
+Scope: Paramedics are strictly unauthorized to perform internal vaginal exams to determine cervical dilation.
 
-Signs of imminent birth:
-• Crowning or other presenting part is visible, OR
-• In primips: presenting part visible during and between contractions, maternal urge to push, contractions <2 min apart, OR
-• In multips: contractions ≤5 min apart and any other signs of second stage labor present.
+When to Inspect: You should inspect the perineum to check for imminent birth if there is a history of ruptured membranes or prolapsed cord, the patient reports an urge to push or move bowels, the patient is near term with decreased consciousness, or there is heavy vaginal bleeding with hypotension or shock.
 
-Oxytocin has been added for administration immediately after delivery of all fetuses and/or placenta and up to 4 hours post-placenta delivery. Oxytocin dramatically reduces the potential for massive post-partum hemorrhage. Some evidence indicates oxytocin can induce vasoconstriction, potentially exacerbating hypertension.`,
-    interventions: `Once the newborn is delivered, the cord should be clamped and cut early ONLY if:
-• Multiple gestation is suspected
-• Neonatal or maternal resuscitation is required
-• Transport considerations arise (after approximately 3 minutes; once cord pulsations have ceased)
+Signs of Second Stage Labor: Look for contractions every two to three minutes lasting 60 to 90 seconds, a maternal urge to push or move bowels, heavy red show, or the presenting part and bulging membranes becoming visible.
 
-External uterine massage should be performed ONLY when the placenta has been delivered and there is excessive bleeding. Continue until bleeding stops. Do NOT pack the vagina to control bleeding.
+Signs of Imminent Birth: Crowning or other presenting part is visible. In primips, this includes the presenting part being visible during and between contractions with an urge to push and contractions less than two minutes apart. In multips, it includes contractions five minutes apart or less with any other signs of second stage labor.
 
-In circumstances where the paramedic is unable to control excessive bleeding, external bimanual compression should be performed (can be done regardless of whether placenta is delivered).
+Lack of Progression: If signs of imminent birth are present but delivery stalls, discourage the patient from pushing or bearing down and initiate immediate transport.`,
+    interventions: `Umbilical Cord Management: Clamp and cut early ONLY if multiple gestation is suspected, resuscitation is required, or for transport considerations (after about three minutes once pulsations cease). Clamp in two places: approximately 15 cm from the neonate's abdomen, and 5 to 7 cm from the first clamp. Cut between the clamps.
 
-Shoulder Dystocia – ALARM Maneuvers: You have 8 MINUTES from time of head delivery to complete delivery. The McRoberts Maneuver combined with suprapubic pressure resolves the majority of shoulder dystocia cases.
+Shoulder Dystocia: Suspect this if the body does not emerge after the head or if you see the turtle sign (the fetal head retracting firmly against the perineum). Attempt the McRoberts Manoeuvre and apply suprapubic pressure. If delivery is not achieved, attempt the Gaskin Manoeuvre (positioning the patient on their hands and knees) to deliver the posterior shoulder.
 
-Prolapsed cord: Position patient knee-chest or exaggerated Sims position. Gently cradle cord and replace into vagina; insert finger(s)/hand into vagina to apply manual digital pressure lifting presenting part off the cord. Maintain manual elevation until transfer of care.`,
+Breech Delivery: Remain hands off until the fetus delivers to the umbilicus to avoid stimulating premature respiration. If the head does not deliver within three minutes of the body, attempt the Mauriceau Smellie Veit Manoeuvre to aid flexion and assist the head out. Have a partner apply suprapubic pressure if available.
+
+Prolapsed Cord: Place the patient in a knee chest or Exaggerated Sims position (left lateral, right knee drawn up, pelvis elevated). Gently replace the cord into the vagina and use your fingers to apply manual pressure, lifting the presenting part off the cord until transfer of care.
+
+Nuchal Cord: Slip the cord over the head or shoulders. If it cannot be relieved manually, clamp and cut it while the neonate is still on the perineum.
+
+Hemorrhage and Uterine Massage: Perform external uterine massage only after the placenta is delivered and excessive bleeding is present. Do not pack the vagina. If bleeding is uncontrolled, perform external bimanual compression (which can be done regardless of whether the placenta is delivered).
+
+Medication: Administer Oxytocin immediately after delivery of all fetuses or the placenta and up to 4 hours post placenta delivery to reduce the risk of massive hemorrhage. Keep in mind that it can induce vasoconstriction and exacerbate hypertension.`,
     references: null,
   },
 
