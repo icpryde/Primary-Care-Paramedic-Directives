@@ -114,6 +114,7 @@
       <button class="home-nav-btn cat-companion" data-view="view-companion">Companion Document</button>
       <button class="home-nav-btn cat-reference" data-view="view-references">Medical References</button>
       <button class="home-nav-btn cat-calculators" data-view="view-calculators">Medical Calculators</button>
+      <button class="home-nav-btn cat-medications" data-view="view-medications">Medication Information</button>
       <button class="home-nav-btn cat-contact" data-view="view-contact">Contact</button>
       <button class="home-nav-btn cat-destination" data-view="view-destination">Destination Guidelines</button>
     </nav>
@@ -172,6 +173,28 @@
     <div class="calculators-top-banner">MEDICAL CALCULATORS</div>
     <p class="view-intro">Interactive scoring and decision-support tools. Reference charts (GCS, PCS, LAMS) are under <strong>Medical References</strong>.</p>
     <div id="calculators-list" class="category-list flat-list"></div>
+  </div>
+
+  <!-- MEDICATION INFORMATION -->
+  <div id="view-medications" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="medications-search" type="search" placeholder="Search meds, classes, tags…" autocomplete="off" />
+      </div>
+    </div>
+    <div class="medications-top-banner">MEDICATION INFORMATION</div>
+    <p class="view-intro">Common home medications and paramedic-carried drugs: class, route, onset, and field notes. Suffix patterns help recognize unfamiliar drug names.</p>
+    <div class="med-tab-bar" role="tablist" aria-label="Medication filter">
+      <button type="button" class="med-tab med-tab--on" data-med-tab="All" role="tab" aria-selected="true">All</button>
+      <button type="button" class="med-tab" data-med-tab="Paramedic Drug" role="tab" aria-selected="false">EMS Drugs</button>
+      <button type="button" class="med-tab" data-med-tab="Home Med" role="tab" aria-selected="false">Home Meds</button>
+      <button type="button" class="med-tab" data-med-tab="Suffixes" role="tab" aria-selected="false">Suffixes</button>
+    </div>
+    <div id="medications-list" class="medications-list"></div>
   </div>
 
   <!-- BURN CALCULATOR -->
@@ -1119,6 +1142,7 @@
   <script src="data/contact.js"></script>
   <script src="data/destinationGuidelines.js"></script>
   <script src="data/calculators-content.js"></script>
+  <script src="data/medications.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

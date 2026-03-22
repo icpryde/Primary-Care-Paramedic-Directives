@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pcp-directives-v50';
+const CACHE_NAME = 'pcp-directives-v51';
 const BASE = (self.location && self.location.hostname === 'icpryde.github.io')
   ? '/Primary-Care-Paramedic-Directives'
   : '';
@@ -14,6 +14,7 @@ const ASSETS = [
   BASE + '/data/contact.js',
   BASE + '/data/destinationGuidelines.js',
   BASE + '/data/calculators-content.js',
+  BASE + '/data/medications.js',
   BASE + '/data/logos.json',
   BASE + '/assets/logos/region-waterloo-paramedic.png',
   BASE + '/assets/logos/halton-paramedic.png',

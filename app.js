@@ -113,6 +113,7 @@ function showView(viewId, title, pushHistory = true) {
   if (viewId === 'view-dosage-calc') dosageRefresh();
   if (viewId === 'view-parkland-burn') parklandRefresh();
   if (viewId === 'view-iv-therapy') ivTherapyRefresh();
+  if (viewId === 'view-medications') medicationsSyncAndRender();
 }
 
 function goBack() {
@@ -2270,6 +2271,191 @@ function buildCalculatorsView() {
   });
 }
 
+// ─── Medication Information (Field Rx–style reference) ─────────────────────
+const medicationsUI = { tab: 'All', search: '', expandedId: null };
+
+function medicationsFilterMeds() {
+  if (typeof MEDICATIONS === 'undefined') return [];
+  const q = medicationsUI.search.trim().toLowerCase();
+  return MEDICATIONS.filter(med => {
+    const matchesSearch = !q || med.name.toLowerCase().includes(q) ||
+      med.category.toLowerCase().includes(q) ||
+      med.indication.toLowerCase().includes(q) ||
+      (med.tags || []).some(tag => tag.toLowerCase().includes(q));
+    const matchesTab = medicationsUI.tab === 'All' || med.type === medicationsUI.tab;
+    return matchesSearch && matchesTab;
+  });
+}
+
+function medicationsFilterSuffixes() {
+  if (typeof MED_SUFFIXES === 'undefined') return [];
+  const q = medicationsUI.search.trim().toLowerCase();
+  return MED_SUFFIXES.filter(item =>
+    !q || item.suffix.toLowerCase().includes(q) ||
+    item.category.toLowerCase().includes(q) ||
+    item.indication.toLowerCase().includes(q) ||
+    item.example.toLowerCase().includes(q)
+  );
+}
+
+function medicationsSyncTabs() {
+  document.querySelectorAll('#view-medications .med-tab').forEach(btn => {
+    const on = btn.dataset.medTab === medicationsUI.tab;
+    btn.classList.toggle('med-tab--on', on);
+    btn.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+}
+
+function renderMedicationsList() {
+  const container = $('medications-list');
+  if (!container) return;
+
+  if (medicationsUI.tab === 'Suffixes') {
+    const items = medicationsFilterSuffixes();
+    if (!items.length) {
+      const q = escapeHtml(medicationsUI.search.trim());
+      container.innerHTML = `<div class="med-empty"><p>No suffixes match${q ? ` “${q}”` : ''}.</p></div>`;
+      return;
+    }
+    container.innerHTML = items.map(item => `
+      <div class="med-suffix-card">
+        <div class="med-suffix-row">
+          <h3 class="med-suffix-title">${escapeHtml(item.suffix)}</h3>
+          <span class="med-suffix-cat">${escapeHtml(item.category)}</span>
+        </div>
+        <p class="med-suffix-indication">${escapeHtml(item.indication)}</p>
+        <p class="med-suffix-examples"><span class="med-suffix-examples-label">Examples:</span> ${escapeHtml(item.example)}</p>
+      </div>
+    `).join('');
+    return;
+  }
+
+  const meds = medicationsFilterMeds();
+  if (!meds.length) {
+    const q = escapeHtml(medicationsUI.search.trim());
+    container.innerHTML = `<div class="med-empty"><p>No medications match${q ? ` “${q}”` : ''}.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = meds.map(med => {
+    const expanded = medicationsUI.expandedId === med.id;
+    const home = med.type === 'Home Med';
+    const badges = `
+      ${home
+        ? '<span class="med-badge med-badge-home">Home Med</span>'
+        : '<span class="med-badge med-badge-ems">EMS Drug</span>'}
+      ${med.critical ? '<span class="med-badge med-badge-alert">High Alert</span>' : ''}
+    `;
+    const chevron = expanded
+      ? '<span class="med-chevron med-chevron-up" aria-hidden="true"></span>'
+      : '<span class="med-chevron med-chevron-down" aria-hidden="true"></span>';
+    const preview = expanded ? '' : `<p class="med-card-preview">${escapeHtml(med.indication)}</p>`;
+    const body = expanded ? `
+      <div class="med-card-body">
+        <div class="med-stats-grid">
+          <div class="med-stat">
+            <span class="med-stat-label">Route</span>
+            <span class="med-stat-val">${escapeHtml(med.route)}</span>
+          </div>
+          <div class="med-stat">
+            <span class="med-stat-label">Onset</span>
+            <span class="med-stat-val">${escapeHtml(med.onset)}</span>
+          </div>
+          <div class="med-stat med-stat-wide">
+            <span class="med-stat-label">Duration</span>
+            <span class="med-stat-val">${escapeHtml(med.duration)}</span>
+          </div>
+        </div>
+        <div class="med-block">
+          <span class="med-block-label">Primary indication</span>
+          <p class="med-block-text">${escapeHtml(med.indication)}</p>
+        </div>
+        <details class="med-details">
+          <summary>Pharmacodynamics &amp; deep dive</summary>
+          <p class="med-details-body">${escapeHtml(med.pharmacodynamics)}</p>
+        </details>
+        <details class="med-details med-details-notes">
+          <summary>Clinical field notes</summary>
+          <div class="med-notes-wrap">
+            <span class="med-notes-icon" aria-hidden="true">!</span>
+            <p class="med-notes-text">${escapeHtml(med.clinicalNotes)}</p>
+          </div>
+        </details>
+      </div>
+    ` : '';
+    return `
+      <div class="med-card${expanded ? ' med-card--expanded' : ''}" data-med-id="${med.id}">
+        <button type="button" class="med-card-header" aria-expanded="${expanded}">
+          <div class="med-card-header-main">
+            <div class="med-card-title-row">
+              <span class="med-card-name">${escapeHtml(med.prefix)}<span class="med-name-suffix">${escapeHtml(med.suffix)}</span></span>
+              <span class="med-badge-row">${badges}</span>
+            </div>
+            <p class="med-card-category">${escapeHtml(med.category)}</p>
+            ${preview}
+          </div>
+          ${chevron}
+        </button>
+        ${body}
+      </div>
+    `;
+  }).join('');
+}
+
+function medicationsSyncAndRender() {
+  const inp = $('medications-search');
+  if (inp) inp.value = medicationsUI.search;
+  medicationsSyncTabs();
+  renderMedicationsList();
+}
+
+function buildMedicationsView() {
+  const root = $('view-medications');
+  if (!root || typeof MEDICATIONS === 'undefined') return;
+
+  if (!root.dataset.bound) {
+    root.dataset.bound = '1';
+    root.querySelectorAll('.med-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        medicationsUI.tab = btn.dataset.medTab;
+        medicationsUI.expandedId = null;
+        medicationsSyncTabs();
+        renderMedicationsList();
+      });
+    });
+    const searchInp = $('medications-search');
+    if (searchInp) {
+      searchInp.addEventListener('input', e => {
+        medicationsUI.search = e.target.value;
+        renderMedicationsList();
+      });
+    }
+    const medList = $('medications-list');
+    if (medList && !medList.dataset.clickBound) {
+      medList.dataset.clickBound = '1';
+      medList.addEventListener('click', e => {
+        const btn = e.target.closest('.med-card-header');
+        if (!btn) return;
+        const card = btn.closest('.med-card');
+        if (!card) return;
+        const id = Number(card.dataset.medId);
+        if (Number.isNaN(id)) return;
+        medicationsUI.expandedId = medicationsUI.expandedId === id ? null : id;
+        renderMedicationsList();
+      });
+    }
+  }
+  medicationsSyncAndRender();
+}
+
+/** Open medication section from global search (optional expanded med). */
+function medicationsOpenFromSearch(med) {
+  medicationsUI.tab = 'All';
+  medicationsUI.search = '';
+  medicationsUI.expandedId = med && med.id != null ? med.id : null;
+  showView('view-medications', med ? med.name : 'Medications');
+}
+
 function renderCalculatorDetail(kind) {
   const body = typeof GCS_CALCULATOR_HTML !== 'undefined' && kind === 'gcs'
     ? GCS_CALCULATOR_HTML
@@ -2653,6 +2839,26 @@ function buildSearchIndex() {
     type: 'calc-iv-therapy',
     data: null,
   });
+  index.push({
+    id: 'med-hub',
+    title: 'Medication Information',
+    catLabel: 'Medication Information',
+    text: 'medication medications drugs pharma pharmacology field rx home meds ems drugs paramedic suffix pril olol statin doac nitro aspirin naloxone'.toLowerCase(),
+    type: 'med-hub',
+    data: null,
+  });
+  if (typeof MEDICATIONS !== 'undefined') {
+    MEDICATIONS.forEach(m => {
+      index.push({
+        id: `med-${m.id}`,
+        title: m.name,
+        catLabel: 'Medication Information',
+        text: [m.name, m.category, m.indication, ...(m.tags || [])].join(' ').toLowerCase(),
+        type: 'med-drug',
+        data: m,
+      });
+    });
+  }
   return index;
 }
 
@@ -3164,6 +3370,7 @@ function init() {
         'view-companion': DEFAULT_HEADER_TITLE,
         'view-references': DEFAULT_HEADER_TITLE,
         'view-calculators': 'Calculators',
+        'view-medications': 'Medications',
         'view-burn': 'Burn %',
         'view-lams': 'LAMS Calculator',
         'view-ped-calc': 'Pediatric Values Calculator',
@@ -3227,6 +3434,7 @@ function init() {
   buildReferencesView();
 
   buildCalculatorsView();
+  buildMedicationsView();
 
   buildSpecialEventView();
   buildContactView();
@@ -3360,6 +3568,10 @@ function init() {
         showView('view-dosage-calc', 'Dosage Calc');
       } else if (result.type === 'presepsis') {
         showView('view-presepsis', 'Pre-Sepsis');
+      } else if (result.type === 'med-hub') {
+        medicationsOpenFromSearch(null);
+      } else if (result.type === 'med-drug') {
+        medicationsOpenFromSearch(result.data);
       } else {
         renderCompanionDetail(result.data);
         showView('view-detail', headerTitleFromItem(result.data));
