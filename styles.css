@@ -28,13 +28,18 @@ body.app-on-home {
   --header-bar: 110px;
 }
 
-html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
   background: var(--bg);
   color: var(--text);
   overflow-x: hidden;
+  touch-action: manipulation;
   min-height: 100vh;
   padding-top: calc(var(--header-bar) + var(--safe-top));
   padding-bottom: var(--safe-bot);

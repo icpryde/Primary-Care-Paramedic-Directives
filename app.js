@@ -395,16 +395,34 @@ function closeInstallHelpModal() {
 
 /** Block pinch-to-zoom globally, except inside the image viewer. */
 function setupPinchZoomBlock() {
+  const shouldBlockZoom = target => {
+    if (document.documentElement.classList.contains('ref-image-viewer-open')) return false;
+    return !target?.closest?.('#ref-image-viewer');
+  };
+
   document.addEventListener('touchstart', function (e) {
-    if (e.touches.length > 1 && !document.documentElement.classList.contains('ref-image-viewer-open')) {
+    if (e.touches.length > 1 && shouldBlockZoom(e.target)) {
       e.preventDefault();
     }
   }, { passive: false });
-  document.addEventListener('gesturestart', function (e) {
-    if (!document.documentElement.classList.contains('ref-image-viewer-open')) {
+
+  document.addEventListener('touchmove', function (e) {
+    if (e.touches.length > 1 && shouldBlockZoom(e.target)) {
       e.preventDefault();
     }
-  });
+  }, { passive: false });
+
+  document.addEventListener('gesturestart', function (e) {
+    if (shouldBlockZoom(e.target)) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  document.addEventListener('gesturechange', function (e) {
+    if (shouldBlockZoom(e.target)) {
+      e.preventDefault();
+    }
+  }, { passive: false });
 }
 
 /** iOS PWA has no system swipe-back; mimic Safari with edge gestures. */
@@ -3635,7 +3653,9 @@ function init() {
 
   // Register Service Worker
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg failed:', err));
+    navigator.serviceWorker.register('sw.js')
+      .then(registration => registration.update().catch(() => {}))
+      .catch(err => console.log('SW reg failed:', err));
   }
 }
 
