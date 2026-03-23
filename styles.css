@@ -60,12 +60,8 @@ body {
   box-sizing: border-box;
 }
 
-html.nav-gesture-active #app-header,
-body.nav-gesture-active #app-header {
-  z-index: 900;
-  will-change: transform;
-  transform: translateZ(0);
-}
+/* Header stays at z-index:100 so transitioning views (200/201) cover it,
+   creating the illusion the header slides with each panel. */
 
 /* Top-right help: spans full header row so it does not wrap to a second grid row */
 #header-help-btn.header-help-corner {
