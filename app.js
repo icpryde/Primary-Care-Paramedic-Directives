@@ -393,6 +393,20 @@ function closeInstallHelpModal() {
   if (helpBtn && !helpBtn.hidden) helpBtn.focus();
 }
 
+/** Block pinch-to-zoom globally, except inside the image viewer. */
+function setupPinchZoomBlock() {
+  document.addEventListener('touchstart', function (e) {
+    if (e.touches.length > 1 && !document.documentElement.classList.contains('ref-image-viewer-open')) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+  document.addEventListener('gesturestart', function (e) {
+    if (!document.documentElement.classList.contains('ref-image-viewer-open')) {
+      e.preventDefault();
+    }
+  });
+}
+
 /** iOS PWA has no system swipe-back; mimic Safari with edge gestures. */
 function setupEdgeSwipeNavigation() {
   const EDGE = 32;
@@ -3599,6 +3613,7 @@ function init() {
     });
   });
 
+  setupPinchZoomBlock();
   setupEdgeSwipeNavigation();
 
   initPreSepsisTool();
