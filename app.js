@@ -7,6 +7,7 @@ const state = {
   history: [],
   /** Screens undone via Back, for swipe-forward (most recent at end). */
   forwardStack: [],
+  isTransitioning: false,
 };
 
 const DEFAULT_HEADER_TITLE = 'Medical Directives';
@@ -88,34 +89,7 @@ function bindFlatListSearch(inputId, listId) {
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
-function showView(viewId, title, pushHistory = true) {
-  const current = document.querySelector('.view.active');
-  if (current) {
-    if (pushHistory && current.id !== viewId) {
-      state.forwardStack = [];
-      state.history.push({ viewId: current.id, title: $('header-title').textContent, scrollY: window.scrollY });
-    }
-    current.classList.remove('active');
-    current.hidden = true;
-  }
-  const next = $(viewId);
-  next.hidden = false;
-  next.classList.add('active');
-  window.scrollTo(0, 0);
-
-  if (viewId !== 'view-home') {
-    const home = $('view-home');
-    if (home) {
-      home.classList.remove('home-searching');
-      const sr = $('search-results');
-      if (sr) sr.hidden = true;
-      const gs = $('global-search');
-      if (gs) gs.value = '';
-    }
-  }
-
-  $('header-title').textContent = title || DEFAULT_HEADER_TITLE;
-  updateBackButtonVisibility(viewId);
+function syncViewForNavigation(viewId) {
   if (viewId === 'view-presepsis') presepsisRefreshUI();
   if (viewId === 'view-burn') burnRefreshUI();
   if (viewId === 'view-lams') lamsRefreshUI();
@@ -127,8 +101,150 @@ function showView(viewId, title, pushHistory = true) {
   if (viewId === 'view-medications') medicationsSyncAndRender();
 }
 
+function clearTransitionStyles(view) {
+  if (!view) return;
+  view.classList.remove('transitioning');
+  view.style.position = '';
+  view.style.top = '';
+  view.style.left = '';
+  view.style.right = '';
+  view.style.bottom = '';
+  view.style.height = '';
+  view.style.width = '';
+  view.style.minHeight = '';
+  view.style.overflowY = '';
+  view.style.webkitOverflowScrolling = '';
+  view.style.zIndex = '';
+  view.style.transform = '';
+  view.style.transition = '';
+  view.style.paddingTop = '';
+  view.style.boxShadow = '';
+}
+
+function transitionViews(current, next, direction, nextScrollTop, onDone) {
+  if (!current || !next || current === next) {
+    if (typeof onDone === 'function') onDone();
+    return;
+  }
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    current.classList.remove('active');
+    current.hidden = true;
+    next.hidden = false;
+    next.classList.add('active');
+    if (typeof onDone === 'function') onDone();
+    return;
+  }
+  state.isTransitioning = true;
+  const currentScrollY = window.scrollY;
+  const headerEl = $('app-header');
+  const headerBottom = headerEl ? headerEl.getBoundingClientRect().bottom : 0;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const duration = 300;
+  const easing = 'cubic-bezier(0.2, 0.9, 0.3, 1)';
+
+  next.hidden = false;
+  next.classList.add('active', 'transitioning');
+  current.classList.add('transitioning');
+
+  [current, next].forEach((view, i) => {
+    view.style.position = 'fixed';
+    view.style.top = '0';
+    view.style.left = '0';
+    view.style.width = vw + 'px';
+    view.style.height = vh + 'px';
+    view.style.right = 'auto';
+    view.style.bottom = 'auto';
+    view.style.minHeight = 'auto';
+    view.style.overflowY = 'auto';
+    view.style.webkitOverflowScrolling = 'touch';
+    view.style.paddingTop = headerBottom + 'px';
+    view.style.transition = 'none';
+    view.style.transform = 'translateX(0)';
+  });
+
+  if (direction === 'forward') {
+    current.style.zIndex = '200';
+    next.style.zIndex = '201';
+    next.style.boxShadow = '-4px 0 24px rgba(0,0,0,0.18)';
+    next.style.transform = 'translateX(100%)';
+  } else {
+    current.style.zIndex = '201';
+    current.style.boxShadow = '-4px 0 24px rgba(0,0,0,0.18)';
+    next.style.zIndex = '200';
+    next.style.transform = 'translateX(-30%)';
+  }
+
+  current.scrollTop = currentScrollY;
+  next.scrollTop = nextScrollTop || 0;
+  next.getBoundingClientRect();
+
+  requestAnimationFrame(() => {
+    current.style.transition = `transform ${duration}ms ${easing}`;
+    next.style.transition = `transform ${duration}ms ${easing}`;
+    if (direction === 'forward') {
+      current.style.transform = 'translateX(-30%)';
+      next.style.transform = 'translateX(0)';
+    } else {
+      current.style.transform = 'translateX(100%)';
+      next.style.transform = 'translateX(0)';
+    }
+    setTimeout(() => {
+      current.classList.remove('active');
+      current.hidden = true;
+      clearTransitionStyles(current);
+      clearTransitionStyles(next);
+      next.classList.add('active');
+      state.isTransitioning = false;
+      if (typeof onDone === 'function') onDone();
+    }, duration + 20);
+  });
+}
+
+function showView(viewId, title, pushHistory = true) {
+  const current = document.querySelector('.view.active');
+  const next = $(viewId);
+  if (!next || state.isTransitioning) return;
+  if (current && current.id === viewId) {
+    $('header-title').textContent = title || DEFAULT_HEADER_TITLE;
+    updateBackButtonVisibility(viewId);
+    syncViewForNavigation(viewId);
+    return;
+  }
+  if (current) {
+    if (pushHistory && current.id !== viewId) {
+      state.forwardStack = [];
+      state.history.push({ viewId: current.id, title: $('header-title').textContent, scrollY: window.scrollY });
+    }
+  }
+  if (viewId !== 'view-home') {
+    const home = $('view-home');
+    if (home) {
+      home.classList.remove('home-searching');
+      const sr = $('search-results');
+      if (sr) sr.hidden = true;
+      const gs = $('global-search');
+      if (gs) gs.value = '';
+    }
+  }
+  syncViewForNavigation(viewId);
+  if (!current) {
+    next.hidden = false;
+    next.classList.add('active');
+    $('header-title').textContent = title || DEFAULT_HEADER_TITLE;
+    updateBackButtonVisibility(viewId);
+    window.scrollTo(0, 0);
+    return;
+  }
+  transitionViews(current, next, 'forward', 0, () => {
+    $('header-title').textContent = title || DEFAULT_HEADER_TITLE;
+    updateBackButtonVisibility(viewId);
+    window.scrollTo(0, 0);
+  });
+}
+
 function goBack() {
-  if (!state.history.length) return;
+  if (!state.history.length || state.isTransitioning) return;
   const cur = document.querySelector('.view.active');
   if (cur) {
     state.forwardStack.push({
@@ -138,17 +254,26 @@ function goBack() {
     });
   }
   const prev = state.history.pop();
-  if (cur) { cur.classList.remove('active'); cur.hidden = true; }
   const target = $(prev.viewId);
-  target.hidden = false;
-  target.classList.add('active');
-  $('header-title').textContent = prev.title;
-  updateBackButtonVisibility(target.id);
-  requestAnimationFrame(() => window.scrollTo(0, prev.scrollY || 0));
+  if (!target) return;
+  syncViewForNavigation(target.id);
+  if (!cur) {
+    target.hidden = false;
+    target.classList.add('active');
+    $('header-title').textContent = prev.title;
+    updateBackButtonVisibility(target.id);
+    requestAnimationFrame(() => window.scrollTo(0, prev.scrollY || 0));
+    return;
+  }
+  transitionViews(cur, target, 'back', prev.scrollY || 0, () => {
+    $('header-title').textContent = prev.title;
+    updateBackButtonVisibility(target.id);
+    requestAnimationFrame(() => window.scrollTo(0, prev.scrollY || 0));
+  });
 }
 
 function goForward() {
-  if (!state.forwardStack.length) return;
+  if (!state.forwardStack.length || state.isTransitioning) return;
   const cur = document.querySelector('.view.active');
   if (cur) {
     state.history.push({
@@ -158,13 +283,22 @@ function goForward() {
     });
   }
   const next = state.forwardStack.pop();
-  if (cur) { cur.classList.remove('active'); cur.hidden = true; }
   const target = $(next.viewId);
-  target.hidden = false;
-  target.classList.add('active');
-  $('header-title').textContent = next.title;
-  updateBackButtonVisibility(next.viewId);
-  requestAnimationFrame(() => window.scrollTo(0, next.scrollY || 0));
+  if (!target) return;
+  syncViewForNavigation(next.viewId);
+  if (!cur) {
+    target.hidden = false;
+    target.classList.add('active');
+    $('header-title').textContent = next.title;
+    updateBackButtonVisibility(next.viewId);
+    requestAnimationFrame(() => window.scrollTo(0, next.scrollY || 0));
+    return;
+  }
+  transitionViews(cur, target, 'forward', next.scrollY || 0, () => {
+    $('header-title').textContent = next.title;
+    updateBackButtonVisibility(next.viewId);
+    requestAnimationFrame(() => window.scrollTo(0, next.scrollY || 0));
+  });
 }
 
 function updateBackButtonVisibility(activeViewId) {
@@ -425,50 +559,236 @@ function setupPinchZoomBlock() {
   }, { passive: false });
 }
 
-/** iOS PWA has no system swipe-back; mimic Safari with edge gestures. */
+/** iOS PWA has no system swipe-back; mimic Safari with interactive edge gestures. */
 function setupEdgeSwipeNavigation() {
   const EDGE = 32;
-  const SWIPE_MIN = 70;
-  let startX = 0;
-  let startY = 0;
-  let fromLeftEdge = false;
-  let fromRightEdge = false;
+  const DEAD_ZONE = 10;
+  const COMMIT_THRESHOLD = 0.35;
+  const VELOCITY_THRESHOLD = 0.4;
+
+  let gesture = null;
+
+  function setupPanels(current, target, direction) {
+    const headerEl = $('app-header');
+    const headerBottom = headerEl ? headerEl.getBoundingClientRect().bottom : 0;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const currentScrollY = window.scrollY;
+
+    target.hidden = false;
+    target.classList.add('active', 'transitioning');
+    current.classList.add('transitioning');
+
+    [current, target].forEach(view => {
+      view.style.position = 'fixed';
+      view.style.top = '0';
+      view.style.left = '0';
+      view.style.width = vw + 'px';
+      view.style.height = vh + 'px';
+      view.style.right = 'auto';
+      view.style.bottom = 'auto';
+      view.style.minHeight = 'auto';
+      view.style.overflowY = 'auto';
+      view.style.webkitOverflowScrolling = 'touch';
+      view.style.paddingTop = headerBottom + 'px';
+      view.style.transition = 'none';
+    });
+
+    if (direction === 'back') {
+      current.style.zIndex = '201';
+      current.style.boxShadow = '-4px 0 24px rgba(0,0,0,0.18)';
+      target.style.zIndex = '200';
+      target.style.boxShadow = 'none';
+    } else {
+      current.style.zIndex = '200';
+      current.style.boxShadow = 'none';
+      target.style.zIndex = '201';
+      target.style.boxShadow = '-4px 0 24px rgba(0,0,0,0.18)';
+    }
+
+    current.scrollTop = currentScrollY;
+    target.scrollTop = gesture.targetScrollY || 0;
+
+    applyProgress(0);
+  }
+
+  function applyProgress(progress) {
+    if (!gesture) return;
+    const { current, target, direction } = gesture;
+    const vw = window.innerWidth;
+    const p = Math.max(0, Math.min(1, progress));
+    if (direction === 'back') {
+      current.style.transform = `translateX(${p * vw}px)`;
+      target.style.transform = `translateX(${-0.3 * (1 - p) * vw}px)`;
+    } else {
+      current.style.transform = `translateX(${-0.3 * p * vw}px)`;
+      target.style.transform = `translateX(${(1 - p) * vw}px)`;
+    }
+  }
+
+  function finishGesture(commit) {
+    if (!gesture) return;
+    const { current, target, direction, progress, targetEntry } = gesture;
+    const duration = 250;
+    const easing = 'cubic-bezier(0.2, 0.9, 0.3, 1)';
+    current.style.transition = `transform ${duration}ms ${easing}`;
+    target.style.transition = `transform ${duration}ms ${easing}`;
+
+    if (commit) {
+      applyProgress(1);
+      setTimeout(() => {
+        current.classList.remove('active');
+        current.hidden = true;
+        clearTransitionStyles(current);
+        clearTransitionStyles(target);
+        target.classList.add('active');
+
+        if (direction === 'back') {
+          state.forwardStack.push(gesture.currentEntry);
+          state.history.pop();
+          $('header-title').textContent = targetEntry.title;
+          updateBackButtonVisibility(target.id);
+          requestAnimationFrame(() => window.scrollTo(0, targetEntry.scrollY || 0));
+        } else {
+          state.history.push(gesture.currentEntry);
+          state.forwardStack.pop();
+          $('header-title').textContent = targetEntry.title;
+          updateBackButtonVisibility(target.id);
+          requestAnimationFrame(() => window.scrollTo(0, targetEntry.scrollY || 0));
+        }
+        state.isTransitioning = false;
+        gesture = null;
+      }, duration + 20);
+    } else {
+      applyProgress(0);
+      setTimeout(() => {
+        target.classList.remove('active');
+        target.hidden = true;
+        clearTransitionStyles(current);
+        clearTransitionStyles(target);
+        current.classList.add('active');
+        state.isTransitioning = false;
+        gesture = null;
+      }, duration + 20);
+    }
+  }
 
   document.body.addEventListener('touchstart', e => {
-    if (e.touches.length !== 1) {
-      fromLeftEdge = fromRightEdge = false;
-      return;
-    }
-    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
-      fromLeftEdge = fromRightEdge = false;
-      return;
-    }
+    if (state.isTransitioning || gesture) return;
+    if (e.touches.length !== 1) return;
+    if (document.documentElement.classList.contains('ref-image-viewer-open')) return;
+    if (document.documentElement.classList.contains('help-modal-open')) return;
+    const el = e.target;
+    if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT')) return;
+    if (el && el.closest && el.closest('input, textarea, select')) return;
+
     const t = e.touches[0];
-    startX = t.clientX;
-    startY = t.clientY;
+    const x = t.clientX;
     const w = window.innerWidth;
-    fromLeftEdge = startX <= EDGE;
-    fromRightEdge = startX >= w - EDGE;
+    const fromLeft = x <= EDGE;
+    const fromRight = x >= w - EDGE;
+    if (!fromLeft && !fromRight) return;
+
+    const onHome = !!document.querySelector('#view-home.active');
+    let direction = null;
+    let stackEntry = null;
+
+    if (fromLeft && !onHome && state.history.length > 0) {
+      direction = 'back';
+      stackEntry = state.history[state.history.length - 1];
+    } else if (fromRight && state.forwardStack.length > 0) {
+      direction = 'forward';
+      stackEntry = state.forwardStack[state.forwardStack.length - 1];
+    }
+    if (!direction || !stackEntry) return;
+
+    const current = document.querySelector('.view.active');
+    const target = $(stackEntry.viewId);
+    if (!current || !target) return;
+
+    syncViewForNavigation(stackEntry.viewId);
+
+    gesture = {
+      startX: x,
+      startY: t.clientY,
+      direction,
+      current,
+      target,
+      currentEntry: {
+        viewId: current.id,
+        title: $('header-title').textContent,
+        scrollY: window.scrollY,
+      },
+      targetEntry: stackEntry,
+      targetScrollY: stackEntry.scrollY || 0,
+      progress: 0,
+      locked: false,
+      cancelled: false,
+      lastX: x,
+      lastTime: Date.now(),
+      velocity: 0,
+    };
   }, { passive: true });
 
-  document.body.addEventListener('touchend', e => {
-    if (!fromLeftEdge && !fromRightEdge) return;
-    if (e.changedTouches.length !== 1) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - startX;
-    const dy = t.clientY - startY;
-    if (Math.abs(dy) > Math.abs(dx) * 1.25) {
-      fromLeftEdge = fromRightEdge = false;
+  document.body.addEventListener('touchmove', e => {
+    if (!gesture || gesture.cancelled) return;
+    const t = e.touches[0];
+    const dx = t.clientX - gesture.startX;
+    const dy = t.clientY - gesture.startY;
+
+    if (!gesture.locked) {
+      if (Math.abs(dx) < DEAD_ZONE && Math.abs(dy) < DEAD_ZONE) return;
+      if (Math.abs(dy) > Math.abs(dx) * 1.2) {
+        gesture.cancelled = true;
+        return;
+      }
+      gesture.locked = true;
+      state.isTransitioning = true;
+      setupPanels(gesture.current, gesture.target, gesture.direction);
+    }
+
+    e.preventDefault();
+    const now = Date.now();
+    const dt = now - gesture.lastTime || 16;
+    gesture.velocity = (t.clientX - gesture.lastX) / dt;
+    gesture.lastX = t.clientX;
+    gesture.lastTime = now;
+
+    const vw = window.innerWidth;
+    let progress;
+    if (gesture.direction === 'back') {
+      progress = Math.max(0, Math.min(1, dx / vw));
+    } else {
+      progress = Math.max(0, Math.min(1, -dx / vw));
+    }
+    gesture.progress = progress;
+    applyProgress(progress);
+  }, { passive: false });
+
+  function onTouchEnd() {
+    if (!gesture) return;
+    if (!gesture.locked || gesture.cancelled) {
+      if (gesture.locked) {
+        gesture.cancelled = false;
+        clearTransitionStyles(gesture.current);
+        clearTransitionStyles(gesture.target);
+        gesture.target.classList.remove('active');
+        gesture.target.hidden = true;
+        gesture.current.classList.add('active');
+        state.isTransitioning = false;
+      }
+      gesture = null;
       return;
     }
-    if (fromLeftEdge && dx > SWIPE_MIN && state.history.length > 0) {
-      const onHome = document.querySelector('#view-home.active');
-      if (!onHome) goBack();
-    } else if (fromRightEdge && dx < -SWIPE_MIN && state.forwardStack.length > 0) {
-      goForward();
-    }
-    fromLeftEdge = fromRightEdge = false;
-  }, { passive: true });
+    const velocityCommit = gesture.direction === 'back'
+      ? gesture.velocity > VELOCITY_THRESHOLD
+      : gesture.velocity < -VELOCITY_THRESHOLD;
+    const commit = gesture.progress >= COMMIT_THRESHOLD || velocityCommit;
+    finishGesture(commit);
+  }
+
+  document.body.addEventListener('touchend', onTouchEnd, { passive: true });
+  document.body.addEventListener('touchcancel', onTouchEnd, { passive: true });
 }
 
 // ─── Flowchart Viewer ────────────────────────────────────────────────────────

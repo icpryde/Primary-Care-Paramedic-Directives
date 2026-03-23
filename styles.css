@@ -1169,11 +1169,14 @@ body.help-modal-open {
 .special-detail-wrap { background: var(--white); padding: 8px 0 16px; }
 
 /* ── Animations ───────────────────────────────────────── */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateX(6px); }
-  to   { opacity: 1; transform: translateX(0); }
+.view.transitioning {
+  overflow: hidden !important;
+  background: var(--bg);
 }
-.view.active { animation: fadeIn 0.15s ease; }
+.view.transitioning .search-bar-wrap.sticky {
+  position: relative;
+  top: 0;
+}
 
 /* ── Flowchart ────────────────────────────────────────── */
 .flowchart-wrap {
