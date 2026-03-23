@@ -485,6 +485,12 @@ const refImgViewer = {
   lastPinchDist: 0,
 };
 
+function setRefImgViewerUIHidden(hidden) {
+  const modal = $('ref-image-viewer');
+  if (!modal) return;
+  modal.classList.toggle('ref-image-viewer-ui-hidden', !!hidden);
+}
+
 function refImgViewerApply() {
   const stage = $('ref-image-viewer-stage');
   if (!stage) return;
@@ -520,6 +526,8 @@ function openRefImageViewer(src, alt) {
   refImgViewer.tx = 0;
   refImgViewer.ty = 0;
   refImgViewer.panStart = null;
+  refImgViewer.lastPinchDist = 0;
+  setRefImgViewerUIHidden(false);
   img.alt = alt || '';
   img.src = src;
   const done = () => refImgViewerLayoutFit();
@@ -534,6 +542,9 @@ function openRefImageViewer(src, alt) {
 function closeRefImageViewer() {
   const modal = $('ref-image-viewer');
   const img = $('ref-image-viewer-img');
+  setRefImgViewerUIHidden(false);
+  refImgViewer.panStart = null;
+  refImgViewer.lastPinchDist = 0;
   if (modal) {
     modal.hidden = true;
     modal.setAttribute('aria-hidden', 'true');
@@ -582,6 +593,7 @@ function initRefImageViewer() {
     e => {
       if (e.touches.length === 1 && refImgViewer.panStart) {
         e.preventDefault();
+        setRefImgViewerUIHidden(true);
         refImgViewer.tx =
           refImgViewer.panStart.tx + (e.touches[0].clientX - refImgViewer.panStart.x);
         refImgViewer.ty =
@@ -589,6 +601,7 @@ function initRefImageViewer() {
         refImgViewerApply();
       } else if (e.touches.length === 2 && refImgViewer.lastPinchDist > 0) {
         e.preventDefault();
+        setRefImgViewerUIHidden(true);
         const d = refImgTouchDist(e.touches[0], e.touches[1]);
         const ratio = d / refImgViewer.lastPinchDist;
         refImgViewer.lastPinchDist = d;
@@ -602,6 +615,13 @@ function initRefImageViewer() {
   outer.addEventListener('touchend', e => {
     refImgViewer.panStart = null;
     if (e.touches.length < 2) refImgViewer.lastPinchDist = 0;
+    if (e.touches.length === 0) setRefImgViewerUIHidden(false);
+  });
+
+  outer.addEventListener('touchcancel', () => {
+    refImgViewer.panStart = null;
+    refImgViewer.lastPinchDist = 0;
+    setRefImgViewerUIHidden(false);
   });
 
   outer.addEventListener(
@@ -619,6 +639,7 @@ function initRefImageViewer() {
   let drag = null;
   outer.addEventListener('mousedown', e => {
     if (e.button !== 0) return;
+    setRefImgViewerUIHidden(true);
     drag = { x: e.clientX, y: e.clientY, tx: refImgViewer.tx, ty: refImgViewer.ty };
   });
   window.addEventListener('mousemove', e => {
@@ -629,6 +650,7 @@ function initRefImageViewer() {
   });
   window.addEventListener('mouseup', () => {
     drag = null;
+    setRefImgViewerUIHidden(false);
   });
 
   outer.addEventListener('dblclick', e => {
