@@ -569,6 +569,15 @@ function initRefImageViewer() {
   if (!outer || !modal || outer.dataset.bound) return;
   outer.dataset.bound = '1';
 
+  const shouldRestoreViewerUI = () =>
+    !modal.hidden && document.documentElement.classList.contains('ref-image-viewer-open');
+
+  const restoreViewerUI = () => {
+    refImgViewer.panStart = null;
+    refImgViewer.lastPinchDist = 0;
+    if (shouldRestoreViewerUI()) setRefImgViewerUIHidden(false);
+  };
+
   outer.addEventListener(
     'touchstart',
     e => {
@@ -618,11 +627,7 @@ function initRefImageViewer() {
     if (e.touches.length === 0) setRefImgViewerUIHidden(false);
   });
 
-  outer.addEventListener('touchcancel', () => {
-    refImgViewer.panStart = null;
-    refImgViewer.lastPinchDist = 0;
-    setRefImgViewerUIHidden(false);
-  });
+  outer.addEventListener('touchcancel', restoreViewerUI);
 
   outer.addEventListener(
     'wheel',
@@ -651,6 +656,16 @@ function initRefImageViewer() {
   window.addEventListener('mouseup', () => {
     drag = null;
     setRefImgViewerUIHidden(false);
+  });
+
+  window.addEventListener('touchend', e => {
+    if (e.touches.length === 0) restoreViewerUI();
+  }, { passive: true });
+  window.addEventListener('touchcancel', restoreViewerUI, { passive: true });
+  window.addEventListener('pointerup', restoreViewerUI, { passive: true });
+  window.addEventListener('blur', restoreViewerUI);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') restoreViewerUI();
   });
 
   outer.addEventListener('dblclick', e => {
