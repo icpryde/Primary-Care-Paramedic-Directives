@@ -182,21 +182,21 @@ function transitionViews(current, next, direction, nextScrollTop, onDone) {
   next.classList.add('active', 'transitioning');
   current.classList.add('transitioning');
 
-  [current, next].forEach((view, i) => {
+  [current, next].forEach(view => {
+    const headerOffset = (view === current ? origHeaderBottom : destHeaderBottom);
     view.style.position = 'fixed';
     view.style.top = '0';
     view.style.left = '0';
     view.style.width = vw + 'px';
-    view.style.height = vh + 'px';
+    view.style.height = Math.max(0, vh - headerOffset) + 'px';
     view.style.right = 'auto';
     view.style.bottom = 'auto';
     view.style.minHeight = 'auto';
     view.style.overflowY = 'auto';
     view.style.webkitOverflowScrolling = 'touch';
-    view.style.paddingTop = (view === current ? origHeaderBottom : destHeaderBottom) + 'px';
+    view.style.paddingTop = headerOffset + 'px';
     view.style.transition = 'none';
     view.style.transform = 'translateX(0)';
-    view.style.background = 'var(--navy)';
     view.style.willChange = 'transform';
     view.style.backfaceVisibility = 'hidden';
     view.style.contain = 'layout paint style';
@@ -652,22 +652,22 @@ function setupEdgeSwipeNavigation() {
     setNavGestureActive(true);
 
     [current, target].forEach(view => {
+      const headerOffset = (view === current ? origHeaderBottom : destHeaderBottom);
       view.style.position = 'fixed';
       view.style.top = '0';
       view.style.left = '0';
       view.style.width = vw + 'px';
-      view.style.height = vh + 'px';
+      view.style.height = Math.max(0, vh - headerOffset) + 'px';
       view.style.right = 'auto';
       view.style.bottom = 'auto';
       view.style.minHeight = 'auto';
       view.style.overflowY = 'auto';
       view.style.webkitOverflowScrolling = 'touch';
-      view.style.paddingTop = (view === current ? origHeaderBottom : destHeaderBottom) + 'px';
+      view.style.paddingTop = headerOffset + 'px';
       view.style.transition = 'none';
       view.style.willChange = 'transform';
       view.style.backfaceVisibility = 'hidden';
       view.style.contain = 'layout paint style';
-      view.style.background = 'var(--navy)';
     });
 
     if (direction === 'back') {
