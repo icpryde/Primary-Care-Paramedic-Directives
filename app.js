@@ -119,24 +119,6 @@ function clearTransitionStyles(view) {
   view.style.transition = '';
   view.style.paddingTop = '';
   view.style.boxShadow = '';
-  view.style.background = '';
-  view.style.willChange = '';
-  view.style.backfaceVisibility = '';
-  view.style.contain = '';
-}
-
-function setNavGestureActive(active) {
-  document.documentElement.classList.toggle('nav-gesture-active', !!active);
-  document.body.classList.toggle('nav-gesture-active', !!active);
-}
-
-function restoreWindowScroll(scrollY) {
-  const y = scrollY || 0;
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      window.scrollTo(0, y);
-    });
-  });
 }
 
 function transitionViews(current, next, direction, nextScrollTop, onDone) {
@@ -153,7 +135,6 @@ function transitionViews(current, next, direction, nextScrollTop, onDone) {
     return;
   }
   state.isTransitioning = true;
-  setNavGestureActive(true);
   const currentScrollY = window.scrollY;
   const headerEl = $('app-header');
   const headerBottom = headerEl ? headerEl.getBoundingClientRect().bottom : 0;
@@ -180,10 +161,6 @@ function transitionViews(current, next, direction, nextScrollTop, onDone) {
     view.style.paddingTop = headerBottom + 'px';
     view.style.transition = 'none';
     view.style.transform = 'translateX(0)';
-    view.style.background = 'var(--navy)';
-    view.style.willChange = 'transform';
-    view.style.backfaceVisibility = 'hidden';
-    view.style.contain = 'layout paint style';
   });
 
   if (direction === 'forward') {
@@ -218,9 +195,7 @@ function transitionViews(current, next, direction, nextScrollTop, onDone) {
       clearTransitionStyles(current);
       clearTransitionStyles(next);
       next.classList.add('active');
-      next.getBoundingClientRect();
       state.isTransitioning = false;
-      setNavGestureActive(false);
       if (typeof onDone === 'function') onDone();
     }, duration + 20);
   });
@@ -264,7 +239,7 @@ function showView(viewId, title, pushHistory = true) {
   transitionViews(current, next, 'forward', 0, () => {
     $('header-title').textContent = title || DEFAULT_HEADER_TITLE;
     updateBackButtonVisibility(viewId);
-    restoreWindowScroll(0);
+    window.scrollTo(0, 0);
   });
 }
 
@@ -293,7 +268,7 @@ function goBack() {
   transitionViews(cur, target, 'back', prev.scrollY || 0, () => {
     $('header-title').textContent = prev.title;
     updateBackButtonVisibility(target.id);
-    restoreWindowScroll(prev.scrollY || 0);
+    requestAnimationFrame(() => window.scrollTo(0, prev.scrollY || 0));
   });
 }
 
@@ -322,7 +297,7 @@ function goForward() {
   transitionViews(cur, target, 'forward', next.scrollY || 0, () => {
     $('header-title').textContent = next.title;
     updateBackButtonVisibility(next.viewId);
-    restoreWindowScroll(next.scrollY || 0);
+    requestAnimationFrame(() => window.scrollTo(0, next.scrollY || 0));
   });
 }
 
@@ -593,33 +568,6 @@ function setupEdgeSwipeNavigation() {
 
   let gesture = null;
 
-  function resetGesturePanels() {
-    if (!gesture) return;
-    clearTransitionStyles(gesture.current);
-    clearTransitionStyles(gesture.target);
-    gesture.target.classList.remove('active', 'transitioning');
-    gesture.target.hidden = true;
-    gesture.current.classList.add('active');
-    gesture.current.classList.remove('transitioning');
-  }
-
-  function finalizeGesture() {
-    state.isTransitioning = false;
-    setNavGestureActive(false);
-    gesture = null;
-  }
-
-  function abortGesture() {
-    if (!gesture) return;
-    if (gesture.locked) resetGesturePanels();
-    finalizeGesture();
-  }
-
-  function shouldAbortGesture() {
-    return document.documentElement.classList.contains('ref-image-viewer-open')
-      || document.documentElement.classList.contains('help-modal-open');
-  }
-
   function setupPanels(current, target, direction) {
     const headerEl = $('app-header');
     const headerBottom = headerEl ? headerEl.getBoundingClientRect().bottom : 0;
@@ -630,7 +578,6 @@ function setupEdgeSwipeNavigation() {
     target.hidden = false;
     target.classList.add('active', 'transitioning');
     current.classList.add('transitioning');
-    setNavGestureActive(true);
 
     [current, target].forEach(view => {
       view.style.position = 'fixed';
@@ -645,10 +592,6 @@ function setupEdgeSwipeNavigation() {
       view.style.webkitOverflowScrolling = 'touch';
       view.style.paddingTop = headerBottom + 'px';
       view.style.transition = 'none';
-      view.style.willChange = 'transform';
-      view.style.backfaceVisibility = 'hidden';
-      view.style.contain = 'layout paint style';
-      view.style.background = 'var(--navy)';
     });
 
     if (direction === 'back') {
@@ -699,28 +642,33 @@ function setupEdgeSwipeNavigation() {
         clearTransitionStyles(current);
         clearTransitionStyles(target);
         target.classList.add('active');
-        target.getBoundingClientRect();
 
         if (direction === 'back') {
           state.forwardStack.push(gesture.currentEntry);
           state.history.pop();
           $('header-title').textContent = targetEntry.title;
           updateBackButtonVisibility(target.id);
-          restoreWindowScroll(targetEntry.scrollY || 0);
+          requestAnimationFrame(() => window.scrollTo(0, targetEntry.scrollY || 0));
         } else {
           state.history.push(gesture.currentEntry);
           state.forwardStack.pop();
           $('header-title').textContent = targetEntry.title;
           updateBackButtonVisibility(target.id);
-          restoreWindowScroll(targetEntry.scrollY || 0);
+          requestAnimationFrame(() => window.scrollTo(0, targetEntry.scrollY || 0));
         }
-        finalizeGesture();
+        state.isTransitioning = false;
+        gesture = null;
       }, duration + 20);
     } else {
       applyProgress(0);
       setTimeout(() => {
-        resetGesturePanels();
-        finalizeGesture();
+        target.classList.remove('active');
+        target.hidden = true;
+        clearTransitionStyles(current);
+        clearTransitionStyles(target);
+        current.classList.add('active');
+        state.isTransitioning = false;
+        gesture = null;
       }, duration + 20);
     }
   }
@@ -728,7 +676,8 @@ function setupEdgeSwipeNavigation() {
   document.body.addEventListener('touchstart', e => {
     if (state.isTransitioning || gesture) return;
     if (e.touches.length !== 1) return;
-    if (shouldAbortGesture()) return;
+    if (document.documentElement.classList.contains('ref-image-viewer-open')) return;
+    if (document.documentElement.classList.contains('help-modal-open')) return;
     const el = e.target;
     if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT')) return;
     if (el && el.closest && el.closest('input, textarea, select')) return;
@@ -783,10 +732,6 @@ function setupEdgeSwipeNavigation() {
 
   document.body.addEventListener('touchmove', e => {
     if (!gesture || gesture.cancelled) return;
-    if (shouldAbortGesture()) {
-      abortGesture();
-      return;
-    }
     const t = e.touches[0];
     const dx = t.clientX - gesture.startX;
     const dy = t.clientY - gesture.startY;
@@ -822,13 +767,17 @@ function setupEdgeSwipeNavigation() {
 
   function onTouchEnd() {
     if (!gesture) return;
-    if (shouldAbortGesture()) {
-      abortGesture();
-      return;
-    }
     if (!gesture.locked || gesture.cancelled) {
-      if (gesture.locked) resetGesturePanels();
-      finalizeGesture();
+      if (gesture.locked) {
+        gesture.cancelled = false;
+        clearTransitionStyles(gesture.current);
+        clearTransitionStyles(gesture.target);
+        gesture.target.classList.remove('active');
+        gesture.target.hidden = true;
+        gesture.current.classList.add('active');
+        state.isTransitioning = false;
+      }
+      gesture = null;
       return;
     }
     const velocityCommit = gesture.direction === 'back'
@@ -840,10 +789,6 @@ function setupEdgeSwipeNavigation() {
 
   document.body.addEventListener('touchend', onTouchEnd, { passive: true });
   document.body.addEventListener('touchcancel', onTouchEnd, { passive: true });
-  window.addEventListener('blur', abortGesture);
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible') abortGesture();
-  });
 }
 
 // ─── Flowchart Viewer ────────────────────────────────────────────────────────

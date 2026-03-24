@@ -60,13 +60,6 @@ body {
   box-sizing: border-box;
 }
 
-html.nav-gesture-active #app-header,
-body.nav-gesture-active #app-header {
-  z-index: 900;
-  will-change: transform;
-  transform: translateZ(0);
-}
-
 /* Top-right help: spans full header row so it does not wrap to a second grid row */
 #header-help-btn.header-help-corner {
   grid-column: 1 / -1;
@@ -1178,10 +1171,7 @@ body.help-modal-open {
 /* ── Animations ───────────────────────────────────────── */
 .view.transitioning {
   overflow: hidden !important;
-  background: var(--navy);
-  will-change: transform;
-  backface-visibility: hidden;
-  contain: layout paint style;
+  background: var(--bg);
 }
 .view.transitioning .search-bar-wrap.sticky {
   position: relative;
