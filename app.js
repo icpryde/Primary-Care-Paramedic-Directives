@@ -139,21 +139,6 @@ function restoreWindowScroll(scrollY) {
   });
 }
 
-/**
- * Returns the expected header bottom (px) for a destination view without
- * mutating any DOM state. Home uses a 110 px bar; all others use 52 px.
- */
-function getHeaderBottomForView(viewId) {
-  const headerEl = $('app-header');
-  if (!headerEl) return 52;
-  const currentHeight = headerEl.getBoundingClientRect().height;
-  const currentIsHome = document.body.classList.contains('app-on-home');
-  const currentHeaderBar = currentIsHome ? 110 : 52;
-  const safeTop = Math.max(0, currentHeight - currentHeaderBar);
-  const destHeaderBar = (viewId === 'view-home') ? 110 : 52;
-  return destHeaderBar + safeTop;
-}
-
 function transitionViews(current, next, direction, nextScrollTop, onDone) {
   if (!current || !next || current === next) {
     if (typeof onDone === 'function') onDone();
@@ -171,8 +156,7 @@ function transitionViews(current, next, direction, nextScrollTop, onDone) {
   setNavGestureActive(true);
   const currentScrollY = window.scrollY;
   const headerEl = $('app-header');
-  const origHeaderBottom = headerEl ? headerEl.getBoundingClientRect().bottom : 0;
-  const destHeaderBottom = getHeaderBottomForView(next.id);
+  const headerBottom = headerEl ? headerEl.getBoundingClientRect().bottom : 0;
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   const duration = 300;
@@ -193,7 +177,7 @@ function transitionViews(current, next, direction, nextScrollTop, onDone) {
     view.style.minHeight = 'auto';
     view.style.overflowY = 'auto';
     view.style.webkitOverflowScrolling = 'touch';
-    view.style.paddingTop = (view === current ? origHeaderBottom : destHeaderBottom) + 'px';
+    view.style.paddingTop = headerBottom + 'px';
     view.style.transition = 'none';
     view.style.transform = 'translateX(0)';
     view.style.background = 'var(--navy)';
@@ -229,9 +213,6 @@ function transitionViews(current, next, direction, nextScrollTop, onDone) {
       next.style.transform = 'translateX(0)';
     }
     setTimeout(() => {
-      // Fire onDone (title + back-button update) while views still cover the
-      // real header — prevents any flash of wrong header state.
-      if (typeof onDone === 'function') onDone();
       current.classList.remove('active');
       current.hidden = true;
       clearTransitionStyles(current);
@@ -240,6 +221,7 @@ function transitionViews(current, next, direction, nextScrollTop, onDone) {
       next.getBoundingClientRect();
       state.isTransitioning = false;
       setNavGestureActive(false);
+      if (typeof onDone === 'function') onDone();
     }, duration + 20);
   });
 }
@@ -640,8 +622,7 @@ function setupEdgeSwipeNavigation() {
 
   function setupPanels(current, target, direction) {
     const headerEl = $('app-header');
-    const origHeaderBottom = headerEl ? headerEl.getBoundingClientRect().bottom : 0;
-    const destHeaderBottom = getHeaderBottomForView(target.id);
+    const headerBottom = headerEl ? headerEl.getBoundingClientRect().bottom : 0;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const currentScrollY = window.scrollY;
@@ -662,7 +643,7 @@ function setupEdgeSwipeNavigation() {
       view.style.minHeight = 'auto';
       view.style.overflowY = 'auto';
       view.style.webkitOverflowScrolling = 'touch';
-      view.style.paddingTop = (view === current ? origHeaderBottom : destHeaderBottom) + 'px';
+      view.style.paddingTop = headerBottom + 'px';
       view.style.transition = 'none';
       view.style.willChange = 'transform';
       view.style.backfaceVisibility = 'hidden';
@@ -713,10 +694,6 @@ function setupEdgeSwipeNavigation() {
     if (commit) {
       applyProgress(1);
       setTimeout(() => {
-        // Update header state while views still cover it — prevents flash
-        $('header-title').textContent = targetEntry.title;
-        updateBackButtonVisibility(target.id);
-
         current.classList.remove('active');
         current.hidden = true;
         clearTransitionStyles(current);
@@ -727,11 +704,16 @@ function setupEdgeSwipeNavigation() {
         if (direction === 'back') {
           state.forwardStack.push(gesture.currentEntry);
           state.history.pop();
+          $('header-title').textContent = targetEntry.title;
+          updateBackButtonVisibility(target.id);
+          restoreWindowScroll(targetEntry.scrollY || 0);
         } else {
           state.history.push(gesture.currentEntry);
           state.forwardStack.pop();
+          $('header-title').textContent = targetEntry.title;
+          updateBackButtonVisibility(target.id);
+          restoreWindowScroll(targetEntry.scrollY || 0);
         }
-        restoreWindowScroll(targetEntry.scrollY || 0);
         finalizeGesture();
       }, duration + 20);
     } else {
