@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pcp-directives-v55';
+const CACHE_NAME = 'pcp-directives-v56';
 const BASE = (self.location && self.location.hostname === 'icpryde.github.io')
   ? '/Primary-Care-Paramedic-Directives'
   : '';
@@ -29,6 +29,7 @@ const ASSETS = [
   BASE + '/manifest.json',
   BASE + '/icons/icon-192.png',
   BASE + '/icons/icon-512.png',
+  BASE + '/assets/Paramedic_Directives_logo.png',
   BASE + '/assets/newborn-flowchart.pdf',
   BASE + '/assets/newborn-flowchart-thumb.png',
   BASE + '/assets/trauma-arrest-flowchart.pdf',
