@@ -144,12 +144,9 @@ function restoreWindowScroll(scrollY) {
  * mutating any DOM state. Home uses a 110 px bar; all others use 52 px.
  */
 function getHeaderBottomForView(viewId) {
-  const headerEl = $('app-header');
-  if (!headerEl) return 52;
-  const currentHeight = headerEl.getBoundingClientRect().height;
-  const currentIsHome = document.body.classList.contains('app-on-home');
-  const currentHeaderBar = currentIsHome ? 110 : 52;
-  const safeTop = Math.max(0, currentHeight - currentHeaderBar);
+  const rootStyle = getComputedStyle(document.documentElement);
+  const safeTopRaw = rootStyle.getPropertyValue('--safe-top').trim();
+  const safeTop = parseFloat(safeTopRaw) || 0;
   const destHeaderBar = (viewId === 'view-home') ? 110 : 52;
   return destHeaderBar + safeTop;
 }
@@ -187,9 +184,9 @@ function transitionViews(current, next, direction, nextScrollTop, onDone) {
     view.style.position = 'fixed';
     view.style.top = '0';
     view.style.left = '0';
-    view.style.width = vw + 'px';
-    view.style.height = Math.max(0, vh - headerOffset) + 'px';
-    view.style.right = 'auto';
+    view.style.width = 'auto';
+    view.style.height = vh + 'px';
+    view.style.right = '0';
     view.style.bottom = 'auto';
     view.style.minHeight = 'auto';
     view.style.overflowY = 'auto';
@@ -656,9 +653,9 @@ function setupEdgeSwipeNavigation() {
       view.style.position = 'fixed';
       view.style.top = '0';
       view.style.left = '0';
-      view.style.width = vw + 'px';
-      view.style.height = Math.max(0, vh - headerOffset) + 'px';
-      view.style.right = 'auto';
+      view.style.width = 'auto';
+      view.style.height = vh + 'px';
+      view.style.right = '0';
       view.style.bottom = 'auto';
       view.style.minHeight = 'auto';
       view.style.overflowY = 'auto';
