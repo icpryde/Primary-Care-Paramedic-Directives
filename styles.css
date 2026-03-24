@@ -1173,6 +1173,7 @@ body.help-modal-open {
 
 /* ── Animations ───────────────────────────────────────── */
 .view.transitioning {
+  overflow: hidden !important;
   will-change: transform;
   backface-visibility: hidden;
   contain: layout paint style;
