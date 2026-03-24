@@ -1174,6 +1174,7 @@ body.help-modal-open {
 /* ── Animations ───────────────────────────────────────── */
 .view.transitioning {
   overflow: hidden !important;
+  background: var(--navy);
   will-change: transform;
   backface-visibility: hidden;
   contain: layout paint style;
