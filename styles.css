@@ -321,7 +321,7 @@ body.app-on-home .header-logo-placeholder {
   color: #fff;
   text-align: center;
   width: auto;
-  max-width: calc(100% - 2 * var(--header-side) - 12px);
+  max-width: 100%;
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;

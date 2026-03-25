@@ -43,6 +43,7 @@ const HEADER_TITLE_ALIASES = {
   'Terminal Congested Breathing': 'Terminal congestion',
   'Suspected Adrenal Crisis': 'Adrenal crisis',
   'Lateral Patellar Dislocation': 'Patellar dislocation',
+  'Subcutaneous Line Placement': 'Subcut. line placement',
 };
 
 function trimHeaderTitle(str, max = 22) {
