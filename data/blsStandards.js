@@ -289,7 +289,6 @@ const BLS_GROUP_CONTENT = {
 
   'bls-medical': {
     lead: 'Medical presentations requiring focused assessment, early risk recognition, and destination planning.',
-    sectionIntro: 'Specific standards in Section 2 – Medical Standards have been developed not on the basis of diagnosis, but on the basis of: (a) chief complaint, as stated by the patient/bystanders; (b) presenting problem as indicated by the patient/bystanders; and/or (c) immediately obvious primary survey critical findings, e.g. respiratory failure.\n\nParamedics should be aware of a patient\'s potential to deteriorate and prepare accordingly. Particular attention should be paid to the potential for compromises to airway, breathing or circulation, seizures, and/or emesis.\n\nIn conjunction with history gathering, paramedics shall determine provoking factors, quality, region/radiation/relieving factors, severity, and timing of the chief complaint or presenting problem.\n\nWhen providing patient care as per Section 2 – Medical Standards, a paramedic shall ensure that the patient simultaneously receives care in accordance with the ALS PCS.',
     standards: [
       {
         id: 'bls-abdominal-pain',

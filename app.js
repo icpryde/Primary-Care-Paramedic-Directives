@@ -1965,28 +1965,53 @@ function getBlsStandardsForGroup(groupId) {
   return group.standards;
 }
 
+/** Bold selected phrases in Pregnancy Standard guidelines (input must already be HTML-escaped). */
+function formatBlsPregnancyGuidelinesHtml(escaped) {
+  let s = String(escaped);
+  const phrases = [
+    '= 36 weeks of gestational size',
+    '= 20 weeks of gestational size',
+    '3 months + 7 days',
+    'diastolic BP ≥110',
+    '≥140/90',
+  ].sort((a, b) => b.length - a.length);
+  phrases.forEach(p => {
+    const re = new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+    s = s.replace(re, '<strong>$&</strong>');
+  });
+  return s;
+}
+
 /** Wrap numeric / threshold fragments in BLS detail text (input must already be HTML-escaped). */
 function formatBlsHighlight(t) {
   if (t == null || t === '') return '';
   let s = String(t);
-  s = s.replace(/(\d+-\d+%|\d+%)/g, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\d+-\d+%)/g, '<span class="bls-val">$1</span>');
+  s = s.replace(/\bCTAS\s+2\b/gi, '<span class="bls-val bls-val--red">$&</span>');
   s = s.replace(/((?:SpO₂|SpO2|ETCO₂|ETCO2|GCS|LAMS|SBP|DBP|HR|RR|BP|CTAS)\s*(?:[<>≤≥=]|&lt;|&gt;|&le;|&ge;)\s*\d+(?:\.\d+)?(?:\s*(?:mmHg|bpm|\/min|mmol\/L|mmol))?)/gi, '<span class="bls-val">$1</span>');
-  s = s.replace(/(\b(?:≥|≤|&lt;|&gt;|&le;|&ge;|<|>)\s*\d+(?:\.\d+)?\s*°\s*C\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/((?:^|(?<=[\s(,;:'"–-]))(?:≥|≤|&lt;|&gt;|&le;|&ge;|<|>)\s*\d+(?:\.\d+)?\s*°\s*C\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/((?:^|(?<=[\s(,;:'"–-]))(?:≥|≤|&lt;|&gt;|&le;|&ge;|<|>)\s*\d+(?:\.\d+)?%)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b(?:1st|2nd|3rd)\s+degree\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\birrigate for a minimum of (?:10|20) minutes at scene\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/((?:^|(?<=[\s(,;:'"–-]))(?:≥|≤|&lt;|&gt;|&le;|&ge;|<|>)\s*\d+\s*breaths\/minute\b)/gi, '<span class="bls-val">$1</span>');
   s = s.replace(/(\b\d+(?:-\d+)?\s*mL\/(?:hr|kg\/hr)\b)/gi, '<span class="bls-val">$1</span>');
-  s = s.replace(/(\b\d+\s*mL\/hr\b)/gi, '<span class="bls-val">$1</span>');
   s = s.replace(/(\b\d+\s*mEq\b)/gi, '<span class="bls-val">$1</span>');
-  s = s.replace(/(\b\d+\s*mL\b)/gi, '<span class="bls-val">$1</span>');
-  s = s.replace(/(\b(?:≥|≤|&lt;|&gt;)\s*\d+\s*years?\s+of\s+age\b)/gi, '<span class="bls-val">$1</span>');
-  s = s.replace(/(\bInfant\s*&lt;\s*1\s+year\s+old\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b\d+\s*mL\b)(?!\/)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(?<!Infant\s)(\b(?:age\s+)?(?:≥|≤|&lt;|&gt;|&le;|&ge;|<|>)\s*\d+\s*years?\s+(?:of\s+age|old)\b)/gi, '<span class="bls-val">$1</span>');
   s = s.replace(/(\b(?:≥|≤|<|>|&lt;|&gt;)\s*\d+\s*km\/hr\b)/gi, '<span class="bls-val">$1</span>');
-  s = s.replace(/(\b\d+\s*feet\/\d+\s*stairs\b)/gi, '<span class="bls-val">$1</span>');
   s = s.replace(/(\b(?:≥|≤|<|>|&lt;|&gt;)\s*\d+\s*metres?\b)/gi, '<span class="bls-val">$1</span>');
   s = s.replace(/(\bevery\s+\d+\s+minutes?\b)/gi, '<span class="bls-val">$1</span>');
-  s = s.replace(/(\b(?:<|>|&lt;|&gt;)\s*\d+\s*hours?\b)/gi, '<span class="bls-val">$1</span>');
-  s = s.replace(/(\b(?:<|>|&lt;|&gt;)\s*\d+\s*minutes?\b)/gi, '<span class="bls-val">$1</span>');
-  s = s.replace(/(\b\d+-\d+\s*(?:mmHg|bpm|\/min|litres|minutes|mm|mL)\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/((?:^|(?<=[\s(,;:'"–-]))(?:<|>|≤|≥|&lt;|&gt;|&le;|&ge;)\s*\d+\s*hours?\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(?<!<\s)\b(\d+\s+hours?\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\bapproximately\s+\d+\s+breaths\s+per\s+minute\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/((?:^|(?<=[\s(,;:'"–-]))(?:<|>|≤|≥|&lt;|&gt;|&le;|&ge;)\s*\d+\s*minutes?\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b\d+\s*\(\s*(?:≥|≤|&lt;|&gt;|&le;|&ge;)\s*\d+\s*\))/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b\d+-\d+\s*(?:mmHg|bpm|\/min|litres|minutes|mm)\b)/gi, '<span class="bls-val">$1</span>');
   s = s.replace(/(\b(?:≥|≤|&lt;|&gt;)\s*\d+(?:\/\d+)?\s*mmHg\b)/gi, '<span class="bls-val">$1</span>');
-  s = s.replace(/(\b(?:≥|≤|&lt;|&gt;)\s*\d+(?:\.\d+)?\s*%\b)/g, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\(PCI\)\s*(?:≥|&ge;|≤|&le;|<|>|&lt;|&gt;)\s*\d+\s+minutes\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\bAt least 2 mm ST-elevation in leads V1-V3\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\bAt least 1 mm ST-elevation\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(?<![≥≤<>]|&lt;|&gt;|&le;|&ge;)\b(\d+(?:\.\d+)?%)\b/g, '<span class="bls-val">$1</span>');
   return s;
 }
 
@@ -2152,6 +2177,10 @@ function renderBlsStandardDetail(standard, group) {
   // Helper: render guidelines (flat strings or structured groups)
   function renderGuidelines(gl) {
     if (!gl || !gl.length) return '';
+    function formatGuidelineEscaped(escaped) {
+      if (standard.id === 'bls-pregnancy') return formatBlsPregnancyGuidelinesHtml(escaped);
+      return formatBlsText(escaped);
+    }
     let h = `<div class="bls-guideline-box"><div class="bls-guideline-heading">Guidelines</div>`;
     // Check if structured (dict with heading/items) or flat strings
     const isStructured = gl.some(g => g && typeof g === 'object' && g.heading);
@@ -2160,15 +2189,15 @@ function renderBlsStandardDetail(standard, group) {
         if (g && typeof g === 'object' && g.heading) {
           h += `<div class="bls-guideline-subheading">${escHtml(g.heading)}</div>`;
           h += `<ul class="bls-guideline-list">`;
-          (g.items || []).forEach(gi => { h += `<li>${formatBlsText(escHtml(typeof gi === 'string' ? gi : ''))}</li>`; });
+          (g.items || []).forEach(gi => { h += `<li>${formatGuidelineEscaped(escHtml(typeof gi === 'string' ? gi : ''))}</li>`; });
           h += `</ul>`;
         } else {
-          h += `<ul class="bls-guideline-list"><li>${formatBlsText(escHtml(typeof g === 'string' ? g : ''))}</li></ul>`;
+          h += `<ul class="bls-guideline-list"><li>${formatGuidelineEscaped(escHtml(typeof g === 'string' ? g : ''))}</li></ul>`;
         }
       });
     } else {
       h += `<ul class="bls-guideline-list">`;
-      gl.forEach(g => { h += `<li>${formatBlsText(escHtml(typeof g === 'string' ? g : ''))}</li>`; });
+      gl.forEach(g => { h += `<li>${formatGuidelineEscaped(escHtml(typeof g === 'string' ? g : ''))}</li>`; });
       h += `</ul>`;
     }
     h += `</div>`;

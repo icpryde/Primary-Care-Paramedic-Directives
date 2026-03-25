@@ -1032,6 +1032,11 @@ body.help-modal-open {
   -webkit-box-decoration-break: clone;
 }
 
+.bls-val.bls-val--red {
+  color: #b42318;
+  background: rgba(180, 35, 24, 0.12);
+}
+
 /* DNR / definitions blocks */
 .section-card.bls-def-section {
   background: rgba(58, 134, 205, 0.06);
