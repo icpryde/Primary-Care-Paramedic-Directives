@@ -2052,44 +2052,101 @@ function renderBlsStandardDetail(standard, group) {
   html += `<div class="detail-scope-banner bg-navy">PRIMARY CARE PARAMEDIC</div>`;
   html += `<div class="detail-cat-banner bg-purple">BLS Standards — ${escHtml(group.title)}</div>`;
   html += `<div class="detail-title">${escHtml(standard.title)}</div>`;
-  html += `<div class="detail-auth">BLS PCS v3.4 quick reference. Confirm with current MOH BLS PCS and local service policy.</div>`;
+  html += `<div class="detail-auth">BLS PCS v3.4 verbatim reference. Confirm with current MOH BLS PCS and local service policy.</div>`;
   html += renderMyNotesAnchor();
 
-  const critical = Array.isArray(standard.critical) ? standard.critical : [];
-  const keyPoints = Array.isArray(standard.keyPoints) ? standard.keyPoints : [];
+  const sections = Array.isArray(standard.sections) ? standard.sections : [];
+  const guidelines = Array.isArray(standard.guidelines) ? standard.guidelines : [];
   const children = Array.isArray(standard.children) ? standard.children : [];
 
-  if (critical.length) {
-    html += `<div class="section-card">
-      <div class="section-heading red">Critical</div>
-      ${critical.map(c => `<div class="bls-critical"><strong>⚠</strong> ${escHtml(c)}</div>`).join('')}
-    </div>`;
+  // Helper: render a single item (string or { text, subItems })
+  function renderItem(item) {
+    if (typeof item === 'string') {
+      return `<li>${escHtml(item)}</li>`;
+    }
+    if (item && typeof item === 'object') {
+      let h = `<li>${escHtml(item.text || '')}`;
+      const subs = Array.isArray(item.subItems) ? item.subItems : [];
+      if (subs.length) {
+        h += `<ol class="bls-sub-list">`;
+        subs.forEach(sub => {
+          if (typeof sub === 'string') {
+            h += `<li>${escHtml(sub)}</li>`;
+          } else if (sub && typeof sub === 'object') {
+            h += `<li>${escHtml(sub.text || '')}`;
+            const ss = Array.isArray(sub.subItems) ? sub.subItems : [];
+            if (ss.length) {
+              h += `<ol class="bls-sub-sub-list">`;
+              ss.forEach(s => { h += `<li>${escHtml(typeof s === 'string' ? s : (s && s.text) || '')}</li>`; });
+              h += `</ol>`;
+            }
+            h += `</li>`;
+          }
+        });
+        h += `</ol>`;
+      }
+      h += `</li>`;
+      return h;
+    }
+    return '';
   }
 
-  if (keyPoints.length) {
-    html += `<div class="section-card">
-      <div class="section-heading">Key Points</div>
-      <ul class="bls-points">${keyPoints.map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>
-    </div>`;
+  // Helper: render a section block
+  function renderSection(sec) {
+    let h = `<div class="section-card">`;
+    if (sec.heading) {
+      h += `<div class="section-heading">${escHtml(sec.heading)}</div>`;
+    }
+    if (sec.preamble) {
+      h += `<div class="bls-preamble">${escHtml(sec.preamble)}</div>`;
+    }
+    const items = Array.isArray(sec.items) ? sec.items : [];
+    if (items.length) {
+      h += `<ol class="bls-directive-list">`;
+      items.forEach(item => { h += renderItem(item); });
+      h += `</ol>`;
+    }
+    h += `</div>`;
+    return h;
   }
 
+  // Render sections
+  sections.forEach(sec => { html += renderSection(sec); });
+
+  // Render children (blunt/penetrating)
   if (children.length) {
     children.forEach(child => {
-      const ckp = Array.isArray(child.keyPoints) ? child.keyPoints : [];
-      html += `<div class="section-card">
-        <div class="section-heading">${escHtml(child.title)}</div>
-        ${ckp.length ? `<ul class="bls-points">${ckp.map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>` : ''}
-      </div>`;
+      html += `<div class="section-card">`;
+      html += `<div class="section-heading">${escHtml(child.title)}</div>`;
+      if (child.preamble) {
+        html += `<div class="bls-preamble">${escHtml(child.preamble)}</div>`;
+      }
+      const items = Array.isArray(child.items) ? child.items : [];
+      if (items.length) {
+        html += `<ol class="bls-directive-list">`;
+        items.forEach(item => { html += renderItem(item); });
+        html += `</ol>`;
+      }
+      const cGuidelines = Array.isArray(child.guidelines) ? child.guidelines : [];
+      if (cGuidelines.length) {
+        html += `<div class="bls-guideline-box"><div class="bls-guideline-heading">Guidelines</div>`;
+        html += `<ul class="bls-guideline-list">`;
+        cGuidelines.forEach(g => { html += `<li>${escHtml(g)}</li>`; });
+        html += `</ul></div>`;
+      }
+      html += `</div>`;
     });
   }
 
-  html += `<div class="section-card"><div class="section-heading">Rapid Use Notes</div>
-    <ul class="bls-points">
-      <li><strong>Reassess frequently:</strong> trends in LOC, airway, breathing, perfusion, and pain drive destination and urgency.</li>
-      <li><strong>Escalate early:</strong> red-flag findings should trigger higher-acuity destination and pre-alert pathways.</li>
-      <li><strong>Document clearly:</strong> key findings, interventions, response, and consultation/patch decisions.</li>
-    </ul>
-  </div>`;
+  // Render guidelines
+  if (guidelines.length) {
+    html += `<div class="section-card">`;
+    html += `<div class="bls-guideline-box"><div class="bls-guideline-heading">Guidelines</div>`;
+    html += `<ul class="bls-guideline-list">`;
+    guidelines.forEach(g => { html += `<li>${escHtml(g)}</li>`; });
+    html += `</ul></div>`;
+    html += `</div>`;
+  }
 
   html += renderMyNotesSection(standard.id || ('bls-' + group.id));
 
@@ -3176,18 +3233,39 @@ function buildSearchIndex() {
       const c = BLS_GROUP_CONTENT[group.id] || {};
       const standards = Array.isArray(c.standards) ? c.standards : [];
       standards.forEach(std => {
-        const childTexts = [];
-        if (std.children) {
-          std.children.forEach(child => {
-            if (child.title) childTexts.push(child.title);
-            if (child.keyPoints) childTexts.push(...child.keyPoints);
+        const textParts = [std.title];
+        // Collect text from sections
+        if (std.sections) {
+          std.sections.forEach(sec => {
+            if (sec.preamble) textParts.push(sec.preamble);
+            (sec.items || []).forEach(item => {
+              if (typeof item === 'string') textParts.push(item);
+              else if (item && item.text) {
+                textParts.push(item.text);
+                (item.subItems || []).forEach(sub => {
+                  textParts.push(typeof sub === 'string' ? sub : (sub && sub.text) || '');
+                });
+              }
+            });
           });
         }
+        // Collect text from children (blunt/penetrating)
+        if (std.children) {
+          std.children.forEach(child => {
+            if (child.title) textParts.push(child.title);
+            (child.items || []).forEach(item => {
+              if (typeof item === 'string') textParts.push(item);
+              else if (item && item.text) textParts.push(item.text);
+            });
+          });
+        }
+        // Collect guidelines
+        if (std.guidelines) textParts.push(...std.guidelines);
         index.push({
           id: std.id || std.title,
           title: std.title,
           catLabel: 'BLS — ' + group.title,
-          text: [std.title, ...(std.keyPoints || []), ...(std.critical || []), ...childTexts].join(' ').toLowerCase(),
+          text: textParts.join(' ').toLowerCase(),
           type: 'bls-standard',
           data: { standard: std, group: group },
         });

@@ -925,7 +925,7 @@ body.help-modal-open {
   line-height: 1.4;
   padding: 8px 10px;
   border-radius: 8px;
-  margin: 4px 0 10px;
+  margin: 4px var(--page-gutter) 10px;
 }
 
 .bls-points {
@@ -937,6 +937,72 @@ body.help-modal-open {
   line-height: 1.45;
   color: var(--text);
   font-size: 14px;
+}
+
+/* BLS directive verbatim content */
+.bls-preamble {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: 4px var(--page-gutter) 6px;
+  line-height: 1.45;
+}
+.bls-directive-list {
+  margin: 0;
+  padding-left: calc(var(--page-gutter) + 18px);
+  padding-right: var(--page-gutter);
+  list-style-type: decimal;
+}
+.bls-directive-list > li {
+  margin: 8px 0;
+  line-height: 1.5;
+  color: var(--text);
+  font-size: 14px;
+}
+.bls-sub-list {
+  margin: 4px 0;
+  padding-left: 20px;
+  list-style-type: lower-alpha;
+}
+.bls-sub-list > li {
+  margin: 4px 0;
+  line-height: 1.45;
+  font-size: 13.5px;
+}
+.bls-sub-sub-list {
+  margin: 4px 0;
+  padding-left: 18px;
+  list-style-type: lower-roman;
+}
+.bls-sub-sub-list > li {
+  margin: 3px 0;
+  line-height: 1.4;
+  font-size: 13px;
+}
+.bls-guideline-box {
+  margin: 8px var(--page-gutter) 4px;
+  border-left: 3px solid var(--blue);
+  background: rgba(58, 134, 205, 0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.bls-guideline-heading {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--blue);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.bls-guideline-list {
+  margin: 0;
+  padding-left: 16px;
+}
+.bls-guideline-list li {
+  margin: 4px 0;
+  line-height: 1.4;
+  color: var(--text);
+  font-size: 13.5px;
 }
 
 .bls-children {
