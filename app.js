@@ -93,6 +93,31 @@ function bindFlatListSearch(inputId, listId) {
   });
 }
 
+/** Add clear (X) button to every `.search-bar` search input; toggles with text. */
+function initSearchClearButtons() {
+  document.querySelectorAll('.search-bar input[type="search"]').forEach(input => {
+    if (input.dataset.clearInit) return;
+    input.dataset.clearInit = '1';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'search-clear';
+    btn.setAttribute('aria-label', 'Clear search');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
+    btn.hidden = !String(input.value || '').trim();
+    input.insertAdjacentElement('afterend', btn);
+    const syncVisibility = () => {
+      btn.hidden = !String(input.value || '').trim();
+    };
+    input.addEventListener('input', syncVisibility);
+    btn.addEventListener('click', () => {
+      input.value = '';
+      btn.hidden = true;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+    });
+  });
+}
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 function showView(viewId, title, pushHistory = true) {
   const current = document.querySelector('.view.active');
@@ -116,7 +141,10 @@ function showView(viewId, title, pushHistory = true) {
       const sr = $('search-results');
       if (sr) sr.hidden = true;
       const gs = $('global-search');
-      if (gs) gs.value = '';
+      if (gs) {
+        gs.value = '';
+        gs.dispatchEvent(new Event('input', { bubbles: true }));
+      }
     }
   }
 
@@ -4178,6 +4206,8 @@ function init() {
   buildSpecialEventView();
   buildContactView();
   buildDestinationView();
+
+  initSearchClearButtons();
 
   // PCP search
   $('pcp-search').addEventListener('input', e => {

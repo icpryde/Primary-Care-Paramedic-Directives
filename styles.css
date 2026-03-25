@@ -740,11 +740,38 @@ body.help-modal-open {
   border: none;
   outline: none;
   font-size: 16px;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   background: transparent;
   color: var(--text);
 }
 .search-bar input::placeholder { color: #8E8E93; }
+
+.search-clear {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  margin: -6px -6px -6px 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #c7c7cc;
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.search-clear[hidden] {
+  display: none !important;
+}
+.search-clear svg {
+  display: block;
+}
+.search-clear:active {
+  opacity: 0.85;
+}
 
 /* ── Search Results ───────────────────────────────────── */
 .search-results {
