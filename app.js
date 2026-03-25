@@ -2006,12 +2006,7 @@ function buildCategoryList(containerEl, items_fn, onClickFn) {
           subRow.innerHTML = `<span class="directive-row-title">${std.title}</span><span class="directive-row-chevron"></span>`;
           subRow.addEventListener('click', e => {
             e.stopPropagation();
-            try {
-              renderBlsStandardDetail(std, item);
-              showView('view-detail', headerTitleFromItem(std));
-            } catch (err) {
-              alert('BLS click error: ' + err.message);
-            }
+            onClickFn({ type: 'bls-standard', standard: std, group: item });
           });
           subList.appendChild(subRow);
         });
@@ -3950,8 +3945,13 @@ function init() {
 
   // Build PCP list
   buildCategoryList($('pcp-list'), getDirectivesByCategory, directive => {
-    renderDirectiveDetail(directive);
-    showView('view-detail', headerTitleFromItem(directive));
+    if (directive.type === 'bls-standard') {
+      renderBlsStandardDetail(directive.standard, directive.group);
+      showView('view-detail', headerTitleFromItem(directive.standard));
+    } else {
+      renderDirectiveDetail(directive);
+      showView('view-detail', headerTitleFromItem(directive));
+    }
   });
 
   // Build Companion list
