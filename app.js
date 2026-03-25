@@ -4006,46 +4006,10 @@ function init() {
 
   // Register Service Worker
   if ('serviceWorker' in navigator) {
-    const hadController = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.register('sw.js')
-      .then(registration => {
-        registration.update().catch(() => {});
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (hadController) showUpdateBadge();
-        });
-      })
+      .then(registration => registration.update().catch(() => {}))
       .catch(err => console.log('SW reg failed:', err));
   }
-}
-
-function showUpdateBadge() {
-  const badge = $('update-badge');
-  if (!badge || !badge.hidden) return;
-  badge.hidden = false;
-
-  // Tap → open the help modal (already contains close-and-reopen instructions)
-  badge.addEventListener('click', () => {
-    badge.hidden = true;
-    openInstallHelpModal();
-  }, { once: true });
-
-  // Swipe right (≥ 50 px) or swipe up (≥ 50 px) to dismiss
-  let t0x = 0, t0y = 0;
-  badge.addEventListener('touchstart', e => {
-    t0x = e.touches[0].clientX;
-    t0y = e.touches[0].clientY;
-  }, { passive: true });
-  badge.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - t0x;
-    const dy = e.changedTouches[0].clientY - t0y;
-    if (dx > 50 || dy < -50) {
-      badge.classList.add('update-badge--hiding');
-      badge.addEventListener('transitionend', () => {
-        badge.hidden = true;
-        badge.classList.remove('update-badge--hiding');
-      }, { once: true });
-    }
-  }, { passive: true });
 }
 
 document.addEventListener('DOMContentLoaded', init);

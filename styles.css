@@ -6007,35 +6007,3 @@ body.help-modal-open {
   transition: background 0.15s;
 }
 .quick-calc-btn:active { background: #1e40af; }
-
-/* ── Update-ready Badge ─────────────────────────────────── */
-.update-badge {
-  position: fixed;
-  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-  right: max(16px, calc(12px + env(safe-area-inset-right, 0px)));
-  z-index: 1100;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 11px 18px;
-  background: var(--green);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  border-radius: 999px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  transform: translateX(0);
-  opacity: 1;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-.update-badge--hiding {
-  transform: translateX(calc(100% + 32px));
-  opacity: 0;
-}
-.update-badge-icon {
-  font-size: 18px;
-  line-height: 1;
-}
