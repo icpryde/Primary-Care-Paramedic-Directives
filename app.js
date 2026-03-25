@@ -2006,8 +2006,12 @@ function buildCategoryList(containerEl, items_fn, onClickFn) {
           subRow.innerHTML = `<span class="directive-row-title">${std.title}</span><span class="directive-row-chevron"></span>`;
           subRow.addEventListener('click', e => {
             e.stopPropagation();
-            renderBlsStandardDetail(std, item);
-            showView('view-detail', headerTitleFromItem(std));
+            try {
+              renderBlsStandardDetail(std, item);
+              showView('view-detail', headerTitleFromItem(std));
+            } catch (err) {
+              alert('BLS click error: ' + err.message);
+            }
           });
           subList.appendChild(subRow);
         });
