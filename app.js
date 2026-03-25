@@ -2095,7 +2095,6 @@ function renderBlsStandardDetail(standard, group) {
   html += renderMyNotesSection(standard.id || ('bls-' + group.id));
 
   $('detail-content').innerHTML = html;
-  ensureMyNotesMounted();
   window.scrollTo(0, 0);
 }
 
