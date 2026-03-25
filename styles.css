@@ -5986,7 +5986,7 @@ body.help-modal-open {
 }
 
 /* ── Quick Calculator button on directive detail ──────────────────────────── */
-.quick-calc-card { border-left: 3px solid #3b82f6 !important; }
+.quick-calc-card { border-left: 3px solid #3b82f6 !important; padding-bottom: 16px; }
 .quick-calc-heading { color: #1d4ed8 !important; }
 .quick-calc-btn {
   display: block;
@@ -5994,7 +5994,7 @@ body.help-modal-open {
   min-width: 200px;
   max-width: calc(100% - 32px);
   padding: 11px 24px;
-  margin: 10px auto 12px;
+  margin: 10px auto 0;
   background: #1d4ed8;
   color: #fff;
   font-size: 0.92rem;
