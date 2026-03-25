@@ -749,21 +749,24 @@ body.help-modal-open {
 
 .search-clear {
   flex-shrink: 0;
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  padding: 12px;
-  margin: -12px -8px -12px 0;
-  box-sizing: content-box;
+  width: 18px;
+  height: 18px;
+  padding: 0;
   border: none;
   border-radius: 50%;
   background: #c7c7cc;
-  background-clip: content-box;
   color: #fff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+.search-clear::before {
+  content: '';
+  position: absolute;
+  inset: -13px;
 }
 .search-clear[hidden] {
   display: none !important;
@@ -772,7 +775,7 @@ body.help-modal-open {
   display: block;
 }
 .search-clear:active {
-  opacity: 0.85;
+  opacity: 0.7;
 }
 
 /* ── Search Results ───────────────────────────────────── */
