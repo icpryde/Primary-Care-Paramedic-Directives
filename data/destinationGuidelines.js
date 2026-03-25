@@ -6,6 +6,21 @@ const MOH_BLS_PCS_V34_PDF =
 
 const DESTINATION_MENU = [
   {
+    id: 'prompt-acute-stroke',
+    title: 'Acute Stroke Bypass Protocol',
+    keywords: 'stroke dsc lvo lams ctas bypass evt telestroke acute stroke protocol prompt card',
+  },
+  {
+    id: 'prompt-stemi-bypass',
+    title: 'STEMI Bypass Protocol',
+    keywords: 'stemi pci cath lab bypass fibrinolytic southlake srhc st elevation ami chest pain pci centre lbbb',
+  },
+  {
+    id: 'fast-sepsis-prealert',
+    title: 'FAST Sepsis Pre-Alert',
+    keywords: 'sepsis prealert parahews fast infection hospital alert',
+  },
+  {
     id: 'field-trauma-triage',
     title: 'Field Trauma Triage Standards',
     keywords: 'trauma triage field mechanism injury lth physiological anatomical prompt card flowchart',
@@ -21,24 +36,9 @@ const DESTINATION_MENU = [
     keywords: 'death pronouncement coroner police scene preservation body',
   },
   {
-    id: 'prompt-acute-stroke',
-    title: 'Acute Stroke Protocol - Prompt Card',
-    keywords: 'stroke dsc lvo lams ctas bypass evt telestroke acute stroke protocol prompt card',
-  },
-  {
-    id: 'radio-channel-change',
-    title: 'Radio Channel Change Locations',
-    keywords: 'radio nia reg2 moh zn prov com fifty road qew cacc tac',
-  },
-  {
-    id: 'prompt-stemi-bypass',
-    title: 'STEMI Hospital Bypass Protocol Prompt Card',
-    keywords: 'stemi pci cath lab bypass fibrinolytic southlake srhc st elevation ami chest pain pci centre lbbb',
-  },
-  {
-    id: 'fast-sepsis-prealert',
-    title: 'FAST Sepsis Pre-Alert',
-    keywords: 'sepsis prealert parahews fast infection hospital alert',
+    id: 'prompt-spinal-motion-restriction',
+    title: 'Spinal Motion Restriction Standard',
+    keywords: 'smr spinal motion restriction standard collar penetrating moi prompt card',
   },
   {
     id: 'twelve-lead-acs',
@@ -51,9 +51,9 @@ const DESTINATION_MENU = [
     keywords: 'fit2sit fit to sit ctas gcs rowpsv grh cmh st mary exclusion inclusion',
   },
   {
-    id: 'prompt-spinal-motion-restriction',
-    title: 'Spinal Motion Restriction Standard',
-    keywords: 'smr spinal motion restriction standard collar penetrating moi prompt card',
+    id: 'radio-channel-change',
+    title: 'Radio Channel Change Locations',
+    keywords: 'radio nia reg2 moh zn prov com fifty road qew cacc tac',
   },
 ];
 
@@ -240,7 +240,7 @@ function buildDestinationDetailHtml(id) {
 
   if (id === 'prompt-acute-stroke') {
     html += `<div class="section-card destination-guidelines-page">
-      <h2 class="destination-page-title">Acute Stroke Protocol - Prompt Card</h2>
+      <h2 class="destination-page-title">Acute Stroke Bypass Protocol</h2>
       <div class="destination-prose">
         <p class="destination-lead">Quick reference for the Acute Stroke Protocol in BLS PCS. See BLS PCS for the full standard.</p>
 
@@ -331,7 +331,7 @@ function buildDestinationDetailHtml(id) {
 
   if (id === 'prompt-stemi-bypass') {
     html += `<div class="section-card destination-guidelines-page">
-      <h2 class="destination-page-title">STEMI Hospital Bypass Protocol Prompt Card</h2>
+      <h2 class="destination-page-title">STEMI Bypass Protocol</h2>
       <div class="destination-prose">
         <p class="destination-lead"><strong>Paramedic Prompt Card for STEMI Hospital Bypass Protocol</strong></p>
         <p>This prompt card summarizes the <em>STEMI Hospital Bypass Protocol</em> in the <em>Basic Life Support Patient Care Standards (BLS PCS)</em>. Refer to BLS PCS for the full protocol.</p>
