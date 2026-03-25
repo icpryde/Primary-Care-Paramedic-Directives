@@ -1117,6 +1117,351 @@
     <div id="references-list" class="category-list"></div>
   </div>
 
+  <!-- DEXTROSE DOSE CALCULATOR -->
+  <div id="view-dextrose" class="view drug-calc-view" hidden>
+    <div class="drug-calc-scroll">
+      <header class="drug-calc-header drug-calc-header--blue">
+        <div class="drug-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.7c2 4 6 6 6 10a6 6 0 1 1-12 0c0-4 4-6 6-10z"/></svg>
+        </div>
+        <div>
+          <h2 class="drug-calc-h1">Dextrose Calculator</h2>
+          <p class="drug-calc-sub">ALS PCS — Hypoglycemia Directive</p>
+        </div>
+      </header>
+
+      <div class="drug-calc-card">
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Patient Weight</span>
+          <div class="drug-calc-weight-row">
+            <input id="dex-weight" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-dex-unit="kg">kg</button>
+              <button type="button" class="drug-calc-unit-btn" data-dex-unit="lbs">lbs</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Age Group</span>
+          <div class="drug-calc-toggle-row">
+            <button type="button" class="drug-calc-option-btn" id="dex-age-under2">Under 2 years</button>
+            <button type="button" class="drug-calc-option-btn drug-calc-option-btn--on" id="dex-age-over2">2 years and older</button>
+          </div>
+        </div>
+
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Concentration</span>
+          <div class="drug-calc-toggle-row">
+            <button type="button" class="drug-calc-option-btn drug-calc-option-btn--on" id="dex-conc-10">10% (D10W)</button>
+            <button type="button" class="drug-calc-option-btn" id="dex-conc-50">50% (D50W)</button>
+          </div>
+        </div>
+
+        <div id="dex-result" class="drug-calc-result drug-calc-result--hidden">
+          <div class="drug-calc-result-main">
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Volume to administer</span>
+              <span class="drug-calc-result-value"><span id="dex-vol">—</span> <span class="drug-calc-result-unit">mL</span></span>
+            </div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dextrose mass</span>
+              <span class="drug-calc-result-value"><span id="dex-dose">—</span> <span class="drug-calc-result-unit">g</span></span>
+            </div>
+          </div>
+          <div class="drug-calc-meta-row">
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight (kg)</span><span id="dex-kg-display" class="drug-calc-meta-val">—</span></div>
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Route</span><span class="drug-calc-meta-val">IV</span></div>
+          </div>
+          <div id="dex-max-warning" class="drug-calc-warning" hidden>
+            ⚠ Dose exceeds maximum — showing max allowed dose
+          </div>
+        </div>
+
+        <div id="dex-empty" class="drug-calc-empty">Enter patient weight to calculate dose</div>
+      </div>
+
+      <div class="drug-calc-card drug-calc-card--info">
+        <h3 class="drug-calc-info-heading">Directive Parameters</h3>
+        <div class="drug-calc-info-grid">
+          <div>
+            <p class="drug-calc-info-sub">D10W — Under 2 years</p>
+            <ul class="drug-calc-info-list">
+              <li>Dose: 0.2 g/kg (2 mL/kg)</li>
+              <li>Max single dose: 5 g (50 mL)</li>
+            </ul>
+            <p class="drug-calc-info-sub" style="margin-top:8px">D10W — Age ≥ 2 yr</p>
+            <ul class="drug-calc-info-list">
+              <li>Dose: 0.2 g/kg (2 mL/kg)</li>
+              <li>Max single dose: 25 g (250 mL)</li>
+            </ul>
+            <p class="drug-calc-info-sub" style="margin-top:8px">D50W — Age ≥ 2 yr</p>
+            <ul class="drug-calc-info-list">
+              <li>Dose: 0.5 g/kg (1 mL/kg)</li>
+              <li>Max single dose: 25 g (50 mL)</li>
+            </ul>
+          </div>
+          <div>
+            <p class="drug-calc-info-sub">Dosing</p>
+            <ul class="drug-calc-info-list">
+              <li>Route: IV</li>
+              <li>Interval: 10 min</li>
+              <li>Max doses: 2</li>
+            </ul>
+          </div>
+        </div>
+        <p class="drug-calc-note">Titrate to level of awareness where patient can safely consume complex carbohydrate.</p>
+      </div>
+
+      <p class="drug-calc-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
+    </div>
+  </div>
+
+  <!-- EPI ANAPHYLAXIS DOSE CALCULATOR -->
+  <div id="view-epi-anaphylaxis" class="view drug-calc-view" hidden>
+    <div class="drug-calc-scroll">
+      <header class="drug-calc-header drug-calc-header--red">
+        <div class="drug-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V12m0 0l-4-4m4 4l4-4M6 6h.01M18 6h.01M12 2v4"/></svg>
+        </div>
+        <div>
+          <h2 class="drug-calc-h1">EPINEPHrine (IM) Calculator</h2>
+          <p class="drug-calc-sub">ALS PCS — Anaphylaxis (1:1,000)</p>
+        </div>
+      </header>
+
+      <div class="drug-calc-card">
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Patient Weight</span>
+          <div class="drug-calc-weight-row">
+            <input id="epi-weight" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-epi-unit="kg">kg</button>
+              <button type="button" class="drug-calc-unit-btn" data-epi-unit="lbs">lbs</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="epi-result" class="drug-calc-result drug-calc-result--hidden">
+          <div class="drug-calc-result-main">
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dose to administer</span>
+              <span class="drug-calc-result-value"><span id="epi-dose">—</span> <span class="drug-calc-result-unit">mg</span></span>
+            </div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Volume to draw up (1:1,000)</span>
+              <span class="drug-calc-result-value"><span id="epi-vol">—</span> <span class="drug-calc-result-unit">mL</span></span>
+            </div>
+          </div>
+          <div class="drug-calc-meta-row">
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight (kg)</span><span id="epi-kg-display" class="drug-calc-meta-val">—</span></div>
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Route</span><span class="drug-calc-meta-val">IM</span></div>
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Conc.</span><span class="drug-calc-meta-val">1 mg/mL</span></div>
+          </div>
+          <div id="epi-max-warning" class="drug-calc-warning" hidden>
+            ⚠ Dose exceeds maximum — showing max allowed dose (0.5 mg / 0.5 mL)
+          </div>
+        </div>
+
+        <div id="epi-empty" class="drug-calc-empty">Enter patient weight to calculate dose</div>
+      </div>
+
+      <div class="drug-calc-card drug-calc-card--info">
+        <h3 class="drug-calc-info-heading">Directive Parameters</h3>
+        <div class="drug-calc-info-grid">
+          <div>
+            <p class="drug-calc-info-sub">Allergic Reaction</p>
+            <ul class="drug-calc-info-list">
+              <li>Dose: 0.01 mg/kg IM (rounded to nearest 0.05 mg)</li>
+              <li>Max single dose: 0.5 mg</li>
+              <li>Interval: minimum 5 min</li>
+              <li>Max doses: 2</li>
+            </ul>
+          </div>
+          <div>
+            <p class="drug-calc-info-sub">Medical Cardiac Arrest<br><em>(Anaphylaxis as causative event)</em></p>
+            <ul class="drug-calc-info-list">
+              <li>Same dose calculation</li>
+              <li>Max doses: <strong>1 only</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="drug-calc-note">Concentration: 1 mg/mL (1:1,000). EPINEPHrine administration takes priority over IV access.</p>
+      </div>
+
+      <p class="drug-calc-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
+    </div>
+  </div>
+
+  <!-- BRONCHOCONSTRICTION DRUG CALCULATOR -->
+  <div id="view-broncho-calc" class="view drug-calc-view" hidden>
+    <div class="drug-calc-scroll">
+      <header class="drug-calc-header drug-calc-header--teal">
+        <div class="drug-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+        </div>
+        <div>
+          <h2 class="drug-calc-h1">Bronchoconstriction Calculator</h2>
+          <p class="drug-calc-sub">ALS PCS — EPINEPHrine &amp; Dexamethasone</p>
+        </div>
+      </header>
+
+      <div class="drug-calc-card">
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Patient Weight</span>
+          <div class="drug-calc-weight-row">
+            <input id="broncho-weight" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-broncho-unit="kg">kg</button>
+              <button type="button" class="drug-calc-unit-btn" data-broncho-unit="lbs">lbs</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="broncho-result" class="drug-calc-result drug-calc-result--hidden">
+          <div class="drug-calc-drug-section">
+            <div class="drug-calc-drug-label drug-calc-drug-label--red">EPINEPHrine IM (1:1,000)</div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dose</span>
+              <span class="drug-calc-result-value"><span id="broncho-epi-dose">—</span> <span class="drug-calc-result-unit">mg</span></span>
+            </div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Volume to draw up</span>
+              <span class="drug-calc-result-value"><span id="broncho-epi-vol">—</span> <span class="drug-calc-result-unit">mL</span></span>
+            </div>
+            <div id="broncho-epi-max-warning" class="drug-calc-warning" hidden>⚠ Dose exceeds maximum — showing max (0.5 mg / 0.5 mL)</div>
+            <p class="drug-calc-condition-note">Condition: apneic patient requiring BVM + history of asthma. Max 1 dose.</p>
+          </div>
+
+          <div class="drug-calc-drug-section">
+            <div class="drug-calc-drug-label drug-calc-drug-label--green">Dexamethasone PO / IM / IV</div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dose</span>
+              <span class="drug-calc-result-value"><span id="broncho-dex-dose">—</span> <span class="drug-calc-result-unit">mg</span></span>
+            </div>
+            <div id="broncho-dex-max-warning" class="drug-calc-warning" hidden>⚠ Dose exceeds maximum — showing max (8 mg)</div>
+            <p class="drug-calc-condition-note">Condition: Hx asthma OR COPD OR ≥ 20 pack-year. Max 1 dose.</p>
+          </div>
+
+          <div class="drug-calc-meta-row">
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight (kg)</span><span id="broncho-kg-display" class="drug-calc-meta-val">—</span></div>
+          </div>
+        </div>
+
+        <div id="broncho-empty" class="drug-calc-empty">Enter patient weight to calculate doses</div>
+      </div>
+
+      <div class="drug-calc-card drug-calc-card--info">
+        <h3 class="drug-calc-info-heading">Directive Parameters</h3>
+        <div class="drug-calc-info-grid">
+          <div>
+            <p class="drug-calc-info-sub">EPINEPHrine IM (1:1,000)</p>
+            <ul class="drug-calc-info-list">
+              <li>0.01 mg/kg (rounded to nearest 0.05 mg)</li>
+              <li>Max single dose: 0.5 mg</li>
+              <li>Max doses: 1</li>
+            </ul>
+          </div>
+          <div>
+            <p class="drug-calc-info-sub">Dexamethasone</p>
+            <ul class="drug-calc-info-list">
+              <li>0.5 mg/kg PO/IM/IV</li>
+              <li>Max single dose: 8 mg</li>
+              <li>Max doses: 1</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p class="drug-calc-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
+    </div>
+  </div>
+
+  <!-- CROUP DRUG CALCULATOR -->
+  <div id="view-croup-calc" class="view drug-calc-view" hidden>
+    <div class="drug-calc-scroll">
+      <header class="drug-calc-header drug-calc-header--purple">
+        <div class="drug-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+        </div>
+        <div>
+          <h2 class="drug-calc-h1">Croup Calculator</h2>
+          <p class="drug-calc-sub">ALS PCS — EPINEPHrine NEB &amp; Dexamethasone</p>
+        </div>
+      </header>
+
+      <div class="drug-calc-card">
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Patient Weight</span>
+          <div class="drug-calc-weight-row">
+            <input id="croup-weight" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-croup-unit="kg">kg</button>
+              <button type="button" class="drug-calc-unit-btn" data-croup-unit="lbs">lbs</button>
+            </div>
+          </div>
+        </div>
+        <p class="drug-calc-age-note">Age range: ≥ 6 months to &lt; 8 years</p>
+
+        <div id="croup-result" class="drug-calc-result drug-calc-result--hidden">
+          <div class="drug-calc-drug-section">
+            <div class="drug-calc-drug-label drug-calc-drug-label--red">EPINEPHrine NEB (1:1,000)</div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dose</span>
+              <span class="drug-calc-result-value"><span id="croup-epi-dose">—</span> <span class="drug-calc-result-unit">mg</span></span>
+            </div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Volume of 1:1,000 solution</span>
+              <span class="drug-calc-result-value"><span id="croup-epi-vol">—</span> <span class="drug-calc-result-unit">mL</span></span>
+            </div>
+            <p class="drug-calc-condition-note">Condition: stridor at rest. HR &lt; 200 bpm. Max 1 dose.</p>
+          </div>
+
+          <div class="drug-calc-drug-section">
+            <div class="drug-calc-drug-label drug-calc-drug-label--green">Dexamethasone PO</div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dose</span>
+              <span class="drug-calc-result-value"><span id="croup-dex-dose">—</span> <span class="drug-calc-result-unit">mg</span></span>
+            </div>
+            <div id="croup-dex-max-warning" class="drug-calc-warning" hidden>⚠ Dose exceeds maximum — showing max (8 mg)</div>
+            <p class="drug-calc-condition-note">For mild, moderate and severe croup. Unaltered LOA. Max 1 dose.</p>
+          </div>
+
+          <div class="drug-calc-meta-row">
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight (kg)</span><span id="croup-kg-display" class="drug-calc-meta-val">—</span></div>
+            <div class="drug-calc-meta-pill" id="croup-weight-bracket-pill"><span class="drug-calc-meta-label">Epi bracket</span><span id="croup-weight-bracket" class="drug-calc-meta-val">—</span></div>
+          </div>
+        </div>
+
+        <div id="croup-empty" class="drug-calc-empty">Enter patient weight to calculate doses</div>
+      </div>
+
+      <div class="drug-calc-card drug-calc-card--info">
+        <h3 class="drug-calc-info-heading">Directive Parameters</h3>
+        <div class="drug-calc-info-grid">
+          <div>
+            <p class="drug-calc-info-sub">EPINEPHrine NEB (1:1,000)</p>
+            <ul class="drug-calc-info-list">
+              <li>Weight &lt; 10 kg → 2.5 mg (2.5 mL)</li>
+              <li>Weight ≥ 10 kg → 5 mg (5 mL)</li>
+              <li>Max doses: 1</li>
+            </ul>
+          </div>
+          <div>
+            <p class="drug-calc-info-sub">Dexamethasone PO</p>
+            <ul class="drug-calc-info-list">
+              <li>0.5 mg/kg</li>
+              <li>Max single dose: 8 mg</li>
+              <li>Max doses: 1</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p class="drug-calc-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
+    </div>
+  </div>
+
   <!-- DIRECTIVE DETAIL -->
   <div id="view-detail" class="view" hidden>
     <div id="detail-content" class="detail-content"></div>

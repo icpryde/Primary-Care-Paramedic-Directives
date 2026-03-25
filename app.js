@@ -124,6 +124,10 @@ function showView(viewId, title, pushHistory = true) {
   if (viewId === 'view-dosage-calc') dosageRefresh();
   if (viewId === 'view-parkland-burn') parklandRefresh();
   if (viewId === 'view-iv-therapy') ivTherapyRefresh();
+  if (viewId === 'view-dextrose') dextroseInit();
+  if (viewId === 'view-epi-anaphylaxis') epiAnaphylaxisInit();
+  if (viewId === 'view-broncho-calc') bronchoCalcInit();
+  if (viewId === 'view-croup-calc') croupCalcInit();
   if (viewId === 'view-medications') medicationsSyncAndRender();
 }
 
@@ -1529,6 +1533,14 @@ function ivSetTab(tab) {
   if (d) d.hidden = tab !== 'directive';
 }
 
+/** Open the IV Therapy calculator pre-set to a specific directive preset. */
+function ivDirOpenPreset(preset) {
+  ivSetTab('directive');
+  ivSetDirType(preset);
+  ivDirSyncForm();
+  showView('view-iv-therapy', 'IV Therapy');
+}
+
 function ivDirSyncForm() {
   const type = ivGetDirType();
   const age = $('iv-dir-age')?.value || 'adult';
@@ -2121,6 +2133,26 @@ function renderDirectiveDetail(directive) {
     html += `</div></div>`;
   }
 
+  // QUICK CALCULATOR LINKS
+  const calcLinks = {
+    'hypoglycemia':           [{ label: 'Dextrose Dose Calculator',                      fn: `showView('view-dextrose','Dextrose Calc')` }],
+    'allergic-reaction':      [{ label: 'EPINEPHrine Dose Calculator',                   fn: `showView('view-epi-anaphylaxis','Epi Calculator')` }],
+    'bronchoconstriction':    [{ label: 'Bronchoconstriction Drug Calculator',           fn: `showView('view-broncho-calc','Broncho Calculator')` }],
+    'croup':                  [{ label: 'Croup Drug Calculator',                         fn: `showView('view-croup-calc','Croup Calculator')` }],
+    'medical-cardiac-arrest': [{ label: 'EPINEPHrine Dose Calculator (Anaphylaxis)',      fn: `showView('view-epi-anaphylaxis','Epi Calculator')` }],
+    'cardiogenic-shock':      [{ label: 'IV Fluid Calculator',                           fn: `ivDirOpenPreset('bolus_cardio')` }],
+    'iv-fluid':               [{ label: 'IV Therapy Calculator',                         fn: `ivDirOpenPreset('bolus_general')` }],
+  };
+  const directiveCalcLinks = calcLinks[directive.id];
+  if (directiveCalcLinks) {
+    html += `<div class="section-card quick-calc-card">`;
+    html += `<div class="section-heading quick-calc-heading">Quick Calculator</div>`;
+    directiveCalcLinks.forEach(link => {
+      html += `<button class="quick-calc-btn" onclick="${link.fn}">${link.label}</button>`;
+    });
+    html += `</div>`;
+  }
+
   // My Notes section at bottom
   html += renderMyNotesSection(directive.id);
 
@@ -2325,6 +2357,281 @@ function buildReferencesView() {
 }
 
 // ─── Medical Calculators hub ─────────────────────────────────────────────────
+// ─── Drug Calculators (Directive-linked) ─────────────────────────────────────
+
+// ── Shared helper: round to nearest 0.05, preserving float precision ──────────
+function roundTo005(val) {
+  return parseFloat((Math.round(val / 0.05) * 0.05).toFixed(2));
+}
+
+// ── Dextrose Calculator ───────────────────────────────────────────────────────
+const dexState = { unit: 'kg', conc: '10', age: 'over2' };
+
+function dextroseCalcRefresh() {
+  const raw = parseFloat($('dex-weight')?.value ?? '');
+  const resultEl = $('dex-result');
+  const emptyEl  = $('dex-empty');
+  if (!resultEl || !emptyEl) return;
+
+  if (!raw || raw <= 0 || isNaN(raw)) {
+    resultEl.classList.add('drug-calc-result--hidden');
+    emptyEl.hidden = false;
+    return;
+  }
+
+  const kg = dexState.unit === 'lbs' ? raw / 2.20462 : raw;
+  let dose, vol, maxDose, maxVol;
+
+  if (dexState.age === 'under2') {
+    dose    = Math.min(parseFloat((kg * 0.2).toFixed(2)), 5);
+    vol     = Math.min(parseFloat((kg * 2).toFixed(1)), 50);
+    maxDose = 5; maxVol = 50;
+  } else if (dexState.conc === '10') {
+    dose   = Math.min(parseFloat((kg * 0.2).toFixed(2)), 25);
+    vol    = Math.min(parseFloat((kg * 2).toFixed(1)), 250);
+    maxDose = 25; maxVol = 250;
+  } else {
+    dose   = Math.min(parseFloat((kg * 0.5).toFixed(2)), 25);
+    vol    = Math.min(parseFloat((kg * 1).toFixed(1)), 50);
+    maxDose = 25; maxVol = 50;
+  }
+
+  const rawDose = dexState.age === 'under2' ? kg * 0.2 : (dexState.conc === '10' ? kg * 0.2 : kg * 0.5);
+  const isMaxed = rawDose > maxDose;
+
+  $('dex-vol').textContent        = vol.toFixed(1);
+  $('dex-dose').textContent       = dose.toFixed(1);
+  $('dex-kg-display').textContent = kg.toFixed(1);
+  const warn = $('dex-max-warning');
+  if (warn) warn.hidden = !isMaxed;
+  resultEl.classList.remove('drug-calc-result--hidden');
+  emptyEl.hidden = true;
+}
+
+function dextroseInit() {
+  const root = $('view-dextrose');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  $('dex-weight')?.addEventListener('input', dextroseCalcRefresh);
+
+  $('dex-age-under2')?.addEventListener('click', () => {
+    dexState.age = 'under2';
+    $('dex-age-under2').classList.add('drug-calc-option-btn--on');
+    $('dex-age-over2').classList.remove('drug-calc-option-btn--on');
+    dexState.conc = '10';
+    $('dex-conc-10')?.classList.add('drug-calc-option-btn--on');
+    $('dex-conc-50')?.classList.remove('drug-calc-option-btn--on');
+    const conc50 = $('dex-conc-50');
+    if (conc50) { conc50.disabled = true; conc50.style.opacity = '0.4'; conc50.style.pointerEvents = 'none'; }
+    dextroseCalcRefresh();
+  });
+  $('dex-age-over2')?.addEventListener('click', () => {
+    dexState.age = 'over2';
+    $('dex-age-over2').classList.add('drug-calc-option-btn--on');
+    $('dex-age-under2').classList.remove('drug-calc-option-btn--on');
+    const conc50 = $('dex-conc-50');
+    if (conc50) { conc50.disabled = false; conc50.style.opacity = ''; conc50.style.pointerEvents = ''; }
+    dextroseCalcRefresh();
+  });
+
+  root.querySelectorAll('[data-dex-unit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      dexState.unit = btn.dataset.dexUnit;
+      root.querySelectorAll('[data-dex-unit]').forEach(b =>
+        b.classList.toggle('drug-calc-unit-btn--on', b === btn));
+      dextroseCalcRefresh();
+    });
+  });
+
+  $('dex-conc-10')?.addEventListener('click', () => {
+    dexState.conc = '10';
+    $('dex-conc-10').classList.add('drug-calc-option-btn--on');
+    $('dex-conc-50').classList.remove('drug-calc-option-btn--on');
+    dextroseCalcRefresh();
+  });
+  $('dex-conc-50')?.addEventListener('click', () => {
+    dexState.conc = '50';
+    $('dex-conc-50').classList.add('drug-calc-option-btn--on');
+    $('dex-conc-10').classList.remove('drug-calc-option-btn--on');
+    dextroseCalcRefresh();
+  });
+
+  dextroseCalcRefresh();
+}
+
+// ── EPINEPHrine Anaphylaxis Calculator ────────────────────────────────────────
+const epiState = { unit: 'kg' };
+
+function epiAnaphylaxisRefresh() {
+  const raw = parseFloat($('epi-weight')?.value ?? '');
+  const resultEl = $('epi-result');
+  const emptyEl  = $('epi-empty');
+  if (!resultEl || !emptyEl) return;
+
+  if (!raw || raw <= 0 || isNaN(raw)) {
+    resultEl.classList.add('drug-calc-result--hidden');
+    emptyEl.hidden = false;
+    return;
+  }
+
+  const kg       = epiState.unit === 'lbs' ? raw / 2.20462 : raw;
+  const rawDose  = kg * 0.01;
+  const rounded  = roundTo005(rawDose);
+  const isMaxed  = rounded > 0.5;
+  const finalDose = Math.min(rounded, 0.5);
+
+  $('epi-dose').textContent       = finalDose.toFixed(2);
+  $('epi-vol').textContent        = finalDose.toFixed(2);
+  $('epi-kg-display').textContent = kg.toFixed(1);
+  const warn = $('epi-max-warning');
+  if (warn) warn.hidden = !isMaxed;
+  resultEl.classList.remove('drug-calc-result--hidden');
+  emptyEl.hidden = true;
+}
+
+function epiAnaphylaxisInit() {
+  const root = $('view-epi-anaphylaxis');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  $('epi-weight')?.addEventListener('input', epiAnaphylaxisRefresh);
+
+  root.querySelectorAll('[data-epi-unit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      epiState.unit = btn.dataset.epiUnit;
+      root.querySelectorAll('[data-epi-unit]').forEach(b =>
+        b.classList.toggle('drug-calc-unit-btn--on', b === btn));
+      epiAnaphylaxisRefresh();
+    });
+  });
+
+  epiAnaphylaxisRefresh();
+}
+
+// ── Bronchoconstriction Calculator ────────────────────────────────────────────
+const bronchoState = { unit: 'kg' };
+
+function bronchoCalcRefresh() {
+  const raw = parseFloat($('broncho-weight')?.value ?? '');
+  const resultEl = $('broncho-result');
+  const emptyEl  = $('broncho-empty');
+  if (!resultEl || !emptyEl) return;
+
+  if (!raw || raw <= 0 || isNaN(raw)) {
+    resultEl.classList.add('drug-calc-result--hidden');
+    emptyEl.hidden = false;
+    return;
+  }
+
+  const kg          = bronchoState.unit === 'lbs' ? raw / 2.20462 : raw;
+
+  // Epi IM
+  const epiRaw     = kg * 0.01;
+  const epiRounded = roundTo005(epiRaw);
+  const epiIsMaxed = epiRounded > 0.5;
+  const epiDose    = Math.min(epiRounded, 0.5);
+  const epiVol     = epiDose;
+
+  // Dexamethasone
+  const dexRaw     = kg * 0.5;
+  const dexIsMaxed = dexRaw > 8;
+  const dexDose    = Math.min(parseFloat(dexRaw.toFixed(1)), 8);
+
+  $('broncho-epi-dose').textContent = epiDose.toFixed(2);
+  $('broncho-epi-vol').textContent  = epiVol.toFixed(2);
+  const epiWarn = $('broncho-epi-max-warning');
+  if (epiWarn) epiWarn.hidden = !epiIsMaxed;
+
+  $('broncho-dex-dose').textContent = dexDose.toFixed(1);
+  const dexWarn = $('broncho-dex-max-warning');
+  if (dexWarn) dexWarn.hidden = !dexIsMaxed;
+
+  $('broncho-kg-display').textContent = kg.toFixed(1);
+  resultEl.classList.remove('drug-calc-result--hidden');
+  emptyEl.hidden = true;
+}
+
+function bronchoCalcInit() {
+  const root = $('view-broncho-calc');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  $('broncho-weight')?.addEventListener('input', bronchoCalcRefresh);
+
+  root.querySelectorAll('[data-broncho-unit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      bronchoState.unit = btn.dataset.bronchoUnit;
+      root.querySelectorAll('[data-broncho-unit]').forEach(b =>
+        b.classList.toggle('drug-calc-unit-btn--on', b === btn));
+      bronchoCalcRefresh();
+    });
+  });
+
+  bronchoCalcRefresh();
+}
+
+// ── Croup Calculator ──────────────────────────────────────────────────────────
+const croupState = { unit: 'kg' };
+
+function croupCalcRefresh() {
+  const raw = parseFloat($('croup-weight')?.value ?? '');
+  const resultEl = $('croup-result');
+  const emptyEl  = $('croup-empty');
+  if (!resultEl || !emptyEl) return;
+
+  if (!raw || raw <= 0 || isNaN(raw)) {
+    resultEl.classList.add('drug-calc-result--hidden');
+    emptyEl.hidden = false;
+    return;
+  }
+
+  const kg = croupState.unit === 'lbs' ? raw / 2.20462 : raw;
+
+  // Epi NEB: fixed dose based on weight bracket
+  const epiDose     = kg < 10 ? 2.5 : 5;
+  const epiVol      = epiDose; // 1 mg/mL → same mL as mg
+  const bracket     = kg < 10 ? '< 10 kg' : '≥ 10 kg';
+
+  // Dexamethasone PO
+  const dexRaw     = kg * 0.5;
+  const dexIsMaxed = dexRaw > 8;
+  const dexDose    = Math.min(parseFloat(dexRaw.toFixed(1)), 8);
+
+  $('croup-epi-dose').textContent = epiDose.toFixed(1);
+  $('croup-epi-vol').textContent  = epiVol.toFixed(1);
+  $('croup-weight-bracket').textContent = bracket;
+
+  $('croup-dex-dose').textContent = dexDose.toFixed(1);
+  const dexWarn = $('croup-dex-max-warning');
+  if (dexWarn) dexWarn.hidden = !dexIsMaxed;
+
+  $('croup-kg-display').textContent = kg.toFixed(1);
+  resultEl.classList.remove('drug-calc-result--hidden');
+  emptyEl.hidden = true;
+}
+
+function croupCalcInit() {
+  const root = $('view-croup-calc');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  $('croup-weight')?.addEventListener('input', croupCalcRefresh);
+
+  root.querySelectorAll('[data-croup-unit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      croupState.unit = btn.dataset.croupUnit;
+      root.querySelectorAll('[data-croup-unit]').forEach(b =>
+        b.classList.toggle('drug-calc-unit-btn--on', b === btn));
+      croupCalcRefresh();
+    });
+  });
+
+  croupCalcRefresh();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 function buildCalculatorsView() {
   const container = $('calculators-list');
   if (!container) return;
@@ -2338,6 +2645,10 @@ function buildCalculatorsView() {
     { title: 'Weight Converter', fn: () => showView('view-weight-convert', 'Weight Converter') },
     { title: 'Medical Dosage Calculator', fn: () => showView('view-dosage-calc', 'Dosage Calc') },
     { title: 'IV Therapy Calculator', fn: () => showView('view-iv-therapy', 'IV Therapy') },
+    { title: 'Dextrose Dose Calculator', fn: () => showView('view-dextrose', 'Dextrose Calc') },
+    { title: 'EPINEPHrine Dose Calculator (Anaphylaxis)', fn: () => showView('view-epi-anaphylaxis', 'Epi Calculator') },
+    { title: 'Bronchoconstriction Drug Calculator', fn: () => showView('view-broncho-calc', 'Broncho Calculator') },
+    { title: 'Croup Drug Calculator', fn: () => showView('view-croup-calc', 'Croup Calculator') },
     { title: 'Glasgow Coma Scale (Calculator)', fn: () => renderCalculatorDetail('gcs') },
     { title: 'Pediatric Coma Scale (Calculator)', fn: () => renderCalculatorDetail('pcs') },
   ];
@@ -3683,6 +3994,10 @@ function init() {
   initDosageCalcTool();
   initParklandBurnTool();
   initIvTherapyTool();
+  dextroseInit();
+  epiAnaphylaxisInit();
+  bronchoCalcInit();
+  croupCalcInit();
   initRefImageViewer();
 
   const activeView = document.querySelector('.view.active');

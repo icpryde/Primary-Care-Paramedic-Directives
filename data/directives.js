@@ -894,7 +894,7 @@ const DIRECTIVES = [
       'Suspected hypoglycemia'
     ],
     conditions: {
-      'dextrose': { age: '≥ 2 years', loa: 'Altered', hr: 'N/A', rr: 'N/A', sbp: 'N/A', other: 'Hypoglycemia' },
+      'dextrose': { age: 'Any age (< 2 yr: D10W only)', loa: 'Altered', hr: 'N/A', rr: 'N/A', sbp: 'N/A', other: 'Hypoglycemia' },
       'glucagon': { age: 'N/A (≥4 years for IN powder)', loa: 'Altered', hr: 'N/A', rr: 'N/A', sbp: 'N/A', other: 'Hypoglycemia' },
     },
     contraindications: {
@@ -909,14 +909,13 @@ const DIRECTIVES = [
       },
       {
         med: 'Consider dextrose (if available and authorized)',
-        cols: ['', '10% dextrose', '50% dextrose'],
+        cols: ['', '< 2 years\n10% dextrose only', '≥ 2 years\n10% dextrose', '≥ 2 years\n50% dextrose'],
         rows: [
-          ['Age', '≥ 2 years', '≥ 2 years'],
-          ['Route', 'IV', 'IV'],
-          ['Dose', '0.2 g/kg (2 ml/kg)', '0.5 g/kg (1 ml/kg)'],
-          ['Max. single dose', '25 g (250 ml)', '25 g (50 ml)'],
-          ['Dosing interval', '10 min', '10 min'],
-          ['Max. # of doses', '2', '2'],
+          ['Route', 'IV', 'IV', 'IV'],
+          ['Dose', '0.2 g/kg (2 ml/kg)', '0.2 g/kg (2 ml/kg)', '0.5 g/kg (1 ml/kg)'],
+          ['Max. single dose', '5 g (50 ml)', '25 g (250 ml)', '25 g (50 ml)'],
+          ['Dosing interval', '10 min', '10 min', '10 min'],
+          ['Max. # of doses', '2', '2', '2'],
         ],
         note: 'Titrate dextrose to a level of awareness where the patient can safely consume complex carbohydrate.'
       },
