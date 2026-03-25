@@ -4013,3 +4013,29 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// Always fetch sw.js fresh so the footer shows the live server version,
+// not whatever version is frozen in the service worker cache.
+(function fetchAppVersion() {
+  fetch('sw.js', { cache: 'no-store' })
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var m = text.match(/pcp-directives-v(\d+)/);
+      var tag = document.getElementById('app-version-tag');
+      if (m && tag) tag.textContent = 'App v' + m[1];
+    })
+    .catch(function() {});
+})();
+
+// Always fetch sw.js fresh so the footer shows the live server version,
+// not whatever version is frozen in the service worker cache.
+(function fetchAppVersion() {
+  fetch('sw.js', { cache: 'no-store' })
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var m = text.match(/pcp-directives-v(\d+)/);
+      var tag = document.getElementById('app-version-tag');
+      if (m && tag) tag.textContent = 'App v' + m[1];
+    })
+    .catch(function() {});
+})();
