@@ -2094,6 +2094,26 @@ function renderDirectiveDetail(directive) {
     html += `</div>`;
   }
 
+  // QUICK CALCULATOR LINKS
+  const calcLinks = {
+    'hypoglycemia':           [{ label: 'Dextrose Dose Calculator',                      fn: `showView('view-dextrose','Dextrose Calc')` }],
+    'allergic-reaction':      [{ label: 'EPINEPHrine Dose Calculator',                   fn: `showView('view-epi-anaphylaxis','Epi Calculator')` }],
+    'bronchoconstriction':    [{ label: 'Bronchoconstriction Drug Calculator',           fn: `showView('view-broncho-calc','Broncho Calculator')` }],
+    'croup':                  [{ label: 'Croup Drug Calculator',                         fn: `showView('view-croup-calc','Croup Calculator')` }],
+    'medical-cardiac-arrest': [{ label: 'EPINEPHrine Dose Calculator (Anaphylaxis)',      fn: `showView('view-epi-anaphylaxis','Epi Calculator')` }],
+    'cardiogenic-shock':      [{ label: 'IV Fluid Calculator',                           fn: `ivDirOpenPreset('bolus_cardio')` }],
+    'iv-fluid':               [{ label: 'IV Therapy Calculator',                         fn: `ivDirOpenPreset('bolus_general')` }],
+  };
+  const directiveCalcLinks = calcLinks[directive.id];
+  if (directiveCalcLinks) {
+    html += `<div class="section-card quick-calc-card">`;
+    html += `<div class="section-heading quick-calc-heading">Quick Calculator</div>`;
+    directiveCalcLinks.forEach(link => {
+      html += `<button class="quick-calc-btn" onclick="${link.fn}">${link.label}</button>`;
+    });
+    html += `</div>`;
+  }
+
   // PATCH POINTS
   if (directive.patchPoints && directive.patchPoints.length) {
     html += `<div class="section-card"><div class="section-heading">Mandatory Patch Point(s)</div>`;
@@ -2131,26 +2151,6 @@ function renderDirectiveDetail(directive) {
       html += `<div class="tnd-cc">${td.clinicalConsiderationsTD}</div>`;
     }
     html += `</div></div>`;
-  }
-
-  // QUICK CALCULATOR LINKS
-  const calcLinks = {
-    'hypoglycemia':           [{ label: 'Dextrose Dose Calculator',                      fn: `showView('view-dextrose','Dextrose Calc')` }],
-    'allergic-reaction':      [{ label: 'EPINEPHrine Dose Calculator',                   fn: `showView('view-epi-anaphylaxis','Epi Calculator')` }],
-    'bronchoconstriction':    [{ label: 'Bronchoconstriction Drug Calculator',           fn: `showView('view-broncho-calc','Broncho Calculator')` }],
-    'croup':                  [{ label: 'Croup Drug Calculator',                         fn: `showView('view-croup-calc','Croup Calculator')` }],
-    'medical-cardiac-arrest': [{ label: 'EPINEPHrine Dose Calculator (Anaphylaxis)',      fn: `showView('view-epi-anaphylaxis','Epi Calculator')` }],
-    'cardiogenic-shock':      [{ label: 'IV Fluid Calculator',                           fn: `ivDirOpenPreset('bolus_cardio')` }],
-    'iv-fluid':               [{ label: 'IV Therapy Calculator',                         fn: `ivDirOpenPreset('bolus_general')` }],
-  };
-  const directiveCalcLinks = calcLinks[directive.id];
-  if (directiveCalcLinks) {
-    html += `<div class="section-card quick-calc-card">`;
-    html += `<div class="section-heading quick-calc-heading">Quick Calculator</div>`;
-    directiveCalcLinks.forEach(link => {
-      html += `<button class="quick-calc-btn" onclick="${link.fn}">${link.label}</button>`;
-    });
-    html += `</div>`;
   }
 
   // My Notes section at bottom
