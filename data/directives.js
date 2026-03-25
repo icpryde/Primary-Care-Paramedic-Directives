@@ -8,6 +8,7 @@ const CATEGORIES = [
   { id: 'cardiac',   label: 'Cardiac/Circulation',               colorClass: 'bg-red'    },
   { id: 'loc',       label: 'Level of Consciousness/Pain/Nausea',colorClass: 'bg-orange' },
   { id: 'procedural',label: 'Procedural',                        colorClass: 'bg-green'  },
+  { id: 'bls',       label: 'BLS Standards',                     colorClass: 'bg-purple' },
 ];
 
 const DIRECTIVES = [

@@ -824,6 +824,99 @@ body.help-modal-open {
   margin-top: 1px;
 }
 
+/* ── BLS Standards (PCP) ───────────────────────────────── */
+.bls-lead {
+  margin: 0 0 10px;
+  color: var(--subtext);
+  line-height: 1.45;
+  font-size: 14px;
+}
+
+.bls-standards-wrap {
+  display: grid;
+  gap: 10px;
+}
+
+.bls-standard {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--white);
+  overflow: hidden;
+}
+
+.bls-standard summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  -webkit-tap-highlight-color: transparent;
+}
+.bls-standard summary::-webkit-details-marker { display: none; }
+
+.bls-standard-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.bls-standard-chevron {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--gray);
+  border-bottom: 2px solid var(--gray);
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.bls-standard[open] .bls-standard-chevron {
+  transform: rotate(-135deg);
+  margin-top: 4px;
+}
+
+.bls-standard-body {
+  padding: 2px 14px 12px;
+}
+
+.bls-critical {
+  border-left: 3px solid var(--red);
+  background: rgba(205, 58, 73, 0.08);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin: 4px 0 10px;
+}
+
+.bls-points {
+  margin: 0;
+  padding-left: 18px;
+}
+.bls-points li {
+  margin: 6px 0;
+  line-height: 1.45;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.bls-children {
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.bls-standard--nested {
+  border-radius: 10px;
+  background: var(--bg);
+}
+.bls-standard--nested .bls-standard-title {
+  font-size: 14px;
+}
+
 /* Category color classes */
 .bg-navy    { background: var(--navy); }
 .bg-blue    { background: var(--blue); }

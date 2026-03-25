@@ -41,6 +41,10 @@ const HEADER_TITLE_ALIASES = {
   'Acute Stroke Bypass Protocol': 'Stroke bypass',
   'STEMI Bypass Protocol': 'STEMI bypass',
   'Spinal Motion Restriction Standard': 'SMR standard',
+  'BLS Standards — General Standards of Care': 'BLS general',
+  'BLS Standards — Medical Standards': 'BLS medical',
+  'BLS Standards — Trauma Standards': 'BLS trauma',
+  'BLS Standards — Obstetrical Standards': 'BLS obstetrical',
   'Terminal Congested Breathing': 'Terminal congestion',
   'Suspected Adrenal Crisis': 'Adrenal crisis',
   'Lateral Patellar Dislocation': 'Patellar dislocation',
@@ -1946,6 +1950,7 @@ function getCategoryForId(catId) {
 }
 
 function getDirectivesByCategory(catId) {
+  if (catId === 'bls' && typeof BLS_GROUPS !== 'undefined') return BLS_GROUPS;
   return DIRECTIVES.filter(d => d.category === catId);
 }
 
@@ -1991,6 +1996,69 @@ function buildCategoryList(containerEl, items_fn, onClickFn) {
     section.appendChild(itemsEl);
     containerEl.appendChild(section);
   });
+}
+
+function escHtml(text) {
+  if (text == null) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderBlsStandardItem(item, nested = false) {
+  const keyPoints = Array.isArray(item.keyPoints) ? item.keyPoints : [];
+  const critical = Array.isArray(item.critical) ? item.critical : [];
+  const children = Array.isArray(item.children) ? item.children : [];
+  const cls = nested ? 'bls-standard bls-standard--nested' : 'bls-standard';
+
+  return `<details class="${cls}">
+    <summary>
+      <span class="bls-standard-title">${escHtml(item.title)}</span>
+      <span class="bls-standard-chevron" aria-hidden="true"></span>
+    </summary>
+    <div class="bls-standard-body">
+      ${critical.length ? `<div class="bls-critical"><strong>Critical:</strong> ${critical.map(escHtml).join(' ')}</div>` : ''}
+      ${keyPoints.length ? `<ul class="bls-points">${keyPoints.map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>` : ''}
+      ${children.length ? `<div class="bls-children">${children.map(child => renderBlsStandardItem(child, true)).join('')}</div>` : ''}
+    </div>
+  </details>`;
+}
+
+function renderBlsGroupDetail(group) {
+  const content = (typeof BLS_GROUP_CONTENT !== 'undefined') ? BLS_GROUP_CONTENT[group.id] : null;
+  if (!content) return;
+
+  const standards = Array.isArray(content.standards) ? content.standards : [];
+  const lead = content.lead || 'BLS standards quick-use reference.';
+
+  let html = '';
+  html += `<div class="detail-scope-banner bg-navy">PRIMARY CARE PARAMEDIC</div>`;
+  html += `<div class="detail-cat-banner bg-purple">BLS Standards</div>`;
+  html += `<div class="detail-title">${escHtml(group.fullTitle || group.title)}</div>`;
+  html += `<div class="detail-auth">Mobile-focused BLS quick reference for rapid field access. Confirm final decisions with current MOH BLS PCS and local service policy.</div>`;
+  html += renderMyNotesAnchor();
+
+  html += `<div class="section-card">
+    <div class="section-heading">${escHtml(group.title)}</div>
+    <p class="bls-lead">${escHtml(lead)}</p>
+    <div class="bls-standards-wrap">${standards.map(item => renderBlsStandardItem(item)).join('')}</div>
+  </div>`;
+
+  html += `<div class="section-card"><div class="section-heading">Rapid Use Notes</div>
+    <ul class="bls-points">
+      <li><strong>Reassess frequently:</strong> trends in LOC, airway, breathing, perfusion, and pain drive destination and urgency.</li>
+      <li><strong>Escalate early:</strong> red-flag findings should trigger higher-acuity destination and pre-alert pathways.</li>
+      <li><strong>Document clearly:</strong> key findings, interventions, response, and consultation/patch decisions.</li>
+    </ul>
+  </div>`;
+
+  html += renderMyNotesSection('bls-' + group.id);
+
+  $('detail-content').innerHTML = html;
+  ensureMyNotesMounted();
+  window.scrollTo(0, 0);
 }
 
 // ─── Render Directive Detail ─────────────────────────────────────────────────
@@ -3067,6 +3135,30 @@ function buildSearchIndex() {
       type: 'directive', data: d
     });
   });
+  if (typeof BLS_GROUPS !== 'undefined' && typeof BLS_GROUP_CONTENT !== 'undefined') {
+    const gatherTitles = (items, acc = []) => {
+      (items || []).forEach(item => {
+        if (item.title) acc.push(item.title);
+        if (item.keyPoints) acc.push(...item.keyPoints);
+        if (item.critical) acc.push(...item.critical);
+        if (item.children) gatherTitles(item.children, acc);
+      });
+      return acc;
+    };
+
+    BLS_GROUPS.forEach(group => {
+      const c = BLS_GROUP_CONTENT[group.id] || {};
+      const searchable = gatherTitles(c.standards || []);
+      index.push({
+        id: group.id,
+        title: group.title,
+        catLabel: 'BLS Standards',
+        text: [group.title, group.fullTitle || '', c.lead || '', ...searchable].join(' ').toLowerCase(),
+        type: 'bls-group',
+        data: group,
+      });
+    });
+  }
   COMPANION.forEach(c => {
     const cat = getCategoryForId(c.category);
     index.push({
@@ -3818,7 +3910,11 @@ function init() {
 
   // Build PCP list
   buildCategoryList($('pcp-list'), getDirectivesByCategory, directive => {
-    renderDirectiveDetail(directive);
+    if (directive.type === 'bls-group') {
+      renderBlsGroupDetail(directive);
+    } else {
+      renderDirectiveDetail(directive);
+    }
     showView('view-detail', headerTitleFromItem(directive));
   });
 
@@ -3930,6 +4026,9 @@ function init() {
       setHomeSearchOverlay(false);
       if (result.type === 'directive') {
         renderDirectiveDetail(result.data);
+        showView('view-detail', headerTitleFromItem(result.data));
+      } else if (result.type === 'bls-group') {
+        renderBlsGroupDetail(result.data);
         showView('view-detail', headerTitleFromItem(result.data));
       } else if (result.type === 'palliative') {
         renderPalliativeDetail(result.data);
