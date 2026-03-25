@@ -824,6 +824,30 @@ body.help-modal-open {
   margin-top: 1px;
 }
 
+.bls-group-chevron {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--border);
+  border-bottom: 2px solid var(--border);
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.directive-row--bls-group.expanded .bls-group-chevron {
+  transform: rotate(-135deg);
+}
+
+.bls-group-sublist.collapsed {
+  display: none;
+}
+
+.directive-row--bls-standard {
+  padding-left: 32px;
+  background: #f7f8fb;
+}
+
 /* ── BLS Standards (PCP) ───────────────────────────────── */
 .bls-lead {
   margin: 0 0 10px;

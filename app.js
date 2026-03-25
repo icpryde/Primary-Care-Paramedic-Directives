@@ -1958,6 +1958,13 @@ function getCompanionByCategory(catId) {
   return COMPANION.filter(c => c.category === catId);
 }
 
+function getBlsStandardsForGroup(groupId) {
+  if (typeof BLS_GROUP_CONTENT === 'undefined') return [];
+  const group = BLS_GROUP_CONTENT[groupId];
+  if (!group || !Array.isArray(group.standards)) return [];
+  return group.standards;
+}
+
 // ─── Build category list (PCP or Companion) ──────────────────────────────────
 function buildCategoryList(containerEl, items_fn, onClickFn) {
   containerEl.innerHTML = '';
@@ -1981,6 +1988,37 @@ function buildCategoryList(containerEl, items_fn, onClickFn) {
     itemsEl.className = 'cat-items';
 
     items.forEach(item => {
+      if (item.type === 'bls-group') {
+        const standards = getBlsStandardsForGroup(item.id);
+
+        const groupRow = document.createElement('div');
+        groupRow.className = 'directive-row directive-row--bls-group';
+        groupRow.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="bls-group-chevron"></span>`;
+
+        const subList = document.createElement('div');
+        subList.className = 'bls-group-sublist collapsed';
+
+        standards.forEach(std => {
+          const subRow = document.createElement('div');
+          subRow.className = 'directive-row directive-row--bls-standard';
+          subRow.innerHTML = `<span class="directive-row-title">${std.title}</span><span class="directive-row-chevron"></span>`;
+          subRow.addEventListener('click', e => {
+            e.stopPropagation();
+            onClickFn(item);
+          });
+          subList.appendChild(subRow);
+        });
+
+        groupRow.addEventListener('click', () => {
+          const collapsed = subList.classList.toggle('collapsed');
+          groupRow.classList.toggle('expanded', !collapsed);
+        });
+
+        itemsEl.appendChild(groupRow);
+        itemsEl.appendChild(subList);
+        return;
+      }
+
       const row = document.createElement('div');
       row.className = 'directive-row';
       row.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="directive-row-chevron"></span>`;
