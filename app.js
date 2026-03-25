@@ -2059,25 +2059,33 @@ function renderBlsStandardDetail(standard, group) {
   const guidelines = Array.isArray(standard.guidelines) ? standard.guidelines : [];
   const children = Array.isArray(standard.children) ? standard.children : [];
 
+  // Helper: highlight key clinical values in escaped HTML text
+  function formatBlsText(text) {
+    return text
+      .replace(/(\d+-\d+%|\d+%)/g, '<span class="bls-val">$1</span>')
+      .replace(/((?:SpO₂|ETCO₂|GCS|LAMS|SBP|HR|RR|BP)\s*(?:[<>≤≥=]|&lt;|&gt;)\s*\d+(?:\.\d+)?(?:\s*(?:mmHg|bpm|\/min))?)/gi, '<span class="bls-val">$1</span>')
+      .replace(/(\d+-\d+\s*(?:mmHg|bpm|\/min|litres|minutes|mm))/gi, '<span class="bls-val">$1</span>');
+  }
+
   // Helper: render a single item (string or { text, subItems })
   function renderItem(item) {
     if (typeof item === 'string') {
-      return `<li>${escHtml(item)}</li>`;
+      return `<li>${formatBlsText(escHtml(item))}</li>`;
     }
     if (item && typeof item === 'object') {
-      let h = `<li>${escHtml(item.text || '')}`;
+      let h = `<li>${formatBlsText(escHtml(item.text || ''))}`;
       const subs = Array.isArray(item.subItems) ? item.subItems : [];
       if (subs.length) {
         h += `<ol class="bls-sub-list">`;
         subs.forEach(sub => {
           if (typeof sub === 'string') {
-            h += `<li>${escHtml(sub)}</li>`;
+            h += `<li>${formatBlsText(escHtml(sub))}</li>`;
           } else if (sub && typeof sub === 'object') {
-            h += `<li>${escHtml(sub.text || '')}`;
+            h += `<li>${formatBlsText(escHtml(sub.text || ''))}`;
             const ss = Array.isArray(sub.subItems) ? sub.subItems : [];
             if (ss.length) {
               h += `<ol class="bls-sub-sub-list">`;
-              ss.forEach(s => { h += `<li>${escHtml(typeof s === 'string' ? s : (s && s.text) || '')}</li>`; });
+              ss.forEach(s => { h += `<li>${formatBlsText(escHtml(typeof s === 'string' ? s : (s && s.text) || ''))}</li>`; });
               h += `</ol>`;
             }
             h += `</li>`;
@@ -2089,6 +2097,42 @@ function renderBlsStandardDetail(standard, group) {
       return h;
     }
     return '';
+  }
+
+  // Helper: render notes callout
+  function renderNotes(notes) {
+    if (!notes || !notes.length) return '';
+    let h = '';
+    notes.forEach(n => {
+      h += `<div class="bls-note"><strong>Note:</strong> ${formatBlsText(escHtml(n))}</div>`;
+    });
+    return h;
+  }
+
+  // Helper: render guidelines (flat strings or structured groups)
+  function renderGuidelines(gl) {
+    if (!gl || !gl.length) return '';
+    let h = `<div class="bls-guideline-box"><div class="bls-guideline-heading">Guidelines</div>`;
+    // Check if structured (dict with heading/items) or flat strings
+    const isStructured = gl.some(g => g && typeof g === 'object' && g.heading);
+    if (isStructured) {
+      gl.forEach(g => {
+        if (g && typeof g === 'object' && g.heading) {
+          h += `<div class="bls-guideline-subheading">${escHtml(g.heading)}</div>`;
+          h += `<ul class="bls-guideline-list">`;
+          (g.items || []).forEach(gi => { h += `<li>${formatBlsText(escHtml(typeof gi === 'string' ? gi : ''))}</li>`; });
+          h += `</ul>`;
+        } else {
+          h += `<ul class="bls-guideline-list"><li>${formatBlsText(escHtml(typeof g === 'string' ? g : ''))}</li></ul>`;
+        }
+      });
+    } else {
+      h += `<ul class="bls-guideline-list">`;
+      gl.forEach(g => { h += `<li>${formatBlsText(escHtml(typeof g === 'string' ? g : ''))}</li>`; });
+      h += `</ul>`;
+    }
+    h += `</div>`;
+    return h;
   }
 
   // Helper: render a section block
@@ -2106,6 +2150,7 @@ function renderBlsStandardDetail(standard, group) {
       items.forEach(item => { h += renderItem(item); });
       h += `</ol>`;
     }
+    h += renderNotes(sec.notes);
     h += `</div>`;
     return h;
   }
@@ -2129,10 +2174,7 @@ function renderBlsStandardDetail(standard, group) {
       }
       const cGuidelines = Array.isArray(child.guidelines) ? child.guidelines : [];
       if (cGuidelines.length) {
-        html += `<div class="bls-guideline-box"><div class="bls-guideline-heading">Guidelines</div>`;
-        html += `<ul class="bls-guideline-list">`;
-        cGuidelines.forEach(g => { html += `<li>${escHtml(g)}</li>`; });
-        html += `</ul></div>`;
+        html += renderGuidelines(cGuidelines);
       }
       html += `</div>`;
     });
@@ -2141,10 +2183,7 @@ function renderBlsStandardDetail(standard, group) {
   // Render guidelines
   if (guidelines.length) {
     html += `<div class="section-card">`;
-    html += `<div class="bls-guideline-box"><div class="bls-guideline-heading">Guidelines</div>`;
-    html += `<ul class="bls-guideline-list">`;
-    guidelines.forEach(g => { html += `<li>${escHtml(g)}</li>`; });
-    html += `</ul></div>`;
+    html += renderGuidelines(guidelines);
     html += `</div>`;
   }
 
@@ -3260,7 +3299,21 @@ function buildSearchIndex() {
           });
         }
         // Collect guidelines
-        if (std.guidelines) textParts.push(...std.guidelines);
+        if (std.guidelines) {
+          std.guidelines.forEach(g => {
+            if (typeof g === 'string') textParts.push(g);
+            else if (g && g.heading) {
+              textParts.push(g.heading);
+              (g.items || []).forEach(gi => { if (typeof gi === 'string') textParts.push(gi); });
+            }
+          });
+        }
+        // Collect notes
+        if (std.sections) {
+          std.sections.forEach(sec => {
+            (sec.notes || []).forEach(n => { if (typeof n === 'string') textParts.push(n); });
+          });
+        }
         index.push({
           id: std.id || std.title,
           title: std.title,

@@ -36,17 +36,18 @@ const BLS_GROUP_CONTENT = {
                 'altered level of consciousness, and/or',
                 'abnormal pregnancy or labour.',
               ] },
-            ]
+            ],
           },
           {
             heading: 'Oxygen Therapy and COPD',
             preamble: 'If a patient with chronic obstructive pulmonary disease (COPD) has increased dyspnea, a decreased level of consciousness, an altered mental status, and/or has suffered major trauma, the paramedic shall:',
             items: [
-              'titrate oxygen administration to achieve an oxygen saturation between 88-92%. If pulse oximetry equipment is not functioning, administer oxygen by nasal cannula with oxygen flow at two litres per minute above the patient\'s home oxygen levels, or two litres per minute if patient is not on home oxygen; 2. re-assess the vital signs approximately every 10 minutes;',
+              'titrate oxygen administration to achieve an oxygen saturation between 88-92%. If pulse oximetry equipment is not functioning, administer oxygen by nasal cannula with oxygen flow at two litres per minute above the patient\'s home oxygen levels, or two litres per minute if patient is not on home oxygen;',
+              're-assess the vital signs approximately every 10 minutes;',
               'maintain oxygen flow rate at that level, if the patient\'s status improves;',
               'increase oxygen by increments of two litres per minute above starting level approximately every two to three minutes if the patient\'s status deteriorates or the patient indicates they feel worse; and',
               'be prepared to ventilate.',
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -86,10 +87,11 @@ const BLS_GROUP_CONTENT = {
                 { text: 'motorized/ATV recreational vehicles collision, or', subItems: [
                   'bicyclist struck or collision, or',
                 ] },
-                'age ≥65 years old including falls from standing height; of Care 3. if the patient meets the criteria of paragraph 1 above, but does not meet the cr iteria of paragraph 2 above, not apply SMR;',
+                'age ≥65 years old including falls from standing height;',
               ] },
-              'subject to paragraph 6 below, if the patient meets the requirements of pa ragraph 2 above, apply SMR using a cervical collar only*, attempt to minimize spinal movement, and secure the patient to the stretcher with stretcher straps (see Guideline below); *Note: Spinal boards or adjustable break-away stretchers may still be indicated for use to minimize spinal movement during extrication.',
-              { text: 'if the patient has penetrating trauma to the head, neck or torso, determine if t he patient exhibits ALL of the following,', subItems: [
+              'if the patient meets the criteria of paragraph 1 above, but does not meet the cr iteria of paragraph 2 above, not apply SMR;',
+              'subject to paragraph 6 below, if the patient meets the requirements of paragraph 2 above, apply SMR using a cervical collar only*, attempt to minimize spinal movement, and secure the patient to the stretcher with stretcher straps (see Guideline below);',
+              { text: 'if the patient has penetrating trauma to the head, neck or torso, determine if the patient exhibits ALL of the following,', subItems: [
                 'no spine tenderness,',
                 'no neurologic signs or symptoms,',
                 'no altered level of consciousness,',
@@ -97,23 +99,33 @@ const BLS_GROUP_CONTENT = {
                 'no distracting painful injury, and',
                 'no anatomic deformity of the spine; and',
               ] },
-              'notwithstanding paragraph 4 above, if the patient meets the criteria of pa ragraph 5, not apply SMR.',
+              'notwithstanding paragraph 4 above, if the patient meets the criteria of paragraph 5, not apply SMR.',
+            ],
+            notes: [
+              'Spinal boards or adjustable break-away stretchers may still be indicated for use to minimize spinal movement during extrication.',
             ]
           },
         ],
         guidelines: [
-          'General',
-          'This standard does not allow the paramedic to "clear the spine" for blunt t rauma patients. Rather, it identifies patients where the mechanism of injury in combination with and the absence of risk criteria mean a spine injury does not have to be considered.',
-          'Using SMR does not mean the paramedic has "cleared" the spine for blunt t rauma patients. The paramedic must at all times manage the patient to minimize spinal movement.',
-          'In conjunction with the Documentation of Patient Care Standard , when po ssible, document the neurologic status before and after SMR on the Ambulance Call Report .',
-          'of Care Use of spinal boards',
-          'Spinal boards or adjustable break-away stretchers should be considered primarily as extrication/patient lifting devices. The goal should be to remove the patient from these devices as soon as it is safe to do so. If sufficient personnel are present, the patient should be log rolled from the extrication device to the stretcher during loading of the patient or shortly after loading into the ambulance. • Spinal boards or adjustable break-away stretchers may remain in place if the paramedic deems it safer/more comfortable for the patient in consideration of short transport times (<30 min).',
-          'Recall that patients with suspected pelvic fractures should be secured on a spinal board or adjustable break-away stretcher as per the Blunt/Penetrating Injury Standard. Patient extrication and transport',
-          'Patient with SMR may be placed in a semi-sitting or supine position, according to patient comfort/clinical condition.',
-          'If patient is unresponsive/uncooperative, apply manual C-spine immobilization until appropriate SMR has been applied.',
-          'Cervical collars should be placed on the patient prior to movement, if possible.',
-          'Patients involved in an MVC, who remain in a vehicle with isolated neck or back pain and no neurologic signs or symptoms/indications of major trauma may be allowed to self-extricate using a stand, turn and pivot onto the stretcher. The paramedic should coach the patient to maintain neutral spinal alignment. • Patients who have had a spinal board or adjustable break-away stretcher applied by a first responder prior to the paramedic\'s arrival should still be assessed for SMR as per the Standard. Unless otherwise required, SMR may be modified to meet this standard. • Patients with SMR undergoing inter-facility transfers may have SMR modified as per the Standard in consultation with the sending physician. This may involve removal of a spinal board.',
-          'of Care SMR and agitated patients Patients who are markedly agitated, combative or confused may not be able to follow commands and cooperate with minimizing spinal movement. There may be rare circumstances in which attempts to apply SMR using a C-collar, spinal board or adjustable break-away stretcher leads to an increase in patient agitation that constitutes a safety hazard to both the patient and the paramedic. In these situations, the paramedic shall apply SMR to the best of his/her ability and secure the patient to the stretcher with stretcher straps. In conjunction with the Documentation of Patient Care Standard, the paramedic shall clearly document the circumstances of the safety hazard and his/her resulting inability to apply SMR to the patient.•',
+          { heading: 'General', items: [
+            'This standard does not allow the paramedic to "clear the spine" for blunt trauma patients. Rather, it identifies patients where the mechanism of injury in combination with and the absence of risk criteria mean a spine injury does not have to be considered.',
+            'Using SMR does not mean the paramedic has "cleared" the spine for blunt trauma patients. The paramedic must at all times manage the patient to minimize spinal movement.',
+            'In conjunction with the Documentation of Patient Care Standard, when possible, document the neurologic status before and after SMR on the Ambulance Call Report.',
+          ] },
+          { heading: 'Use of Spinal Boards', items: [
+            'Spinal boards or adjustable break-away stretchers should be considered primarily as extrication/patient lifting devices. The goal should be to remove the patient from these devices as soon as it is safe to do so. If sufficient personnel are present, the patient should be log rolled from the extrication device to the stretcher during loading of the patient or shortly after loading into the ambulance.',
+            'Spinal boards or adjustable break-away stretchers may remain in place if the paramedic deems it safer/more comfortable for the patient in consideration of short transport times (<30 min).',
+            'Recall that patients with suspected pelvic fractures should be secured on a spinal board or adjustable break-away stretcher as per the Blunt/Penetrating Injury Standard. Patient extrication and transport',
+            'Patient with SMR may be placed in a semi-sitting or supine position, according to patient comfort/clinical condition.',
+            'If patient is unresponsive/uncooperative, apply manual C-spine immobilization until appropriate SMR has been applied.',
+            'Cervical collars should be placed on the patient prior to movement, if possible.',
+            'Patients involved in an MVC, who remain in a vehicle with isolated neck or back pain and no neurologic signs or symptoms/indications of major trauma may be allowed to self-extricate using a stand, turn and pivot onto the stretcher. The paramedic should coach the patient to maintain neutral spinal alignment.',
+            'Patients who have had a spinal board or adjustable break-away stretcher applied by a first responder prior to the paramedic\'s arrival should still be assessed for SMR as per the Standard. Unless otherwise required, SMR may be modified to meet this standard.',
+            'Patients with SMR undergoing inter-facility transfers may have SMR modified as per the Standard in consultation with the sending physician. This may involve removal of a spinal board.',
+          ] },
+          { heading: 'SMR and Agitated Patients', items: [
+            'Patients who are markedly agitated, combative or confused may not be able to follow commands and cooperate with minimizing spinal movement. There may be rare circumstances in which attempts to apply SMR using a C-collar, spinal board or adjustable break-away stretcher leads to an increase in patient agitation that constitutes a safety hazard to both the patient and the paramedic. In these situations, the paramedic shall apply SMR to the best of his/her ability and secure the patient to the stretcher with stretcher straps. In conjunction with the Documentation of Patient Care Standard, the paramedic shall clearly document the circumstances of the safety hazard and his/her resulting inability to apply SMR to the patient.',
+          ] },
         ]
       },
       {
@@ -129,13 +141,14 @@ const BLS_GROUP_CONTENT = {
               'Insertion of an oropharyngeal, nasopharyngeal or supraglottic airway',
               'Endotracheal intubation',
               'Transcutaneous pacing',
-              'Advanced resuscitation drugs such as, but not limited to, vasopressors, antiarrhythmic agents and opioid antagonists Do Not Resuscitate means that the paramedic (in accordance with his/her level of certification) will not initiate any of the interventions listed in the definition of CPR, above. Treatment Any action or service that is provided for a therapeutic, preventive, palliative, diagnostic, cosmetic or other health-related purpose, and includes a course of treatment or plan of treatment. Valid MOH DNR Confirmation Form A DNR Confirmation Form with pre-printed serial number that has been completed, in full, with the following information: of Care 1. The name of the patient (including both surname and first name) to whom the Form applies.',
+              'Advanced resuscitation drugs such as, but not limited to, vasopressors, antiarrhythmic agents and opioid antagonists Do Not Resuscitate means that the paramedic (in accordance with his/her level of certification) will not initiate any of the interventions listed in the definition of CPR, above. Treatment Any action or service that is provided for a therapeutic, preventive, palliative, diagnostic, cosmetic or other health-related purpose, and includes a course of treatment or plan of treatment. Valid MOH DNR Confirmation Form A DNR Confirmation Form with pre-printed serial number that has been completed, in full, with the following information:',
+              'The name of the patient (including both surname and first name) to whom the Form applies.',
               { text: 'A check box that has been checked to identify that one of the following conditions has been met:', subItems: [
                 'A current plan of treatment exists that reflects the patient\'s expressed wish when capable, or consent of the substitute decision-maker when the patient is incapable, that CPR not be included in the patient\'s plan of treatment.',
                 'The physician\'s current opinion is that CPR will almost certainly not benefit the patient and is not part of the plan of treatment, and the physician has discussed this with the capable patient or the substitute decision-maker when the patient is incapable. 3. A check box that has been checked to identify the professional designation of the Medical Doctor (M.D.), Registered Practical Nurse (R.P.N.), Registered Nurse (R.N.), or Registered Nurse in the Extended Class (R.N. [EC]) who has signed the Form. 4. Printed name of the M.D., R.P.N., R.N., or R.N. (EC) signing the Form.',
               ] },
               'A signature by the appropriate M.D., R.P.N., R.N., or R.N. (EC).',
-              'The date that the Form was signed, which must be the same as or precede the date of request for ambulance service. A Valid DNR Confirmation Form may be a fully completed original, or a copy of a fully completed original. of Care General Directive',
+              'The date that the Form was signed, which must be the same as or precede the date of request for ambulance service. A Valid DNR Confirmation Form may be a fully completed original, or a copy of a fully completed original. General Directive',
               { text: 'A paramedic, upon obtaining a Valid MOH DNR Confirmation Form and subject to paragraph 2 below, SHALL NOT initiate CPR (as per the definition above) on the patient in the event that the patient experiences respiratory or cardiorespiratory arrest (i.e. respirations and pulse are absent for at least three minutes from the time that respiratory or cardiac arrest was noted by the paramedic). 2. A paramedic shall initiate CPR (as per the definition above) on a patient who has experienced respiratory or cardiorespiratory arrest when:', subItems: [
                 'the patient with a Valid MOH DNR Confirmation Form appears to the paramedic to be capable and expresses clearly a wish to be resuscitated in the event that he/she experiences a respiratory or cardiac arrest; or',
                 'the patient with a Valid MOH DNR Confirmation Form appears to the paramedic to be capable and expresses a wish to be resuscitated in the event that he/she experiences respiratory or cardiorespiratory arrest, but the request is vague, incomplete or ambiguous such that it is no longer clear what the wishes of the patient are. 3. The paramedic shall provide patient management necessary to provide comfort or alleviate pain, as required by the patient\'s clinical condition.',
@@ -144,7 +157,7 @@ const BLS_GROUP_CONTENT = {
                 'advise the CACC/ACS; and',
                 'follow the',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -170,7 +183,7 @@ const BLS_GROUP_CONTENT = {
                 'that is being used to administer potassium chloride to a patient who is <18 ye ars of age;',
                 'that is being used to administer medication (including pre-packaged me dications, except as detailed in paragraph 2 from the General Directive above);',
                 'that requires electronic monitoring or uses a pressurized intravenous fluid in fuser, pump or central venous line; or',
-                'for a neonate or pediatric patient <2 years of age. of Care Procedure The paramedic shall: Pre-transport',
+                'for a neonate or pediatric patient <2 years of age. Procedure The paramedic shall: Pre-transport',
               ] },
               'confirm physician\'s written IV order with sending facility staff;',
               'determine IV solution, IV flow rate, catheter gauge, catheter length, and cannulation site;',
@@ -181,7 +194,7 @@ const BLS_GROUP_CONTENT = {
               'monitor and maintain IV at the prescribed rate, this may include changing the IV bag as required;',
               'if the IV becomes dislodged or interstitial, discontinue the IV flow and remove the catheter with particular attention to aseptic technique; and',
               'confirm condition of catheter if removed.',
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -199,11 +212,12 @@ const BLS_GROUP_CONTENT = {
               'if the patient is a child, follow the Child in Need of Protection Standard;',
               'notwithstanding paragraph 2 above, in situation where police are not on- scene, offer to contact police; and',
               'upon police request, bag the stretcher linen, dressings, and other materials in contact with the patient, and leave with the attending police officer.',
-            ]
+            ],
           },
         ],
         guidelines: [
-          'If the patient declines to report the incident to the police, it is helpful to discuss options and be knowledgeable regarding local resources (e.g. sexual assault crisis centre; crime victim assistance programs), and be able to provide phone numbers for same. • Advise the patient not to wash, urinate or defecate until an examination is conducted at the receiving facility.',
+          'If the patient declines to report the incident to the police, it is helpful to discuss options and be knowledgeable regarding local resources (e.g. sexual assault crisis centre; crime victim assistance programs), and be able to provide phone numbers for same.',
+          'Advise the patient not to wash, urinate or defecate until an examination is conducted at the receiving facility.',
         ]
       },
     ]
@@ -247,7 +261,7 @@ const BLS_GROUP_CONTENT = {
               'if a pulsatile mass is discovered, not initiate, or discontinue, further abdominal palpation;',
               'if abdominal aneurysm is suspected, palpate femoral pulses for weakness/absence; and',
               'observe for melena, hematemesis, or frank rectal bleeding ("hematochezia").',
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -261,7 +275,7 @@ const BLS_GROUP_CONTENT = {
             items: [
               'perform assessments and obstructed airway clearance maneuvers as per current Heart and Stroke Foundation of Canada Guidelines; and',
               'attempt to clear the airway using oropharyngeal/nasopharyngeal suction.',
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -273,7 +287,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Allergic Reaction (Known or Suspected) Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient with an allergic reaction that is known or susp ected, the paramedic shall:',
+            preamble: 'In situations involving a patient with an allergic reaction that is known or susp ected, th e paramedic shall:',
             items: [
               'consider potential life/limb/function threats, such as anaphylaxis;',
               { text: 'perform, at a minimum, a secondary survey to assess,', subItems: [
@@ -307,7 +321,7 @@ const BLS_GROUP_CONTENT = {
                 'bronchospasm, and',
                 'hypotension.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -332,7 +346,7 @@ const BLS_GROUP_CONTENT = {
               'perform trauma assessments if trauma is obvious, suspected or cannot be ruled out;',
               'if unprotected airway, insert oropharyngeal airway/nasopharyngeal airway; and',
               'if patient is apneic or respirations are inadequate, ventilate the patient in accordance with the Respiratory Failure Standard.',
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -357,7 +371,7 @@ const BLS_GROUP_CONTENT = {
                 'distal pulses, and',
                 'extremities, for circulation, sensation, and movement.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -387,7 +401,7 @@ const BLS_GROUP_CONTENT = {
                 'continue cardiac monitoring, and',
                 'resume CPR if cardiac arrest recurs.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -453,7 +467,7 @@ const BLS_GROUP_CONTENT = {
                 'inform the receiving hospital whether "LVO Clinical Screen is positive or negative "',
                 'Document LAMS screen for patients presenting with CVA/Stroke symptoms 0-24 hours from symptom onset.',
               ] },
-            ]
+            ],
           },
           {
             heading: 'Acute Stroke Bypass Protocol',
@@ -475,9 +489,14 @@ const BLS_GROUP_CONTENT = {
                 'Terminally ill or is in palliative care',
                 'Duration of transport to the Designated Stroke Centre will exceed two hours;',
               ] },
-              'if the patient does not meet any of the contraindications listed in paragraph 3 above, per form a secondary screen for a Large Vessel Occlusion (LVO) stroke using the Los Angeles Motor Scale (LAMS);',
+              'if th e patient does not meet any of the contraindications listed in paragraph 3 above, perform a secondary screen for a Large Vessel Occlusion (LVO) stroke using the Los Angeles Motor Scale (LAMS);',
               'inform the CACC/ACS of the LAMS score to assist in the determination of the closest or most appropriate*** Designated Stroke Centre; and',
-              'if transport has been initiated to a Designated Stroke Centre and the patient\'s symptoms improve significantly or resolve during transport, continue transport to the Designated Stroke Centre. *Note: A Designated Stroke Centre includes a Regional Stroke Centre, District Stroke Centre or a Telestroke Centre regardless of EVT capability. **Note: If symptoms persist after correction of blood glucose level, the patient is not contraindicated as per paragraph 3(c) above. ***Note: Most appropriate refers to a Designated Stroke Centre as defined by a PPS.',
+              'if transport has been initiated to a Designated Stroke Centre and the patient\'s symptoms improve significantly or resolve during transport, continue transport to the Designated Stroke Centre.',
+            ],
+            notes: [
+              'A Designated Stroke Centre includes a Regional Stroke Centre, District Stroke Centre or a Telestroke Centre regardless of EVT capability.',
+              'If symptoms persist after correction of blood glucose level, the patient is not contraindicated as per paragraph 3(c) above.',
+              'Most appropriate refers to a Designated Stroke Centre as defined by a PPS.',
             ]
           },
         ],
@@ -557,7 +576,7 @@ const BLS_GROUP_CONTENT = {
                 'a copy of the qualifying ECG; and',
                 'a copy of the Ambulance Call Report in accordance with the Ontario Ambulance Documentation Standards. Note: Once initiated, continue to follow the STEMI Hospital Bypass Protocol even if the ECG normalizes after the intial assessment.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -592,7 +611,7 @@ const BLS_GROUP_CONTENT = {
               'if epiglottis is suspected and oxygen administration is indicated as per the Oxygen Therapy Standard, attempt to minimize agitation;',
               'position the patient sitting or semi-sitting; and',
               'prepare for potential problems, including complete airway obstruction.',
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -602,7 +621,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Epistaxis (Non-Traumatic) Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient withepistaxis that is believed to be of a non- traumatic origin, the paramedic shall:',
+            preamble: 'In situations involving a patient with epistaxis that is believed to be of a non- traumatic origin, the paramedic shall:',
             items: [
               'consider potential life/limb/function threats, such as upper airway obstruction;',
               { text: 'perform, at a minimum, a secondary survey to assess,', subItems: [
@@ -614,7 +633,7 @@ const BLS_GROUP_CONTENT = {
                 'airway compromise, and',
                 'hypotension.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -624,7 +643,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Excited Delirium Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient withexcited delirium, the paramedic shall:',
+            preamble: 'In situations involving a patient with excited delirium, the paramedic shall:',
             items: [
               { text: 'consider potential life/limb/function threats, such as,', subItems: [
                 'asphyxia,',
@@ -637,11 +656,12 @@ const BLS_GROUP_CONTENT = {
               'provide patient care based on presenting signs and symptoms as per the Standards;',
               'recognize the potential need for advanced patient care as per the ALS PCS; and',
               'prepare for potential problems, including rapid deterioration.',
-            ]
+            ],
           },
         ],
         guidelines: [
-          'Excited delirium is a state of impaired thinking and violent struggling induced by a variety of causes such as drug abuse, severe alcohol intoxication, and/or acute psychosis. These patients are at risk of sudden death. Symptoms of excited delirium include: • Impaired thought processes, e.g. disorientation, acute paranoia, panic, or hallucinations',
+          'Excited delirium is a state of impaired thinking and violent struggling induced by a variety of causes such as drug abuse, severe alcohol intoxication, and/or acute psychosis. These patients are at risk of sudden death. Symptoms of excited delirium include:',
+          'Impaired thought processes, e.g. disorientation, acute paranoia, panic, or hallucinations',
           'Unexpected physical strength',
           'Significantly decreased sensitivity to pain',
           'Sweating, fever, heat intolerance, or, dry/hot skin with no sweating despite extreme agitation',
@@ -653,7 +673,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Extremity Pain (Non-Traumatic) Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient withextremity pain that is believed to be of a non-traumatic origin, the paramedic shall:',
+            preamble: 'In situations involving a patient with extremity pain that is believed to be of a non-traumatic origin, the paramedic shall:',
             items: [
               { text: 'consider potential life/limb/function threats, such as,', subItems: [
                 'acute spinal nerve root(s) compression,',
@@ -670,7 +690,7 @@ const BLS_GROUP_CONTENT = {
                 ] },
               ] },
               'attempt to keep movement to the affected extremity to a minimum and protect from further injury.',
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -707,7 +727,7 @@ const BLS_GROUP_CONTENT = {
               'remove excess layers of clothing if required to promote passive cooling;',
               'not actively cool the patient, and',
               'prepare for potential problems, including seizures, if the patient is a febrile child or an adult in whom serious disorders are suspected (e.g. meningitis).',
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -738,7 +758,7 @@ const BLS_GROUP_CONTENT = {
                 ] },
               ] },
               'prepare for potential problems, including seizures.o o o o o o',
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -780,14 +800,14 @@ const BLS_GROUP_CONTENT = {
                 'cover the patient with wet sheets, and',
                 'apply cold packs to the axillae, groin, neck and head.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
           'Consider various heat-related illnesses in the setting of hot and/or humid outdoor or indoor conditions with chief complaint(s), presenting problems of:',
           'Heat syncope',
           'Heat cramps: severe cramping of large muscle groups',
-          'Heat exhaustion: mild alterations in mental status, and non-specific complaints (headache, giddiness, nausea, vomiting, malaise), withexcessive sweating in healthy adults; or hot, dry skin in the elderly',
+          'Heat exhaustion: mild alterations in mental status, and non-specific complaints (headache, giddiness, nausea, vomiting, malaise), with excessive sweating in healthy adults; or hot, dry skin in the elderly',
           'Heat stroke: severely altered mental status, coma, seizures, hyperthermia ≥40°C Overdose of tricyclic anti-depressants, antihistamines and β-blockers, as well as cocaine, Ecstasy or amphetamine abuse may also lead to heat stroke.',
           'Monitor the patient to determine if cooling procedures should be discontinued, e.g. skin temperature feels normal to touch, generalized shivering develops, the patient\'s level of consciousness normalizes.',
         ]
@@ -809,7 +829,7 @@ const BLS_GROUP_CONTENT = {
               ] },
               'estimate degree of blood loss (e.g. duration of hemorrhage, rate of flow, presence of clots, quantity of blood-soaked or blood-filled materials); and',
               'elicit further information regarding hemorrhage (e.g. type: coffee-grounds emesis, melena, hematochezia, etc.).',
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -836,7 +856,7 @@ const BLS_GROUP_CONTENT = {
               ] },
               'perform, at a minimum, a secondary survey to assess abdomen, as per Abdominal Pain (Non-Traumatic) Standard; and',
               'prepare for potential problems, including airway compromise.',
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -852,7 +872,7 @@ const BLS_GROUP_CONTENT = {
               'observe chest rise and auscultate lung fields to assess adequacy of ventilation (ventilation just sufficient to observe chest rise is adequate);',
               'minimize interruptions to ventilations; and',
               'continue assisted ventilations until patient\'s spontaneous respirations are adequate.',
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -912,7 +932,7 @@ const BLS_GROUP_CONTENT = {
                 'recurrent seizures, and',
                 'post-ictal combativeness or agitation.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -966,7 +986,7 @@ const BLS_GROUP_CONTENT = {
               'if the patient is on home oxygen, elicit history regarding changes in use;',
               'position the patient in sitting or semi-sitting position; and',
               'ventilate the patient if patient is apneic or respirations are inadequate in accordance with the Respiratory Failure Standard.',
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -996,7 +1016,7 @@ const BLS_GROUP_CONTENT = {
                 'seizures, and',
                 'decreased level of consciousness.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: []
@@ -1022,13 +1042,14 @@ const BLS_GROUP_CONTENT = {
                 'seizures, and',
                 'emesis.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
           'Where available, attempt to refer to a compound or substance\'s Material Safety Data Sheet',
           'Attempts to refer to poison control resources should be made in consultation with the BHP and not delay patient care/transport',
-          'Assume carbon monoxide poisoning in setting of exposure to a fuel burning device (e.g. automobile engine exhaust, heating devices) in an enclosed area where the patient, or multiple patients, exhibit the following symptoms/signs without other obvious cause: • Altered mental status',
+          'Assume carbon monoxide poisoning in setting of exposure to a fuel burning device (e.g. automobile engine exhaust, heating devices) in an enclosed area where the patient, or multiple patients, exhibit the following symptoms/signs without other obvious cause:',
+          'Altered mental status',
           'Cardiac dysrhythmias',
           'Emesis',
           'Headache',
@@ -1083,12 +1104,12 @@ const BLS_GROUP_CONTENT = {
                 'document number of pads used on the Ambulance Call Report; and',
               ] },
               'prepare for expected problems, including, shock, if bleeding is profuse.',
-            ]
+            ],
           },
         ],
         guidelines: [
           'Refer to the Sexual Assault (Reported) Standard if vaginal bleeding is suspected t o be due to assault.',
-          'To assist withestimating blood loss, a soaked normal sized pad or tampon can hold approximately five mL of blood. Normal blood loss during menstruation is 10-35 mL.',
+          'To assist with estimating blood loss, a soaked normal sized pad or tampon can hold approximately five mL of blood. Normal blood loss during menstruation is 10-35 mL.',
         ]
       },
       {
@@ -1125,7 +1146,7 @@ const BLS_GROUP_CONTENT = {
                 'neurological deficits, and',
                 'emesis.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -1152,7 +1173,8 @@ const BLS_GROUP_CONTENT = {
                 'primary survey identifies condition(s) requiring immediate interventions which cannot be performed inside the area in which the patient is located;',
               ] },
               'perform a rapid trauma survey immediately after completion of the primary survey, unless indicated otherwise in the Standards;',
-              { text: 'attempt to estimate blood loss (i.e. hemorrhage duration, rate of flow, presence of clots, quantity of blood-soaked materials, quantity of blood vomited); 6. specific to impaled objects, make no attempt to remove; stabilize the object as found using layers of bulky dressings/bandages, unless otherwise specified by the Standards, or the object is,', subItems: [
+              'attempt to estimate blood loss (i.e. hemorrhage duration, rate of flow, presence of clots, quantity of blood-soaked materials, quantity of blood vomited);',
+              { text: 'specific to impaled objects, make no attempt to remove; stabilize the object as found using layers of bulky dressings/bandages, unless otherwise specified by the Standards, or the object is,', subItems: [
                 'compromising the airway, or',
                 'interfering with CPR in a cardiac arrest patient after attempts to change hand position have been made;',
               ] },
@@ -1181,20 +1203,23 @@ const BLS_GROUP_CONTENT = {
                 'other body parts/systems likely to be injured by considering potentially associated life/limb/function threats (as indicated by the Standards and otherwise) as well as possible secondary injuries sustained; and',
               ] },
               'remove any clothing or jewelry that may compromise the injury site.',
-            ]
+            ],
           },
         ],
         guidelines: [
-          'Splinting',
-          'If the injury site is dressed or splinted before paramedic arrival, use judgement when deciding to remove the dressing or splint. If the site is correctly managed as per the Standards, leave the dressing or splint as found. • Splinting priorities are: Spine (neck, thoraco-lumbar, head) Pelvis Femurs Lower legs Upper limbso o o o o',
-          'Trauma and the pregnant patient:',
-          'In pregnant patients, trauma is most often associated with domestic violence.',
-          'In pregnant patients, signs of shock may not be obvious until shock is well advanced.',
-          'Hemorrhagic shock and associated fetal hypoxemia are the major causes of trauma related maternal death and fetal death respectively.',
-          'A pregnant patient\'s enlarged uterus is more susceptible to injury and hemorrhage.',
-          'Blunt trauma may result in premature labour, spontaneous abortion, placental abruption, ruptured diaphragm, liver, spleen, or uterine rupture.',
-          'Placental abruption and subsequent stillbirth can occur within hours of even minor blunt trauma if acceleration/deceleration forces are involved; these patients may have no evidence of abdominal trauma on examination; maintain a high index of suspicion for occult internal injury.',
-          'For blunt trauma to the abdomen, observe for abdominal/uterine enlargement.',
+          { heading: 'Splinting', items: [
+            'If the injury site is dressed or splinted before paramedic arrival, use judgement when deciding to remove the dressing or splint. If the site is correctly managed as per the Standards, leave the dressing or splint as found.',
+            'Splinting priorities are: Spine (neck, thoraco-lumbar, head) Pelvis Femurs Lower legs Upper limbso o o o o',
+          ] },
+          { heading: 'Trauma and the Pregnant Patient', items: [
+            'In pregnant patients, trauma is most often associated with domestic violence.',
+            'In pregnant patients, signs of shock may not be obvious until shock is well advanced.',
+            'Hemorrhagic shock and associated fetal hypoxemia are the major causes of trauma related maternal death and fetal death respectively.',
+            'A pregnant patient\'s enlarged uterus is more susceptible to injury and hemorrhage.',
+            'Blunt trauma may result in premature labour, spontaneous abortion, placental abruption, ruptured diaphragm, liver, spleen, or uterine rupture.',
+            'Placental abruption and subsequent stillbirth can occur within hours of even minor blunt trauma if acceleration/deceleration forces are involved; these patients may have no evidence of abdominal trauma on examination; maintain a high index of suspicion for occult internal injury.',
+            'For blunt trauma to the abdomen, observe for abdominal/uterine enlargement.',
+          ] },
         ]
       },
       {
@@ -1233,7 +1258,7 @@ const BLS_GROUP_CONTENT = {
                   'not delay transport.',
                 ] },
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -1321,7 +1346,8 @@ const BLS_GROUP_CONTENT = {
                 'monitor for development of tension pneumothorax, and',
                 'if tension pneumothorax becomes obvious or suspected (i.e. rapid deterioration in cardiorespiratory status), release occlusive dressing and/or replace;',
               ] },
-              'for patients who have a suspected pneumothorax and require ventilations, ventilate with a lower tidal volume and rate of delivery to prevent exacerbation of increasing intrathoracic pressure; 6. if the patient is conscious and SMR is not indicated as per the Spinal Motion Restriction (SMR) Standard, position the patient sitting or semi-sitting;',
+              'for patients who have a suspected pneumothorax and require ventilations, ventilate with a lower tidal volume and rate of delivery to prevent exacerbation of increasing intrathoracic pressure;',
+              'if the patient is conscious and SMR is not indicated as per the Spinal Motion Restriction (SMR) Standard, position the patient sitting or semi-sitting;',
               { text: 'if the patient has a chest injury, prepare for potential problems, including,', subItems: [
                 'tension pneumothorax,',
                 'cardiac tamponade,',
@@ -1342,7 +1368,7 @@ const BLS_GROUP_CONTENT = {
               'if active bleeding, control bleeding using the minimum pressure required;',
               'if obvious or suspected rupture or puncture of the globe avoid manipulation, palpation, irrigation, direct pressure, and application of cold packs;',
               'cover the eye with a dressing;',
-              'if injury/pain is severe in the affected eye, cover botheyes;',
+              'if injury/pain is severe in the affected eye, cover both eyes;',
               { text: 'notwithstanding paragraphs 7 and 8 above, if the eye is extruded (avulsed),', subItems: [
                 'make no attempt to replace it inside the socket, and',
                 'cover the eye with a moist, sterile dressing and protect/stabilize as if an impaled object;',
@@ -1360,7 +1386,7 @@ const BLS_GROUP_CONTENT = {
               'assess as per the Head Injury subsection below;',
               'if nose injury is obvious or suspected, assess the patient as per the Epistaxis (Non-traumatic) Standard;',
               'apply a cold pack to the injury site;',
-              'if the patient is conscious and SMR is not indicated as per the Spinal Motion Restriction (SMR) Standard , position the patient semi-sitting and leaning forward to assist draining and encourage the patient to expectorate blood, as required;',
+              'if the patient is conscious and SMR is not indicated as per the Spinal Motion Restriction (SMR) Standard, position the patient semi-sitting and leaning forward to assist draining and encourage the patient to expectorate blood, as required;',
               'if the patient is on a spinal board or adjustable break-away stretcher, elevate the head 30 deg r ees; and',
               { text: 'prepare for potential problems, including,', subItems: [
                 'airway obstruction if severe injury and/or massive or uncontrolled oral hemorrhage, and',
@@ -1444,7 +1470,7 @@ const BLS_GROUP_CONTENT = {
               ] },
             ],
             guidelines: [
-              'The attending paramedic should sit within the patient\'s view when possible, so the patient does not attempt to turn his/her head.•',
+              'The attending paramedic should sit within the patient\'s view when possible, so the patient does not attempt to turn his/her head.',
             ]
           },
         ]
@@ -1498,14 +1524,19 @@ const BLS_GROUP_CONTENT = {
                 'respiratory distress/arrest, and',
                 'agitation or combativeness.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
-          'Utilize the Rule of Nines to estimate percentage of body surface burned (or the Modified Rule of Nines for pediatrics) b. assess distal neurovascular status in burned extremities, c. assess for signs of smoke inhalation and upper airway injury,',
+          'Utilize the Rule of Nines to estimate percentage of body surface burned (or the Modified Rule of Nines for pediatrics)',
+          'assess distal neurovascular status in burned extremities,',
+          'assess for signs of smoke inhalation and upper airway injury,',
           'Signs of smoke inhalation and upper airway injury include decreased air entry, burns to lips or mouth, carbon particles in saliva or sputum, cough, drooling,',
-          'stridor or hoarseness, facial burns, burned or singed nasal hair or eyebrows, or shortness of breath, shallow respirations, audible wheezes, or tachypnea. d. if burns involve an eye, assess eye as per Visual Disturbance Standard; and e. notwithstanding paragraph 6(d) above, if burns involve an eye and eye is swollen shut, leave eye shut;',
-          'If administering oxygen as per the Oxygen Therapy Standard, in case of facial burns, gauze pads may be placed under the edges of the oxygen mask to decrease pain and irritation • Carbon Monoxide (CO) poisoning and cyanide toxicity are potential concerns for any incident involving combustible materials. Paramedics should administer high concentration oxygen to known or suspected cases as per the Oxygen Therapy Standard.',
+          'stridor or hoarseness, facial burns, burned or singed nasal hair or eyebrows, or shortness of breath, shallow respirations, audible wheezes, or tachypnea.',
+          'if burns involve an eye, assess eye as per Visual Disturbance Standard; and',
+          'notwithstanding paragraph 6(d) above, if burns involve an eye and eye is swollen shut, leave eye shut;',
+          'If administering oxygen as per the Oxygen Therapy Standard, in case of facial burns, gauze pads may be placed under the edges of the oxygen mask to decrease pain and irritation',
+          'Carbon Monoxide (CO) poisoning and cyanide toxicity are potential concerns for any incident involving combustible materials. Paramedics should administer high concentration oxygen to known or suspected cases as per the Oxygen Therapy Standard.',
         ]
       },
       {
@@ -1515,7 +1546,8 @@ const BLS_GROUP_CONTENT = {
           {
             preamble: 'In situations involving a patient with a cold injury, the paramedic shall:',
             items: [
-              { text: 'remove the patient from the cold as soon as it is safe to do so after completing the primary survey; if the patient is trapped, prevent additional heat loss (e.g. cover with a blanket or put a blanket between the patient and ground); 2. consider life/limb/function threats, such as,', subItems: [
+              'remove the patient from the cold as soon as it is safe to do so after completing the primary survey; if the patient is trapped, prevent additional heat loss (e.g. cover with a blanket or put a blanket between the patient and ground);',
+              { text: 'consider life/limb/function threats, such as,', subItems: [
                 'severe hypothermia,',
                 'severe frostbite, and',
                 'underlying disorders/precipitating factors (e.g. alcohol/drug ingestion, hypoglycemia, trauma);',
@@ -1544,7 +1576,7 @@ const BLS_GROUP_CONTENT = {
                 'leave blisters intact, and',
                 'if dressing digits, dress digits separately.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -1587,7 +1619,7 @@ const BLS_GROUP_CONTENT = {
                 'dysrhythmias, and',
                 'extremity neurovascular compromise.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -1616,7 +1648,7 @@ const BLS_GROUP_CONTENT = {
                 'cover ends with moist, sterile dressings and/or padding; and',
               ] },
               're-assess distal neurovascular status in the affected extremity every approximately 10 minutes if status was compromised on initial assessment.o o',
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -1642,7 +1674,7 @@ const BLS_GROUP_CONTENT = {
                 'leave the object in place and support/cover; and',
               ] },
               'if the foreign body is in the nose, leave the object in place.',
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -1654,7 +1686,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Hazardous Materials Injury Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient withexposure to a hazardous material, the paramedic shall:',
+            preamble: 'In situations involving a patient with exposure to a hazardous material, the paramedic shall:',
             items: [
               { text: 'consider life/limb/function threats, such as,', subItems: [
                 'if chemical in eye, vision loss,',
@@ -1680,7 +1712,7 @@ const BLS_GROUP_CONTENT = {
               { text: 'with respect to eye irrigation,', subItems: [
                 'attempt to utilize eye wash station/equipment if available at scene,',
                 'advise patient not to rub eye(s),',
-                'position the patient with his/her affected side down if one eye is affected or supine if botheyes are affected,',
+                'position the patient with his/her affected side down if one eye is affected or supine if both eyes are affected,',
                 'manually open eyelids if required, and',
                 'attempt to irrigate away from tear duct(s);',
               ] },
@@ -1688,7 +1720,7 @@ const BLS_GROUP_CONTENT = {
               'if solid particles remain stuck to the skin after irrigation is complete, attempt manual removal and then cover affected areas with wet dressing and/or towels;',
               'in conjunction with the Reporting of Patient Care to Receiving Facility Standard, notify the receiving facility of the hazardous material exposure and associated decontamination efforts; and',
               'if gross contamination of ambulance or self, decontaminate immediately after call completion.',
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -1729,25 +1761,30 @@ const BLS_GROUP_CONTENT = {
               'cover protruding tissue/organs with non-adherent materials (e.g. moist, sterile dressings or plastic wrap);',
               'dress and bandage open wounds, prior to splint application, if applicable;',
               'if dressing digits, dress digits individually; leave tips of fingers/toes uncovered to allow observations of neurovascular status unless otherwise indicated by the Standards; and 9. re-assess and monitor distal neurovascular status after dressing, bandaging, and/or splinting is completed; loosen bandages to restore neurovascular status.',
-            ]
+            ],
           },
         ],
         guidelines: [
-          'Application of well-aimed direct pressure',
-          'Expose the wound cavity',
-          'Attempt to visualize the source of bleeding inside the wound cavity',
-          'Clear away blood, debris to better visualize source',
-          'Be firm and aggressive in applying pressure; be prepared for local tissue destruction as a result of applying pressure and packing',
-          'Apply pressure as accurately, directly, firmly and with as small a surface area as possible Use of a tourniquet',
-          'Tourniquets work best when placed over large muscle mass (e.g. thigh, upper arm muscles)',
-          'Tourniquets work poorly when placed on joints (e.g. knee, elbow) or twinned long bones (e.g. radius/ulna, tibia/fibula)',
-          'If a tourniquet is applied to stop uncontrollable extremity hemorrhage, it should not be removed in the pre-hospital setting',
-          'The time of tourniquet application must be documented and communicated to the receiving facility at transfer of care',
-          'In situations such as multi-casualty incidents (MCI), the time of tourniquet application must be listed on the patient and tourniquet',
-          'Do not cover the tourniquet once in place',
-          'If a single tourniquet fails, a second may be used. If a second fails, move immediately to use of pressure and hemostatic dressings Use of hemostatic dressings',
-          'Maintain pressure on bleeding site continuously while packing junctional or extremity wounds',
-          'Ensure wound cavity is completely filled with densely packed dressing material Do not remove dressings, once wound is packed, do not apply subsequent dressings on top',
+          { heading: 'Application of well-aimed direct pressure', items: [
+            'Expose the wound cavity',
+            'Attempt to visualize the source of bleeding inside the wound cavity',
+            'Clear away blood, debris to better visualize source',
+            'Be firm and aggressive in applying pressure; be prepared for local tissue destruction as a result of applying pressure and packing',
+            'Apply pressure as accurately, directly, firmly and with as small a surface area as possible',
+          ] },
+          { heading: 'Use of a Tourniquet', items: [
+            'Tourniquets work best when placed over large muscle mass (e.g. thigh, upper arm muscles)',
+            'Tourniquets work poorly when placed on joints (e.g. knee, elbow) or twinned long bones (e.g. radius/ulna, tibia/fibula)',
+            'If a tourniquet is applied to stop uncontrollable extremity hemorrhage, it should not be removed in the pre-hospital setting',
+            'The time of tourniquet application must be documented and communicated to the receiving facility at transfer of care',
+            'In situations such as multi-casualty incidents (MCI), the time of tourniquet application must be listed on the patient and tourniquet',
+            'Do not cover the tourniquet once in place',
+            'If a single tourniquet fails, a second may be used. If a second fails, move immediately to use of pressure and hemostatic dressings Use of hemostatic dressings',
+          ] },
+          { heading: 'Wound Packing', items: [
+            'Maintain pressure on bleeding site continuously while packing junctional or extremity wounds',
+            'Ensure wound cavity is completely filled with densely packed dressing material Do not remove dressings, once wound is packed, do not apply subsequent dressings on top',
+          ] },
         ]
       },
       {
@@ -1784,7 +1821,7 @@ const BLS_GROUP_CONTENT = {
                 ] },
                 'prepare for tension pneumothorax.',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -1813,7 +1850,8 @@ const BLS_GROUP_CONTENT = {
                   'has unlaboured breathing;',
                 ] },
               ] },
-              { text: 'if the patient does not meet the criteria listed in paragraph 2(b) above, recognize the potential need for neonatal resuscitation in conjunction with the ALS PCS; 4. attempt to determine,', subItems: [
+              'if the patient does not meet the criteria listed in paragraph 2(b) above, recognize the potential need for neonatal resuscitation in conjunction with the ALS PCS;',
+              { text: 'attempt to determine,', subItems: [
                 'a brief history of the pregnancy (e.g. length of gestation, number of pregnancies, number of births),',
                 'details surrounding labour (e.g. duration),',
                 'details regarding delivery (e.g. whether delivery was precipitous, complications),',
@@ -1827,11 +1865,19 @@ const BLS_GROUP_CONTENT = {
                 'clamp and cut umbilical cord, if not yet done, as per the ALS PCS,',
                 'position the neonatal patient supine on a firm surface and with his/her neck slightly extended (to establish a patent airway),',
               ] },
-            ]
+            ],
           },
         ],
         guidelines: [
-          'A small towel roll, such as a face cloth, may be placed beneath the neonatal patient\'s shoulders to facilitate head positioning; be cautious not to hyperextend the neonatal patient\'s neck. e. record time of delivery (or approximate), f. tag/tape the neonatal patient\'s arm with the time of delivery and the mother\'s name, if time and patient conditions permit, g. if the neonatal patient does not require neonatal resuscitation, i. prior to transport, attempt to place the neonatal patient skin to skin on the mother\'s chest or abdomen (to facilitate temperature regulation), and advise the mother she may nurse if she wishes, and ii. swaddle the neonatal patient with a blanket, h. recognize a neonatal patient\'s inefficiency at regulating body temperature and maintain a normal temperature by covering/re-covering the neonatal patient during care; i. take an Apgar score at one and five minutes post-delivery, if possible; and j. in conjunction with the Load and Go Patient Standard, initiate rapid transport if five minute Apgar score is less than seven.',
+          'A small towel roll, such as a face cloth, may be placed beneath the neonatal patient\'s shoulders to facilitate head positioning; be cautious not to hyperextend the neonatal patient\'s neck.',
+          'record time of delivery (or approximate),',
+          'tag/tape the neonatal patient\'s arm with the time of delivery and the mother\'s name, if time and patient conditions permit,',
+          'if the neonatal patient does not require neonatal resuscitation,',
+          'prior to transport, attempt to place the neonatal patient skin to skin on the mother\'s chest or abdomen (to facilitate temperature regulation), and advise the mother she may nurse if she wishes, and',
+          'swaddle the neonatal patient with a blanket,',
+          'recognize a neonatal patient\'s inefficiency at regulating body temperature and maintain a normal temperature by covering/re-covering the neonatal patient during care;',
+          'take an Apgar score at one and five minutes post-delivery, if possible; and',
+          'in conjunction with the Load and Go Patient Standard, initiate rapid transport if five minute Apgar score is less than seven.',
         ]
       },
       {
@@ -1876,7 +1922,7 @@ const BLS_GROUP_CONTENT = {
                 'duration of labour from past pregnancies;',
               ] },
               { text: 'perform, at a minimum, a secondary survey to assess,', subItems: [
-                'abdomen, as per Abdominal Pain (Non-Traumatic) Standard , for pregnant pa tients who present with,',
+                'abdomen, as per Abdominal Pain (Non-Traumatic) Standard, for pregnant patients who present with,',
                 { text: 'a history indicative of a motor vehicle collision,', subItems: [
                   'abdominal pain, contractions, vaginal bleeding, or cord prolapse,',
                   'acceleration/deceleration injuries,',
@@ -1884,7 +1930,7 @@ const BLS_GROUP_CONTENT = {
                 ] },
                 { text: 'fall injuries,', subItems: [
                   'headache, blurred vision, nausea, or swelling,',
-                  'malaise, weakness, dizziness, light-headedness, seizure, or sho rtness of breath, and/or',
+                  'malaise, weakness, dizziness, light-headedness, seizure, or shortness of breath, and/or',
                   'penetrating trauma to the chest/abdomen,',
                 ] },
                 'concurrent with the assessments as per paragraph 5(a) above, when pa lpating the abdomen of a patient beyond 20 weeks of gestation,',
@@ -1900,7 +1946,7 @@ const BLS_GROUP_CONTENT = {
               'transport the patient in the left-lateral position;',
               'notwithstanding paragraph 7 above, if the patient is on a spinal board or adjustable break-away stretcher, tilt 30 degrees to the left; and',
               'in conjunction with the Reporting of Patient Care to Receiving Facility Standard, notify the receiving facility of status of the patient and neonate, if applicable.',
-            ]
+            ],
           },
         ],
         guidelines: [
@@ -1911,7 +1957,7 @@ const BLS_GROUP_CONTENT = {
           'With respect to uterine height:',
           'Uterus at the umbilicus = 20 weeks of gestational size',
           'Uterus at the costal margins = 36 weeks of gestational size',
-          'iii. observe for contractions, as follows:',
+          'observe for contractions, as follows:',
         ]
       },
     ]

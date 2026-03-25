@@ -1005,6 +1005,42 @@ body.help-modal-open {
   font-size: 13.5px;
 }
 
+/* Guideline sub-section headings */
+.bls-guideline-subheading {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text);
+  margin: 10px 0 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bls-guideline-subheading:first-child {
+  margin-top: 2px;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Key clinical value highlights */
+.bls-val {
+  font-weight: 700;
+  color: var(--blue);
+}
+
+/* Note callout */
+.bls-note {
+  margin: 8px 0 4px;
+  padding: 8px 12px;
+  background: rgba(58, 134, 205, 0.1);
+  border-left: 3px solid var(--blue);
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+}
+.bls-note strong {
+  color: var(--blue);
+}
+
 .bls-children {
   margin-top: 8px;
   display: grid;
