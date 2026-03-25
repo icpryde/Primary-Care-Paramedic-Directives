@@ -102,7 +102,7 @@ function initSearchClearButtons() {
     btn.type = 'button';
     btn.className = 'search-clear';
     btn.setAttribute('aria-label', 'Clear search');
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
     btn.hidden = !String(input.value || '').trim();
     input.insertAdjacentElement('afterend', btn);
     const syncVisibility = () => {
@@ -4385,19 +4385,6 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
-
-// Always fetch sw.js fresh so the footer shows the live server version,
-// not whatever version is frozen in the service worker cache.
-(function fetchAppVersion() {
-  fetch('sw.js', { cache: 'no-store' })
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var m = text.match(/pcp-directives-v(\d+)/);
-      var tag = document.getElementById('app-version-tag');
-      if (m && tag) tag.textContent = 'App v' + m[1];
-    })
-    .catch(function() {});
-})();
 
 // Always fetch sw.js fresh so the footer shows the live server version,
 // not whatever version is frozen in the service worker cache.
