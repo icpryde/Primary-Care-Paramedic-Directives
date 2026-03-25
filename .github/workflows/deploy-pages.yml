@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -22,6 +22,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Bump app version
+        run: |
+          CURRENT=$(grep -o 'pcp-directives-v[0-9]*' sw.js | grep -o '[0-9]*$')
+          NEXT=$((CURRENT + 1))
+          echo "Bumping v${CURRENT} → v${NEXT}"
+          sed -i "s/pcp-directives-v${CURRENT}/pcp-directives-v${NEXT}/" sw.js
+          sed -i "s/App v${CURRENT}/App v${NEXT}/" index.html
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sw.js index.html
+          git commit -m "chore: bump app to v${NEXT} [skip ci]"
+          git push
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
