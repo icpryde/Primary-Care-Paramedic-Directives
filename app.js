@@ -1965,6 +1965,31 @@ function getBlsStandardsForGroup(groupId) {
   return group.standards;
 }
 
+/** Wrap numeric / threshold fragments in BLS detail text (input must already be HTML-escaped). */
+function formatBlsHighlight(t) {
+  if (t == null || t === '') return '';
+  let s = String(t);
+  s = s.replace(/(\d+-\d+%|\d+%)/g, '<span class="bls-val">$1</span>');
+  s = s.replace(/((?:SpO₂|SpO2|ETCO₂|ETCO2|GCS|LAMS|SBP|DBP|HR|RR|BP|CTAS)\s*(?:[<>≤≥=]|&lt;|&gt;|&le;|&ge;)\s*\d+(?:\.\d+)?(?:\s*(?:mmHg|bpm|\/min|mmol\/L|mmol))?)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b(?:≥|≤|&lt;|&gt;|&le;|&ge;|<|>)\s*\d+(?:\.\d+)?\s*°\s*C\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b\d+(?:-\d+)?\s*mL\/(?:hr|kg\/hr)\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b\d+\s*mL\/hr\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b\d+\s*mEq\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b\d+\s*mL\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b(?:≥|≤|&lt;|&gt;)\s*\d+\s*years?\s+of\s+age\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\bInfant\s*&lt;\s*1\s+year\s+old\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b(?:≥|≤|<|>|&lt;|&gt;)\s*\d+\s*km\/hr\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b\d+\s*feet\/\d+\s*stairs\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b(?:≥|≤|<|>|&lt;|&gt;)\s*\d+\s*metres?\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\bevery\s+\d+\s+minutes?\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b(?:<|>|&lt;|&gt;)\s*\d+\s*hours?\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b(?:<|>|&lt;|&gt;)\s*\d+\s*minutes?\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b\d+-\d+\s*(?:mmHg|bpm|\/min|litres|minutes|mm|mL)\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b(?:≥|≤|&lt;|&gt;)\s*\d+(?:\/\d+)?\s*mmHg\b)/gi, '<span class="bls-val">$1</span>');
+  s = s.replace(/(\b(?:≥|≤|&lt;|&gt;)\s*\d+(?:\.\d+)?\s*%\b)/g, '<span class="bls-val">$1</span>');
+  return s;
+}
+
 // ─── Build category list (PCP or Companion) ──────────────────────────────────
 function buildCategoryList(containerEl, items_fn, onClickFn) {
   containerEl.innerHTML = '';
@@ -2053,18 +2078,23 @@ function renderBlsStandardDetail(standard, group) {
   html += `<div class="detail-cat-banner bg-purple">BLS Standards — ${escHtml(group.title)}</div>`;
   html += `<div class="detail-title">${escHtml(standard.title)}</div>`;
   html += `<div class="detail-auth">BLS PCS v3.4 verbatim reference. Confirm with current MOH BLS PCS and local service policy.</div>`;
+  const blsGroupMeta = typeof BLS_GROUP_CONTENT !== 'undefined' ? BLS_GROUP_CONTENT[group.id] : null;
+  if (blsGroupMeta && blsGroupMeta.sectionIntro) {
+    const introParas = String(blsGroupMeta.sectionIntro).split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+    html += `<div class="bls-section-intro bls-section-intro--group">`;
+    introParas.forEach(p => {
+      html += `<p>${formatBlsHighlight(escHtml(p))}</p>`;
+    });
+    html += `</div>`;
+  }
   html += renderMyNotesAnchor();
 
   const sections = Array.isArray(standard.sections) ? standard.sections : [];
   const guidelines = Array.isArray(standard.guidelines) ? standard.guidelines : [];
   const children = Array.isArray(standard.children) ? standard.children : [];
 
-  // Helper: highlight key clinical values in escaped HTML text
   function formatBlsText(text) {
-    return text
-      .replace(/(\d+-\d+%|\d+%)/g, '<span class="bls-val">$1</span>')
-      .replace(/((?:SpO₂|ETCO₂|GCS|LAMS|SBP|HR|RR|BP)\s*(?:[<>≤≥=]|&lt;|&gt;)\s*\d+(?:\.\d+)?(?:\s*(?:mmHg|bpm|\/min))?)/gi, '<span class="bls-val">$1</span>')
-      .replace(/(\d+-\d+\s*(?:mmHg|bpm|\/min|litres|minutes|mm))/gi, '<span class="bls-val">$1</span>');
+    return formatBlsHighlight(text);
   }
 
   // Helper: render a single item (string or { text, subItems })
@@ -2073,7 +2103,12 @@ function renderBlsStandardDetail(standard, group) {
       return `<li>${formatBlsText(escHtml(item))}</li>`;
     }
     if (item && typeof item === 'object') {
-      let h = `<li>${formatBlsText(escHtml(item.text || ''))}`;
+      const sys = item.systemLabel
+        ? `<span class="bls-body-system">${escHtml(item.systemLabel)}</span> `
+        : '';
+      const rawText = item.text != null ? String(item.text) : '';
+      const textPart = rawText.trim() !== '' ? formatBlsText(escHtml(rawText)) : '';
+      let h = `<li>${sys}${textPart}`;
       const subs = Array.isArray(item.subItems) ? item.subItems : [];
       if (subs.length) {
         h += `<ol class="bls-sub-list">`;
@@ -2081,7 +2116,12 @@ function renderBlsStandardDetail(standard, group) {
           if (typeof sub === 'string') {
             h += `<li>${formatBlsText(escHtml(sub))}</li>`;
           } else if (sub && typeof sub === 'object') {
-            h += `<li>${formatBlsText(escHtml(sub.text || ''))}`;
+            const subSys = sub.systemLabel
+              ? `<span class="bls-body-system">${escHtml(sub.systemLabel)}</span> `
+              : '';
+            const subRaw = sub.text != null ? String(sub.text) : '';
+            const subText = subRaw.trim() !== '' ? formatBlsText(escHtml(subRaw)) : '';
+            h += `<li>${subSys}${subText}`;
             const ss = Array.isArray(sub.subItems) ? sub.subItems : [];
             if (ss.length) {
               h += `<ol class="bls-sub-sub-list">`;
@@ -2137,9 +2177,13 @@ function renderBlsStandardDetail(standard, group) {
 
   // Helper: render a section block
   function renderSection(sec) {
-    let h = `<div class="section-card">`;
+    const cardExtra = sec.definitions ? ' bls-def-section' : '';
+    let h = `<div class="section-card${cardExtra}">`;
     if (sec.heading) {
       h += `<div class="section-heading">${escHtml(sec.heading)}</div>`;
+    }
+    if (sec.intro) {
+      h += `<div class="bls-section-intro">${formatBlsText(escHtml(sec.intro))}</div>`;
     }
     if (sec.preamble) {
       h += `<div class="bls-preamble">${escHtml(sec.preamble)}</div>`;
@@ -3273,10 +3317,12 @@ function buildSearchIndex() {
       const standards = Array.isArray(c.standards) ? c.standards : [];
       standards.forEach(std => {
         const textParts = [std.title];
+        if (c.sectionIntro) textParts.push(c.sectionIntro);
         // Collect text from sections
         if (std.sections) {
           std.sections.forEach(sec => {
             if (sec.preamble) textParts.push(sec.preamble);
+            if (sec.intro) textParts.push(sec.intro);
             (sec.items || []).forEach(item => {
               if (typeof item === 'string') textParts.push(item);
               else if (item && item.text) {

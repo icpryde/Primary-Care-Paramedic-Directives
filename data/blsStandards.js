@@ -89,7 +89,7 @@ const BLS_GROUP_CONTENT = {
                 ] },
                 'age ≥65 years old including falls from standing height;',
               ] },
-              'if the patient meets the criteria of paragraph 1 above, but does not meet the cr iteria of paragraph 2 above, not apply SMR;',
+              'if the patient meets the criteria of paragraph 1 above, but does not meet the criteria of paragraph 2 above, not apply SMR;',
               'subject to paragraph 6 below, if the patient meets the requirements of paragraph 2 above, apply SMR using a cervical collar only*, attempt to minimize spinal movement, and secure the patient to the stretcher with stretcher straps (see Guideline below);',
               { text: 'if the patient has penetrating trauma to the head, neck or torso, determine if the patient exhibits ALL of the following,', subItems: [
                 'no spine tenderness,',
@@ -115,7 +115,9 @@ const BLS_GROUP_CONTENT = {
           { heading: 'Use of Spinal Boards', items: [
             'Spinal boards or adjustable break-away stretchers should be considered primarily as extrication/patient lifting devices. The goal should be to remove the patient from these devices as soon as it is safe to do so. If sufficient personnel are present, the patient should be log rolled from the extrication device to the stretcher during loading of the patient or shortly after loading into the ambulance.',
             'Spinal boards or adjustable break-away stretchers may remain in place if the paramedic deems it safer/more comfortable for the patient in consideration of short transport times (<30 min).',
-            'Recall that patients with suspected pelvic fractures should be secured on a spinal board or adjustable break-away stretcher as per the Blunt/Penetrating Injury Standard. Patient extrication and transport',
+            'Recall that patients with suspected pelvic fractures should be secured on a spinal board or adjustable break-away stretcher as per the Blunt/Penetrating Injury Standard.',
+          ] },
+          { heading: 'Patient Extrication and Transport', items: [
             'Patient with SMR may be placed in a semi-sitting or supine position, according to patient comfort/clinical condition.',
             'If patient is unresponsive/uncooperative, apply manual C-spine immobilization until appropriate SMR has been applied.',
             'Cervical collars should be placed on the patient prior to movement, if possible.',
@@ -133,7 +135,19 @@ const BLS_GROUP_CONTENT = {
         title: 'Do Not Resuscitate (DNR) Standard',
         sections: [
           {
-            preamble: 'In a situation where a paramedic obtains a Valid MOH DNR Confirmation Form, the paramedic shall follow the General Directive set out below.',
+            intro: 'In a situation where a paramedic obtains a Valid MOH DNR Confirmation Form, the paramedic shall follow the General Directive set out below.',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Definitions',
+            preamble: 'For purposes of the Do Not Resuscitate (DNR) Standard:',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Cardiopulmonary Resuscitation (CPR)',
+            preamble: 'An immediate application of life-saving measures to a person who has suffered sudden respiratory or cardiorespiratory arrest. These measures include but are not limited to basic or advanced cardiac life support interventions outlined in the ALS PCS such as:',
             items: [
               'Chest compression',
               'Defibrillation',
@@ -141,22 +155,55 @@ const BLS_GROUP_CONTENT = {
               'Insertion of an oropharyngeal, nasopharyngeal or supraglottic airway',
               'Endotracheal intubation',
               'Transcutaneous pacing',
-              'Advanced resuscitation drugs such as, but not limited to, vasopressors, antiarrhythmic agents and opioid antagonists Do Not Resuscitate means that the paramedic (in accordance with his/her level of certification) will not initiate any of the interventions listed in the definition of CPR, above. Treatment Any action or service that is provided for a therapeutic, preventive, palliative, diagnostic, cosmetic or other health-related purpose, and includes a course of treatment or plan of treatment. Valid MOH DNR Confirmation Form A DNR Confirmation Form with pre-printed serial number that has been completed, in full, with the following information:',
+              'Advanced resuscitation drugs such as, but not limited to, vasopressors, antiarrhythmic agents and opioid antagonists',
+            ],
+          },
+          {
+            definitions: true,
+            heading: 'Do Not Resuscitate',
+            preamble: 'means that the paramedic (in accordance with his/her level of certification) will not initiate any of the interventions listed in the definition of CPR, above.',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Treatment',
+            preamble: 'Any action or service that is provided for a therapeutic, preventive, palliative, diagnostic, cosmetic or other health-related purpose, and includes a course of treatment or plan of treatment.',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Valid MOH DNR Confirmation Form',
+            preamble: 'A DNR Confirmation Form with pre-printed serial number that has been completed, in full, with the following information:',
+            items: [
               'The name of the patient (including both surname and first name) to whom the Form applies.',
               { text: 'A check box that has been checked to identify that one of the following conditions has been met:', subItems: [
                 'A current plan of treatment exists that reflects the patient\'s expressed wish when capable, or consent of the substitute decision-maker when the patient is incapable, that CPR not be included in the patient\'s plan of treatment.',
-                'The physician\'s current opinion is that CPR will almost certainly not benefit the patient and is not part of the plan of treatment, and the physician has discussed this with the capable patient or the substitute decision-maker when the patient is incapable. 3. A check box that has been checked to identify the professional designation of the Medical Doctor (M.D.), Registered Practical Nurse (R.P.N.), Registered Nurse (R.N.), or Registered Nurse in the Extended Class (R.N. [EC]) who has signed the Form. 4. Printed name of the M.D., R.P.N., R.N., or R.N. (EC) signing the Form.',
+                'The physician\'s current opinion is that CPR will almost certainly not benefit the patient and is not part of the plan of treatment, and the physician has discussed this with the capable patient or the substitute decision-maker when the patient is incapable.',
               ] },
+              'A check box that has been checked to identify the professional designation of the Medical Doctor (M.D.), Registered Practical Nurse (R.P.N.), Registered Nurse (R.N.), or Registered Nurse in the Extended Class (R.N. [EC]) who has signed the Form.',
+              'Printed name of the M.D., R.P.N., R.N., or R.N. (EC) signing the Form.',
               'A signature by the appropriate M.D., R.P.N., R.N., or R.N. (EC).',
-              'The date that the Form was signed, which must be the same as or precede the date of request for ambulance service. A Valid DNR Confirmation Form may be a fully completed original, or a copy of a fully completed original. General Directive',
-              { text: 'A paramedic, upon obtaining a Valid MOH DNR Confirmation Form and subject to paragraph 2 below, SHALL NOT initiate CPR (as per the definition above) on the patient in the event that the patient experiences respiratory or cardiorespiratory arrest (i.e. respirations and pulse are absent for at least three minutes from the time that respiratory or cardiac arrest was noted by the paramedic). 2. A paramedic shall initiate CPR (as per the definition above) on a patient who has experienced respiratory or cardiorespiratory arrest when:', subItems: [
+              'The date that the Form was signed, which must be the same as or precede the date of request for ambulance service.',
+            ],
+            notes: [
+              'A Valid DNR Confirmation Form may be a fully completed original, or a copy of a fully completed original.',
+            ],
+          },
+          {
+            heading: 'General Directive',
+            preamble: 'The paramedic shall:',
+            items: [
+              'A paramedic, upon obtaining a Valid MOH DNR Confirmation Form and subject to paragraph 2 below, SHALL NOT initiate CPR (as per the definition above) on the patient in the event that the patient experiences respiratory or cardiorespiratory arrest (i.e. respirations and pulse are absent for at least three minutes from the time that respiratory or cardiac arrest was noted by the paramedic).',
+              { text: 'A paramedic shall initiate CPR (as per the definition above) on a patient who has experienced respiratory or cardiorespiratory arrest when:', subItems: [
                 'the patient with a Valid MOH DNR Confirmation Form appears to the paramedic to be capable and expresses clearly a wish to be resuscitated in the event that he/she experiences a respiratory or cardiac arrest; or',
-                'the patient with a Valid MOH DNR Confirmation Form appears to the paramedic to be capable and expresses a wish to be resuscitated in the event that he/she experiences respiratory or cardiorespiratory arrest, but the request is vague, incomplete or ambiguous such that it is no longer clear what the wishes of the patient are. 3. The paramedic shall provide patient management necessary to provide comfort or alleviate pain, as required by the patient\'s clinical condition.',
+                'the patient with a Valid MOH DNR Confirmation Form appears to the paramedic to be capable and expresses a wish to be resuscitated in the event that he/she experiences respiratory or cardiorespiratory arrest, but the request is vague, incomplete or ambiguous such that it is no longer clear what the wishes of the patient are.',
               ] },
+              'The paramedic shall provide patient management necessary to provide comfort or alleviate pain, as required by the patient\'s clinical condition.',
               { text: 'Once it has been determined that death has occurred, the paramedic shall:', subItems: [
                 'advise the CACC/ACS; and',
-                'follow the',
+                'follow the Deceased Patient Standard.',
               ] },
+              'In conjunction with the Documentation of Patient Care Standard, the paramedic shall note and document the time at which the paramedic confirms the patient was deceased as per paragraph 1 above.',
             ],
           },
         ],
@@ -167,33 +214,50 @@ const BLS_GROUP_CONTENT = {
         title: 'Intravenous Line Maintenance Standard',
         sections: [
           {
+            heading: 'General Directive',
+            preamble: 'A paramedic shall monitor an intravenous (IV) line for a patient who has:',
             items: [
               { text: 'an IV line to keep the vein open, as follows:', subItems: [
                 'The flow rate to maintain IV patency for a patient <12 years of age is 15 mL/hr of any isotonic crystalloid solution.',
-                'The flow rate to maintain IV patency for a patient ≥12 years of age is 30-60 mL/ hr of any isotonic crystalloid solution; or',
+                'The flow rate to maintain IV patency for a patient ≥12 years of age is 30-60 mL/hr of any isotonic crystalloid solution; or',
               ] },
               { text: 'an intravenous line for fluid replacement with,', subItems: [
-                'a maximum flow rate infused of up to two mL/kg/hr to a maximum of 200 mL /hr,',
+                'a maximum flow rate infused of up to two mL/kg/hr to a maximum of 200 mL/hr,',
                 'thiamine, multivitamin preparations,',
                 'drugs within his/her level of certification, or',
-                'potassium chloride (KCl) for patients ≥18 years of age, to a maximum of 10mEq in a 250 mL bag. Use of Escorts',
+                'potassium chloride (KCl) for patients ≥18 years of age, to a maximum of 10 mEq in a 250 mL bag.',
               ] },
-              { text: 'Unless within his/her level of certification, a paramedic shall request a me dically responsible escort in the event a patient requires an intravenous:', subItems: [
+            ],
+          },
+          {
+            heading: 'Use of Escorts',
+            items: [
+              { text: 'Unless within his/her level of certification, a paramedic shall request a medically responsible escort in the event a patient requires an intravenous:', subItems: [
                 'that is being used for blood (or blood product) administration;',
-                'that is being used to administer potassium chloride to a patient who is <18 ye ars of age;',
-                'that is being used to administer medication (including pre-packaged me dications, except as detailed in paragraph 2 from the General Directive above);',
-                'that requires electronic monitoring or uses a pressurized intravenous fluid in fuser, pump or central venous line; or',
-                'for a neonate or pediatric patient <2 years of age. Procedure The paramedic shall: Pre-transport',
+                'that is being used to administer potassium chloride to a patient who is <18 years of age;',
+                'that is being used to administer medication (including pre-packaged medications, except as detailed in paragraph 2 from the General Directive above);',
+                'that requires electronic monitoring or uses a pressurized intravenous fluid infuser, pump or central venous line; or',
+                'for a neonate or pediatric patient <2 years of age.',
               ] },
-              'confirm physician\'s written IV order with sending facility staff;',
-              'determine IV solution, IV flow rate, catheter gauge, catheter length, and cannulation site;',
-              'note condition of IV site prior to transport;',
-              'confirm amount of fluid remaining in bag;',
-              'determine amount of fluid required for complete transport time and obtain more fluid if applicable; and',
-              'document all pre-transport IV information on the Ambulance Call Report. During transport',
-              'monitor and maintain IV at the prescribed rate, this may include changing the IV bag as required;',
-              'if the IV becomes dislodged or interstitial, discontinue the IV flow and remove the catheter with particular attention to aseptic technique; and',
-              'confirm condition of catheter if removed.',
+            ],
+          },
+          {
+            heading: 'Procedure',
+            preamble: 'The paramedic shall:',
+            items: [
+              { text: 'Pre-transport', subItems: [
+                'confirm physician\'s written IV order with sending facility staff;',
+                'determine IV solution, IV flow rate, catheter gauge, catheter length, and cannulation site;',
+                'note condition of IV site prior to transport;',
+                'confirm amount of fluid remaining in bag;',
+                'determine amount of fluid required for complete transport time and obtain more fluid if applicable; and',
+                'document all pre-transport IV information on the Ambulance Call Report.',
+              ] },
+              { text: 'During transport', subItems: [
+                'monitor and maintain IV at the prescribed rate, this may include changing the IV bag as required;',
+                'if the IV becomes dislodged or interstitial, discontinue the IV flow and remove the catheter with particular attention to aseptic technique; and',
+                'confirm condition of catheter if removed.',
+              ] },
             ],
           },
         ],
@@ -210,7 +274,7 @@ const BLS_GROUP_CONTENT = {
             items: [
               'ensure the patient is not left alone;',
               'if the patient is a child, follow the Child in Need of Protection Standard;',
-              'notwithstanding paragraph 2 above, in situation where police are not on- scene, offer to contact police; and',
+              'notwithstanding paragraph 2 above, in situations where police are not on-scene, offer to contact police; and',
               'upon police request, bag the stretcher linen, dressings, and other materials in contact with the patient, and leave with the attending police officer.',
             ],
           },
@@ -225,6 +289,7 @@ const BLS_GROUP_CONTENT = {
 
   'bls-medical': {
     lead: 'Medical presentations requiring focused assessment, early risk recognition, and destination planning.',
+    sectionIntro: 'Specific standards in Section 2 – Medical Standards have been developed not on the basis of diagnosis, but on the basis of: (a) chief complaint, as stated by the patient/bystanders; (b) presenting problem as indicated by the patient/bystanders; and/or (c) immediately obvious primary survey critical findings, e.g. respiratory failure.\n\nParamedics should be aware of a patient\'s potential to deteriorate and prepare accordingly. Particular attention should be paid to the potential for compromises to airway, breathing or circulation, seizures, and/or emesis.\n\nIn conjunction with history gathering, paramedics shall determine provoking factors, quality, region/radiation/relieving factors, severity, and timing of the chief complaint or presenting problem.\n\nWhen providing patient care as per Section 2 – Medical Standards, a paramedic shall ensure that the patient simultaneously receives care in accordance with the ALS PCS.',
     standards: [
       {
         id: 'bls-abdominal-pain',
@@ -287,7 +352,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Allergic Reaction (Known or Suspected) Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient with an allergic reaction that is known or susp ected, th e paramedic shall:',
+            preamble: 'In situations involving a patient with an allergic reaction that is known or suspected, the paramedic shall:',
             items: [
               'consider potential life/limb/function threats, such as anaphylaxis;',
               { text: 'perform, at a minimum, a secondary survey to assess,', subItems: [
@@ -295,17 +360,12 @@ const BLS_GROUP_CONTENT = {
                 'lungs, for adventitious sounds through auscultation, and',
                 'skin, for erythema, urticaria, and edema;',
               ] },
-              { text: 'consider anaphylaxis if the patient presents with two or more body system manif estations as follows:', subItems: [
-                'Respiratory:',
-                'Dyspnea, wheezing, stridor or hoarse voice',
-                'Ca rdiovascular:',
-                'Tachycardia or hypotension/shock',
-                'Ne urological:',
-                'Dizziness, confusion, or loss of consciousness',
-                'Gast rointestinal',
-                'Nausea, vomiting, abdominal cramps, or diarrhea',
-                'Derma tological/mucosal:',
-                'Facial, orolingual, or generalized swelling/flushing/urticaria;',
+              { text: 'consider anaphylaxis if the patient presents with two or more body system manifestations as follows:', subItems: [
+                { systemLabel: 'Respiratory:', subItems: ['Dyspnea, wheezing, stridor or hoarse voice'] },
+                { systemLabel: 'Cardiovascular:', subItems: ['Tachycardia or hypotension/shock'] },
+                { systemLabel: 'Neurological:', subItems: ['Dizziness, confusion, or loss of consciousness'] },
+                { systemLabel: 'Gastrointestinal:', subItems: ['Nausea, vomiting, abdominal cramps, or diarrhea'] },
+                { systemLabel: 'Dermatological/mucosal:', subItems: ['Facial, orolingual, or generalized swelling/flushing/urticaria;'] },
               ] },
               { text: 'in association with the body systems involvement in paragraph 3 above, consider historical findings as evidence of suspected anaphylaxis, as follows:', subItems: [
                 'Difficulty swallowing/tightness in the throat',
@@ -356,12 +416,12 @@ const BLS_GROUP_CONTENT = {
         title: 'Back Pain (Non-Traumatic) Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient with back pain that is believed to be of a non- tra umatic origin, the paramedic shall:',
+            preamble: 'In situations involving a patient with back pain that is believed to be of a non-traumatic origin, the paramedic shall:',
             items: [
               { text: 'consider potential life/limb/function threats, such as,', subItems: [
                 'abdominal/thoracic aortic aneurysm,',
                 'acute spinal nerve root(s) compression,',
-                'intra-abdominal disease ( e.g. pancreatitis; peptic ulcer), and',
+                'intra-abdominal disease (e.g. pancreatitis; peptic ulcer), and',
                 'possible occult injury (e.g. pathologic fracture); and',
               ] },
               { text: 'perform, at a minimum, a secondary survey to assess,', subItems: [
@@ -448,23 +508,23 @@ const BLS_GROUP_CONTENT = {
                 'agitation, confusion, or combativeness; and',
               ] },
               { text: 'ventilate the patient if patient is apneic or respirations are inadequate,', subItems: [
-                'if ETCO₂ monitoring is available,',
-                { text: 'attempt to maintain ETCO₂ values of 35-45 mmHg,', subItems: [
-                  'notwithstanding paragraph 5(a)(i) above, if signs of cerebral herniation are present after measures to address hypoxemia and hypotension, hyperventilate the patient to attempt to maintain ETCO₂ values of 30-35 mmHg. Signs of cerebral herniation include a deteriorating GCS <9 with any of the following:',
+                { text: 'if ETCO₂ monitoring is available,', subItems: [
+                  'attempt to maintain ETCO₂ values of 35-45 mmHg,',
+                  { text: 'notwithstanding paragraph 5(a)(i) above, if signs of cerebral herniation are present after measures to address hypoxemia and hypotension, hyperventilate the patient to attempt to maintain ETCO₂ values of 30-35 mmHg. Signs of cerebral herniation include a deteriorating GCS <9 with any of the following:', subItems: [
+                    'dilated and unreactive pupils,',
+                    'asymmetric pupillary response, or',
+                    'a motor response that shows either unilateral or bilateral decorticate or decerebrate posturing, or',
+                  ] },
                 ] },
-              ] },
-              'dilated and unreactive pupils,',
-              'asymmetric pupillary response, or',
-              { text: 'a motor response that shows either unilateral or bilateral decorticate or decerebrate posturing, or', subItems: [
-                'if ETCO₂ monitoring is unavailable, and measures to address hypoxemia and hypotension have been taken, and the patient shows signs of cerebral herniation as per paragraph 5(a)(ii) above, hyperventilate the patient as follows:',
-                { text: 'Adult: approximately 20 breaths per minute,', subItems: [
+                { text: 'if ETCO₂ monitoring is unavailable, and measures to address hypoxemia and hypotension have been taken, and the patient shows signs of cerebral herniation as per paragraph 5(a)(ii) above, hyperventilate the patient as follows:', subItems: [
+                  'Adult: approximately 20 breaths per minute,',
                   'Child: approximately 25 breaths per minute,',
                   'Infant <1 year old: approximately 30 breaths per minute.',
                 ] },
               ] },
-              { text: 'perform a secondary screen for LVO stroke using the Los Angeles Motor Sca le (LAMS) for all probable stroke patients presenting within 24 hours of stroke symptom onset,', subItems: [
+              { text: 'perform a secondary screen for LVO stroke using the Los Angeles Motor Scale (LAMS) for all probable stroke patients presenting within 24 hours of stroke symptom onset,', subItems: [
                 'if LAMS is greater than or equal to 4 (≥4), classify the patient as CTAS 2,',
-                'inform the receiving hospital whether "LVO Clinical Screen is positive or negative "',
+                'inform the receiving hospital whether "LVO Clinical Screen is positive or negative"',
                 'Document LAMS screen for patients presenting with CVA/Stroke symptoms 0-24 hours from symptom onset.',
               ] },
             ],
@@ -479,7 +539,7 @@ const BLS_GROUP_CONTENT = {
                 'Unilateral facial droop, or',
                 'Unilateral leg weakness or drift;',
               ] },
-              'if the patient meets the criteria listed in paragraph 1 of the Acute Stroke Bypass Protocol above, determine if the patient can be transported to a Designated Stroke Centre* within 6 hours of a clearly determined time of symptom onset or time the patient was last seen in his/her usual state of health; Note: In select regions, LVO Clinical Screen + patients, presenting within 6 hours of stroke symptom onset, may be redirected to the closest EVT centre.',
+              'if the patient meets the criteria listed in paragraph 1 of the Acute Stroke Bypass Protocol above, determine if the patient can be transported to a Designated Stroke Centre* within 6 hours of a clearly determined time of symptom onset or time the patient was last seen in his/her usual state of health;',
               { text: 'if the patient meets the criteria listed in paragraph 1 and paragraph 2 above, assess the patient to determine if he/she has any of the following contraindications:', subItems: [
                 'CTAS 1 and/or an uncorrected airway, breathing or circulation issue',
                 'Stroke symptoms resolved prior to paramedic arrival or assessment',
@@ -489,11 +549,12 @@ const BLS_GROUP_CONTENT = {
                 'Terminally ill or is in palliative care',
                 'Duration of transport to the Designated Stroke Centre will exceed two hours;',
               ] },
-              'if th e patient does not meet any of the contraindications listed in paragraph 3 above, perform a secondary screen for a Large Vessel Occlusion (LVO) stroke using the Los Angeles Motor Scale (LAMS);',
+              'if the patient does not meet any of the contraindications listed in paragraph 3 above, perform a secondary screen for a Large Vessel Occlusion (LVO) stroke using the Los Angeles Motor Scale (LAMS);',
               'inform the CACC/ACS of the LAMS score to assist in the determination of the closest or most appropriate*** Designated Stroke Centre; and',
               'if transport has been initiated to a Designated Stroke Centre and the patient\'s symptoms improve significantly or resolve during transport, continue transport to the Designated Stroke Centre.',
             ],
             notes: [
+              'Note: In select regions, LVO Clinical Screen + patients, presenting within 6 hours of stroke symptom onset, may be redirected to the closest EVT centre.',
               'A Designated Stroke Centre includes a Regional Stroke Centre, District Stroke Centre or a Telestroke Centre regardless of EVT capability.',
               'If symptoms persist after correction of blood glucose level, the patient is not contraindicated as per paragraph 3(c) above.',
               'Most appropriate refers to a Designated Stroke Centre as defined by a PPS.',
@@ -507,6 +568,8 @@ const BLS_GROUP_CONTENT = {
         title: 'Chest Pain (Non-Traumatic) Standard',
         sections: [
           {
+            heading: 'General Directive',
+            preamble: 'In situations involving a patient with chest pain that is believed to be of a non-traumatic origin, the paramedic shall:',
             items: [
               { text: 'consider potential life/limb/function threats, such as,', subItems: [
                 'acute coronary syndrome/acute myocardial infarction (e.g. ST-segment elevation myocardial infarction [STEMI]),',
@@ -530,8 +593,14 @@ const BLS_GROUP_CONTENT = {
                 'lungs, for decreased air entry and adventitious sounds (e.g. wheezes, crackles), through auscultation,',
                 'abdomen, as per the Abdominal Pain (Non-traumatic) Standard,',
                 'neck, for tracheal position and jugular vein distension, and',
-                'extremities, for leg/ankle edema. STEMI Hospital Bypass Protocol In situations in which the paramedic suspects that the patient is suffering from a STEMI, the paramedic shall:',
+                'extremities, for leg/ankle edema.',
               ] },
+            ],
+          },
+          {
+            heading: 'STEMI Hospital Bypass Protocol',
+            preamble: 'In situations in which the paramedic suspects that the patient is suffering from a STEMI, the paramedic shall:',
+            items: [
               { text: 'assess the patient to determine if they meet all of the following indications:', subItems: [
                 '≥18 years of age;',
                 'experience chest pain or equivalent consistent with cardiac ischemia or myocardial infarction;',
@@ -558,7 +627,7 @@ const BLS_GROUP_CONTENT = {
                 ] },
               ] },
               'notwithstanding paragraphs 2(c), 2(d), and 2(e) above, attempt to determine if the interventional cardiology program at the PCI centre will still permit the transport to the PCI centre;',
-              { text: 'if the patient does not meet any of the contraindications listed in paragraph 2 above OR the interventional cardiology program permits the transport to the PCI centre as per paragraph 3 above, inform the CACC/ACS of the need to transport to a PCI centre; a. provide the PCI centre the following information as soon as possible:', subItems: [
+              { text: 'if the patient does not meet any of the contraindications listed in paragraph 2 above OR the interventional cardiology program permits the transport to the PCI centre as per paragraph 3 above, inform the CACC/ACS of the need to transport to a PCI centre; provide the PCI centre the following information as soon as possible:', subItems: [
                 'that the patient is a "STEMI patient";',
                 'the patient\'s initials;',
                 'the patient\'s age;',
@@ -568,14 +637,18 @@ const BLS_GROUP_CONTENT = {
                 'estimated time of arrival; and',
                 'catchment area of the patient pickup.',
               ] },
-              { text: 'upon arrival at the PCI centre, in addition to the requirements listed in the Transfer of Responsibility for Patient Care Standard, provide the following information to the PCI centre staff: a. time of symptom onset;', subItems: [
+              { text: 'upon arrival at the PCI centre, in addition to the requirements listed in the Transfer of Responsibility for Patient Care Standard, provide the following information to the PCI centre staff:', subItems: [
+                'time of symptom onset;',
                 'time of ROSC, if applicable;',
                 'hemodynamic status;',
                 'medications given and procedure;',
                 'history of acute myocardial infarction/PCI/Coronary artery bypass graft, if applicable;',
                 'a copy of the qualifying ECG; and',
-                'a copy of the Ambulance Call Report in accordance with the Ontario Ambulance Documentation Standards. Note: Once initiated, continue to follow the STEMI Hospital Bypass Protocol even if the ECG normalizes after the intial assessment.',
+                'a copy of the Ambulance Call Report in accordance with the Ontario Ambulance Documentation Standards.',
               ] },
+            ],
+            notes: [
+              'Note: Once initiated, continue to follow the STEMI Hospital Bypass Protocol even if the ECG normalizes after the initial assessment.',
             ],
           },
         ],
@@ -608,7 +681,7 @@ const BLS_GROUP_CONTENT = {
                 'lungs, for adventitious sounds through auscultation;',
               ] },
               'notwithstanding paragraph 2 above, if epiglottitis is suspected, not open and inspect the airway;',
-              'if epiglottis is suspected and oxygen administration is indicated as per the Oxygen Therapy Standard, attempt to minimize agitation;',
+              'if epiglottitis is suspected and oxygen administration is indicated as per the Oxygen Therapy Standard, attempt to minimize agitation;',
               'position the patient sitting or semi-sitting; and',
               'prepare for potential problems, including complete airway obstruction.',
             ],
@@ -621,7 +694,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Epistaxis (Non-Traumatic) Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient with epistaxis that is believed to be of a non- traumatic origin, the paramedic shall:',
+            preamble: 'In situations involving a patient with epistaxis that is believed to be of a non-traumatic origin, the paramedic shall:',
             items: [
               'consider potential life/limb/function threats, such as upper airway obstruction;',
               { text: 'perform, at a minimum, a secondary survey to assess,', subItems: [
@@ -700,7 +773,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Fever Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient with a fever (known fever >38.5°C or chief c omplaint of fever), the paramedic shall:',
+            preamble: 'In situations involving a patient with a fever (known fever >38.5°C or chief complaint of fever), the paramedic shall:',
             items: [
               { text: 'consider potential life/limb/function threats, such as,', subItems: [
                 'overdose,',
@@ -719,7 +792,7 @@ const BLS_GROUP_CONTENT = {
                 { text: 'photophobia,', subItems: [
                   'scleral jaundice,',
                   'stiff neck, and',
-                  'headache,o o o',
+                  'headache,',
                 ] },
                 'abdomen, as per the Abdominal Pain (Non-Traumatic) Standard; and',
                 'temperature',
@@ -733,8 +806,13 @@ const BLS_GROUP_CONTENT = {
         guidelines: [
           'Consideration of sepsis is typically evidenced by all of the following:',
           'Presence of fever: >38.5°C',
-          'Possible infection suspected, e.g. pneumonia, urinary tract infection, a bdominal pain or distension, meningitis, cellulitis, septic arthritis, infected wound',
-          'Presence of any one of: SBP <90 Respiratory rate ≥22 breaths/minute, or intubated for respiratory su pport Acute confusion or reduced level of consciousness If sepsis is suspected, report findings to receiving facility.',
+          'Possible infection suspected, e.g. pneumonia, urinary tract infection, abdominal pain or distension, meningitis, cellulitis, septic arthritis, infected wound',
+          { heading: 'Presence of any one of:', items: [
+            'SBP <90',
+            'Respiratory rate ≥22 breaths/minute, or intubated for respiratory support',
+            'Acute confusion or reduced level of consciousness',
+          ] },
+          'If sepsis is suspected, report findings to receiving facility.',
         ]
       },
       {
@@ -742,7 +820,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Headache (Non-Traumatic) Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient with a headache that is believed to be of a non- traumatic origin, the paramedic shall:',
+            preamble: 'In situations involving a patient with a headache that is believed to be of a non-traumatic origin, the paramedic shall:',
             items: [
               { text: 'consider potential life/limb/function threats, such as,', subItems: [
                 'intracranial/intracerebral events (e.g. hemorrhage, thrombosis, tumour),',
@@ -757,7 +835,7 @@ const BLS_GROUP_CONTENT = {
                   'sensory loss; and',
                 ] },
               ] },
-              'prepare for potential problems, including seizures.o o o o o o',
+              'prepare for potential problems, including seizures.',
             ],
           },
         ],
@@ -766,7 +844,14 @@ const BLS_GROUP_CONTENT = {
           'Sudden onset of severe headache with no previous medical history of headache',
           'Recent onset headache (days, weeks) with sudden worsening',
           'Change in pattern of usual headaches',
-          'Any of the above accompanied by one or more of the following: Altered mental status Decrease in level of consciousness Neurologic deficits Obvious nuchal rigidity and fever or other symptoms of infection. Pupillary abnormalities (inequality, sluggish/absent light reactivity) Visual disturbances',
+          { heading: 'Any of the above accompanied by one or more of the following:', items: [
+            'Altered mental status',
+            'Decrease in level of consciousness',
+            'Neurologic deficits',
+            'Obvious nuchal rigidity and fever or other symptoms of infection',
+            'Pupillary abnormalities (inequality, sluggish/absent light reactivity)',
+            'Visual disturbances',
+          ] },
         ]
       },
       {
@@ -789,7 +874,7 @@ const BLS_GROUP_CONTENT = {
               ] },
               'move the patient to a cooler environment;',
               'remove heavy or excess layers of clothing;',
-              'if available at scene or from bystanders, provide water or electrolyte- containing fluids in small quantities if the patient is conscious, cooperative, able to understand directions and is not nauseated or vomiting;o',
+              'if available at scene or from bystanders, provide water or electrolyte-containing fluids in small quantities if the patient is conscious, cooperative, able to understand directions and is not nauseated or vomiting;',
               { text: 'if working assessment indicates heat exhaustion,', subItems: [
                 'move the patient to the ambulance, and',
                 'remove as much clothing as possible; and',
@@ -808,7 +893,8 @@ const BLS_GROUP_CONTENT = {
           'Heat syncope',
           'Heat cramps: severe cramping of large muscle groups',
           'Heat exhaustion: mild alterations in mental status, and non-specific complaints (headache, giddiness, nausea, vomiting, malaise), with excessive sweating in healthy adults; or hot, dry skin in the elderly',
-          'Heat stroke: severely altered mental status, coma, seizures, hyperthermia ≥40°C Overdose of tricyclic anti-depressants, antihistamines and β-blockers, as well as cocaine, Ecstasy or amphetamine abuse may also lead to heat stroke.',
+          'Heat stroke: severely altered mental status, coma, seizures, hyperthermia ≥40°C',
+          'Overdose of tricyclic anti-depressants, antihistamines and β-blockers, as well as cocaine, Ecstasy or amphetamine abuse may also lead to heat stroke.',
           'Monitor the patient to determine if cooling procedures should be discontinued, e.g. skin temperature feels normal to touch, generalized shivering develops, the patient\'s level of consciousness normalizes.',
         ]
       },
@@ -841,7 +927,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Nausea/Vomiting Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient with a nausea and/or vomiting, the paramedic shall:',
+            preamble: 'In situations involving a patient with nausea and/or vomiting, the paramedic shall:',
             items: [
               { text: 'consider potential life/limb/function threats, such as,', subItems: [
                 'acute coronary syndrome/acute myocardial infarction (e.g. STEMI),',
@@ -886,12 +972,12 @@ const BLS_GROUP_CONTENT = {
           {
             preamble: 'In situations involving a patient in seizure (or post-ictal), the paramedic shall:',
             items: [
-              { text: 'consider potential life/limb/function threats and/or underlying disorders, su ch as,', subItems: [
+              { text: 'consider potential life/limb/function threats and/or underlying disorders, such as,', subItems: [
                 'intracranial event,',
                 'hypoglycemia,',
                 'in pregnant patients or recent post-partum patients, eclampsia,',
                 'in patients ≥50 years of age with new onset or recurrent seizures,',
-                { text: 'brain tumour or other intracranial event ( e.g. hemorrhage, t hrombosis),', subItems: [
+                { text: 'brain tumour or other intracranial event (e.g. hemorrhage, thrombosis),', subItems: [
                   'cardiac dysrhythmias,',
                   'cardiovascular disease,',
                   'cerebrovascular disease, and',
@@ -904,7 +990,7 @@ const BLS_GROUP_CONTENT = {
                   'hypoglycemia,',
                 ] },
                 'in young children febrile convulsions associated with infection,',
-                'infection ( e.g. central nervous system, meningitis),',
+                'infection (e.g. central nervous system, meningitis),',
                 'alcohol withdrawal (including delirium tremens)',
                 'drug ingestion/withdrawal, and',
                 'known seizure disorder;',
@@ -916,7 +1002,7 @@ const BLS_GROUP_CONTENT = {
                 { text: 'eye deviation,', subItems: [
                   'incontinence,',
                   'parts of body affected, and',
-                  'type of seizure ( e.g. full body, focal);',
+                  'type of seizure (e.g. full body, focal);',
                 ] },
               ] },
               { text: 'perform, at a minimum, a secondary survey to assess,', subItems: [
@@ -1026,7 +1112,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Toxicological Emergency Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient with a toxicological emergency (e.g. overdose, poisioning, and/or drug ingestion), the paramedic shall:',
+            preamble: 'In situations involving a patient with a toxicological emergency (e.g. overdose, poisoning, and/or drug ingestion), the paramedic shall:',
             items: [
               'attempt to identify/determine agent(s), quantity, time and route of administration (absorption, inhalation, ingestion or injection);',
               'in cases in which the agent(s) is believed to be a prescription medication, attempt to identify date of prescription and compliance or appropriateness of remainder of prescription amount;',
@@ -1066,7 +1152,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Vaginal Bleeding Standard',
         sections: [
           {
-            preamble: 'In situation involving a patient with vaginal bleeding, the paramedic shall:',
+            preamble: 'In situations involving a patient with vaginal bleeding, the paramedic shall:',
             items: [
               { text: 'consider life/limb/function threats, such as,', subItems: [
                 'in post-menopausal women, tumours,',
@@ -1108,7 +1194,7 @@ const BLS_GROUP_CONTENT = {
           },
         ],
         guidelines: [
-          'Refer to the Sexual Assault (Reported) Standard if vaginal bleeding is suspected t o be due to assault.',
+          'Refer to the Sexual Assault (Reported) Standard if vaginal bleeding is suspected to be due to assault.',
           'To assist with estimating blood loss, a soaked normal sized pad or tampon can hold approximately five mL of blood. Normal blood loss during menstruation is 10-35 mL.',
         ]
       },
@@ -1117,7 +1203,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Visual Disturbance Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient with acute visual disturbances (including g eneralized eye pain) that is believed to be of a non-traumatic origin, the paramedic shall:',
+            preamble: 'In situations involving a patient with acute visual disturbances (including generalized eye pain) that is believed to be of a non-traumatic origin, the paramedic shall:',
             items: [
               { text: 'consider threats to life/limb/function, such as,', subItems: [
                 'intracranial, intracerebral or retinal hemorrhage/thrombosis, and',
@@ -1150,7 +1236,7 @@ const BLS_GROUP_CONTENT = {
           },
         ],
         guidelines: [
-          'Consider patching the patient\'s eyes for patient comfort and to minimize mo vement.',
+          'Consider patching the patient\'s eyes for patient comfort and to minimize movement.',
         ]
       },
     ]
@@ -1158,6 +1244,7 @@ const BLS_GROUP_CONTENT = {
 
   'bls-trauma': {
     lead: 'Trauma-focused standards emphasizing life threats, mechanism, and destination strategy.',
+    sectionIntro: 'Specific standards in Section 3 – Trauma Standards have been developed on the basis of the type of injury.\n\nParamedics should be aware of a patient\'s potential to deteriorate and prepare accordingly. Particular attention should be paid to the potential for problems related to concurrent conditions, compromises to airway, breathing or circulation, neurovascular compromise, seizures, shock, alterations in mental status and/or emesis.\n\nWhen providing care as per Section 3 – Trauma Standards, a paramedic shall ensure that the patient simultaneously receives care in accordance with the ALS PCS.',
     standards: [
       {
         id: 'bls-general-trauma',
@@ -1209,7 +1296,12 @@ const BLS_GROUP_CONTENT = {
         guidelines: [
           { heading: 'Splinting', items: [
             'If the injury site is dressed or splinted before paramedic arrival, use judgement when deciding to remove the dressing or splint. If the site is correctly managed as per the Standards, leave the dressing or splint as found.',
-            'Splinting priorities are: Spine (neck, thoraco-lumbar, head) Pelvis Femurs Lower legs Upper limbso o o o o',
+            'Splinting priorities are:',
+            'Spine (neck, thoraco-lumbar, head)',
+            'Pelvis',
+            'Femurs',
+            'Lower legs',
+            'Upper limbs',
           ] },
           { heading: 'Trauma and the Pregnant Patient', items: [
             'In pregnant patients, trauma is most often associated with domestic violence.',
@@ -1387,7 +1479,7 @@ const BLS_GROUP_CONTENT = {
               'if nose injury is obvious or suspected, assess the patient as per the Epistaxis (Non-traumatic) Standard;',
               'apply a cold pack to the injury site;',
               'if the patient is conscious and SMR is not indicated as per the Spinal Motion Restriction (SMR) Standard, position the patient semi-sitting and leaning forward to assist draining and encourage the patient to expectorate blood, as required;',
-              'if the patient is on a spinal board or adjustable break-away stretcher, elevate the head 30 deg r ees; and',
+              'if the patient is on a spinal board or adjustable break-away stretcher, elevate the head 30 degrees; and',
               { text: 'prepare for potential problems, including,', subItems: [
                 'airway obstruction if severe injury and/or massive or uncontrolled oral hemorrhage, and',
                 'epistaxis.',
@@ -1418,16 +1510,18 @@ const BLS_GROUP_CONTENT = {
                 'emesis;',
               ] },
               { text: 'ventilate the patient if patient is apneic or respirations are inadequate,', subItems: [
-                'if ETCO₂ monitoring is available,',
-                { text: 'attempt to maintain ETCO₂ values of 35-45 mmHg,', subItems: [
-                  'notwithstanding paragraph 3(a)(i) above, if signs of cerebral herniation are present after measures to address hypoxemia and hypotension, hyperventilate the patient to attempt to maintain ETCO₂ values of 30-35 mmHg. Signs of cerebral herniation include a deteriorating GCS <9 with any of the following: 1. Dilated and unreactive pupils,',
+                { text: 'if ETCO₂ monitoring is available,', subItems: [
+                  'attempt to maintain ETCO₂ values of 35-45 mmHg,',
+                  { text: 'notwithstanding paragraph 3(a)(i) above, if signs of cerebral herniation are present after measures to address hypoxemia and hypotension, hyperventilate the patient to attempt to maintain ETCO₂ values of 30-35 mmHg. Signs of cerebral herniation include a deteriorating GCS <9 with any of the following:', subItems: [
+                    'dilated and unreactive pupils,',
+                    'asymmetric pupillary response, or',
+                    'a motor response that shows either unilateral or bilateral decorticate or decerebrate posturing, or',
+                  ] },
                 ] },
-              ] },
-              'Asymmetric pupillary response, or',
-              { text: 'A motor response that shows either unilateral or bilateral decorticate or decerebrate posturing, or', subItems: [
-                { text: 'if ETCO₂ monitoring is unavailable, and measures to address hypoxemia and hypotension have been taken, and the patient shows signs of cerebral herniation as per paragraph 3(a)(ii) above, hyperventilate the patient as follows: i. Adult: approximately 20 breaths per minute', subItems: [
-                  'Child: approximately 25 breaths per minute',
-                  'Infant <1 year old: approximately 30 breaths per minute;',
+                { text: 'if ETCO₂ monitoring is unavailable, and measures to address hypoxemia and hypotension have been taken, and the patient shows signs of cerebral herniation as per paragraph 3(a)(ii) above, hyperventilate the patient as follows:', subItems: [
+                  'Adult: approximately 20 breaths per minute,',
+                  'Child: approximately 25 breaths per minute,',
+                  'Infant <1 year old: approximately 30 breaths per minute.',
                 ] },
               ] },
               'if protruding brain tissue is present, cover with non-adherent material (e.g. moist, sterile dressing; plastic wrap);',
@@ -1590,7 +1684,7 @@ const BLS_GROUP_CONTENT = {
         title: 'Electrocution/Electrical Injury Standard',
         sections: [
           {
-            preamble: 'In situations involving a patient with an electical injury, the paramedic shall:',
+            preamble: 'In situations involving a patient with an electrical injury, the paramedic shall:',
             items: [
               'make no attempt to touch a potential energized source or a patient who is still in contact with a potential energized source;',
               { text: 'consider life/limb/function threats, such as,', subItems: [
@@ -1647,13 +1741,13 @@ const BLS_GROUP_CONTENT = {
                 'irrigate with saline or sterile water if gross contamination, and',
                 'cover ends with moist, sterile dressings and/or padding; and',
               ] },
-              're-assess distal neurovascular status in the affected extremity every approximately 10 minutes if status was compromised on initial assessment.o o',
+              're-assess distal neurovascular status in the affected extremity approximately every 10 minutes if status was compromised on initial assessment.',
             ],
           },
         ],
         guidelines: [
           'With respect to children: if splints do not fit, splint body parts together (e.g. arm-to-trunk, leg-to-leg) and pad in-between.',
-          'With respect to fractured femur or tibia: Stabilize by securing it to the uninjured leg prior to transfer to a spinal board or adjustable break-away stretcher when utilized If log-rolling, log roll onto the uninjured side, if possible',
+          'With respect to fractured femur or tibia: Stabilize by securing it to the uninjured leg prior to transfer to a spinal board or adjustable break-away stretcher when utilized. If log-rolling, log roll onto the uninjured side, if possible.',
         ]
       },
       {
@@ -1691,11 +1785,11 @@ const BLS_GROUP_CONTENT = {
               { text: 'consider life/limb/function threats, such as,', subItems: [
                 'if chemical in eye, vision loss,',
                 'burns, and',
-                'systemic toxicity secondary to chemical absorption through the skin; Note: Specific Personal Protective Equipment (PPE) may be required when exposed to hazardous materials. Consult CANUTEC and other resources, as appropriate.',
+                'systemic toxicity secondary to chemical absorption through the skin;',
               ] },
               'attempt to determine the type and concentration of hazardous material, and duration of exposure;',
               'attempt to remove any contaminated clothing or jewelry;',
-              'attempt decontamination prior to departing scene;o o',
+              'attempt decontamination prior to departing scene;',
               { text: 'if chemical injury to the eye,', subItems: [
                 'assess the eye as per the Visual Disturbance Standard, and',
                 'advise patient to remove contact lens if lens is readily removable;',
@@ -1721,6 +1815,9 @@ const BLS_GROUP_CONTENT = {
               'in conjunction with the Reporting of Patient Care to Receiving Facility Standard, notify the receiving facility of the hazardous material exposure and associated decontamination efforts; and',
               'if gross contamination of ambulance or self, decontaminate immediately after call completion.',
             ],
+            notes: [
+              'Note: Specific Personal Protective Equipment (PPE) may be required when exposed to hazardous materials. Consult CANUTEC and other resources, as appropriate.',
+            ],
           },
         ],
         guidelines: [
@@ -1742,15 +1839,17 @@ const BLS_GROUP_CONTENT = {
             items: [
               'consider underlying injuries to deep structures (e.g. nerves, vessels, bones);',
               { text: 'control wound hemorrhage on the following anatomical basis,', subItems: [
-                'if the wound is located on an extremity,',
-                { text: 'apply well-aimed, direct digital pressure at the site of bleeding,', subItems: [
-                  'apply a tourniquet, if tourniquet fails to stop bleeding completely or cannot be used for any reason then apply a second tourniquet, and/or,',
-                  'pack the wound with hemostatic dressing if appropriate and available or standard gauze if contraindicated or unavailable, maintain pressure and secure with a pressure dressing; b. if the wound is located in a junctional location (e.g. head, shoulders, armpit, neck, pelvis, groin),',
+                { text: 'if the wound is located on an extremity,', subItems: [
+                  'apply well-aimed, direct digital pressure at the site of bleeding;',
+                  'apply a tourniquet; if tourniquet fails to stop bleeding completely or cannot be used for any reason then apply a second tourniquet, and/or',
+                  'pack the wound with hemostatic dressing if appropriate and available or standard gauze if contraindicated or unavailable, maintain pressure and secure with a pressure dressing;',
                 ] },
-                { text: 'apply well-aimed, direct digital pressure at the site of bleeding,', subItems: [
-                  'pack the wound with a hemostatic dressing if appropriate and available or standard gauze if contraindicated or unavailable, maintain pressure and secure with a pressure dressing; c. if the wound is located in the hollow spaces of the skull, chest or abdomen,',
+                { text: 'if the wound is located in a junctional location (e.g. head, shoulders, armpit, neck, pelvis, groin),', subItems: [
+                  'apply well-aimed, direct digital pressure at the site of bleeding;',
+                  'pack the wound with a hemostatic dressing if appropriate and available or standard gauze if contraindicated or unavailable, maintain pressure and secure with a pressure dressing;',
                 ] },
-                { text: 'apply manual pressure with a flat palm and a hemostatic dressing where available and appropriate or standard gauze if cannot use hemostatic dressing,', subItems: [
+                { text: 'if the wound is located in the hollow spaces of the skull, chest or abdomen,', subItems: [
+                  'apply manual pressure with a flat palm and a hemostatic dressing where available and appropriate or standard gauze if cannot use hemostatic dressing,',
                   'do not pack dressings of any kind into the hollow spaces of the skull, chest or abdomen,',
                   'do not insert fingers into the hollow space of the skull, chest or abdomen;',
                 ] },
@@ -1760,7 +1859,8 @@ const BLS_GROUP_CONTENT = {
               'during injury care, manually stabilize any impaled objects if object not yet stabilized;',
               'cover protruding tissue/organs with non-adherent materials (e.g. moist, sterile dressings or plastic wrap);',
               'dress and bandage open wounds, prior to splint application, if applicable;',
-              'if dressing digits, dress digits individually; leave tips of fingers/toes uncovered to allow observations of neurovascular status unless otherwise indicated by the Standards; and 9. re-assess and monitor distal neurovascular status after dressing, bandaging, and/or splinting is completed; loosen bandages to restore neurovascular status.',
+              'if dressing digits, dress digits individually; leave tips of fingers/toes uncovered to allow observations of neurovascular status unless otherwise indicated by the Standards; and',
+              're-assess and monitor distal neurovascular status after dressing, bandaging, and/or splinting is completed; loosen bandages to restore neurovascular status.',
             ],
           },
         ],
@@ -1779,11 +1879,12 @@ const BLS_GROUP_CONTENT = {
             'The time of tourniquet application must be documented and communicated to the receiving facility at transfer of care',
             'In situations such as multi-casualty incidents (MCI), the time of tourniquet application must be listed on the patient and tourniquet',
             'Do not cover the tourniquet once in place',
-            'If a single tourniquet fails, a second may be used. If a second fails, move immediately to use of pressure and hemostatic dressings Use of hemostatic dressings',
+            'If a single tourniquet fails, a second may be used. If a second fails, move immediately to use of pressure and hemostatic dressings.',
           ] },
           { heading: 'Wound Packing', items: [
             'Maintain pressure on bleeding site continuously while packing junctional or extremity wounds',
-            'Ensure wound cavity is completely filled with densely packed dressing material Do not remove dressings, once wound is packed, do not apply subsequent dressings on top',
+            'Ensure wound cavity is completely filled with densely packed dressing material.',
+            'Do not remove dressings; once wound is packed, do not apply subsequent dressings on top.',
           ] },
         ]
       },
@@ -1814,11 +1915,12 @@ const BLS_GROUP_CONTENT = {
                 'water temperature; and',
               ] },
               { text: 'if scuba-diving related,', subItems: [
-                'attempt to determine,',
-                { text: 'number, depth and duration of dives,', subItems: [
+                { text: 'attempt to determine,', subItems: [
+                  'number, depth and duration of dives,',
                   'rate of ascent, and',
-                  'when symptoms occurred (e.g. underwater, upon surfacing or within minutes thereof [possible gas embolus], more than 10 minutes after surfacing [possible decompression sickness], b. where air embolism is suspected and the patient is on a spinal board or adjustable break-away stretcher, not elevate the head 30 degrees if level of consciousness is decreased, and',
+                  'when symptoms occurred (e.g. underwater, upon surfacing or within minutes thereof [possible gas embolus], more than 10 minutes after surfacing [possible decompression sickness]);',
                 ] },
+                'where air embolism is suspected and the patient is on a spinal board or adjustable break-away stretcher, not elevate the head 30 degrees if level of consciousness is decreased, and',
                 'prepare for tension pneumothorax.',
               ] },
             ],
@@ -1926,20 +2028,20 @@ const BLS_GROUP_CONTENT = {
                 { text: 'a history indicative of a motor vehicle collision,', subItems: [
                   'abdominal pain, contractions, vaginal bleeding, or cord prolapse,',
                   'acceleration/deceleration injuries,',
-                  'blunt trauma involving the truncal area (regardless of whether there a re specific complaints),',
+                  'blunt trauma involving the truncal area (regardless of whether there are specific complaints),',
                 ] },
                 { text: 'fall injuries,', subItems: [
                   'headache, blurred vision, nausea, or swelling,',
                   'malaise, weakness, dizziness, light-headedness, seizure, or shortness of breath, and/or',
                   'penetrating trauma to the chest/abdomen,',
                 ] },
-                'concurrent with the assessments as per paragraph 5(a) above, when pa lpating the abdomen of a patient beyond 20 weeks of gestation,',
+                'concurrent with the assessments as per paragraph 5(a) above, when palpating the abdomen of a patient beyond 20 weeks of gestation,',
                 { text: 'note uterine height and palpate for contractions, and', subItems: [
                   'note fetal movements,',
                 ] },
               ] },
-              'Note timing and intensity of contractions, if present',
-              { text: 'Observe for palpable fetal parts/movement, and', subItems: [
+              'note timing and intensity of contractions, if present;',
+              { text: 'observe for palpable fetal parts/movement, and', subItems: [
                 'don sterile gloves prior to inspection and examination of the perineum;',
               ] },
               'manage labour and delivery as per the ALS PCS;',
