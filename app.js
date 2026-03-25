@@ -1993,10 +1993,12 @@ function buildCategoryList(containerEl, items_fn, onClickFn) {
 
         const groupRow = document.createElement('div');
         groupRow.className = 'directive-row directive-row--bls-group';
-        groupRow.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="bls-group-chevron"></span>`;
+        groupRow.setAttribute('data-group-id', item.id);
+        groupRow.innerHTML = `<span class="directive-row-title">${item.title}<span class="bls-group-count">(${standards.length})</span></span><span class="bls-group-chevron"></span>`;
 
         const subList = document.createElement('div');
         subList.className = 'bls-group-sublist collapsed';
+        subList.setAttribute('data-group-id', item.id);
 
         standards.forEach(std => {
           const subRow = document.createElement('div');
@@ -2004,14 +2006,15 @@ function buildCategoryList(containerEl, items_fn, onClickFn) {
           subRow.innerHTML = `<span class="directive-row-title">${std.title}</span><span class="directive-row-chevron"></span>`;
           subRow.addEventListener('click', e => {
             e.stopPropagation();
-            onClickFn(item);
+            renderBlsStandardDetail(std, item);
+            showView('view-detail', headerTitleFromItem(std));
           });
           subList.appendChild(subRow);
         });
 
         groupRow.addEventListener('click', () => {
-          const collapsed = subList.classList.toggle('collapsed');
-          groupRow.classList.toggle('expanded', !collapsed);
+          const isCollapsed = subList.classList.toggle('collapsed');
+          groupRow.classList.toggle('expanded', !isCollapsed);
         });
 
         itemsEl.appendChild(groupRow);
@@ -2045,44 +2048,41 @@ function escHtml(text) {
     .replace(/"/g, '&quot;');
 }
 
-function renderBlsStandardItem(item, nested = false) {
-  const keyPoints = Array.isArray(item.keyPoints) ? item.keyPoints : [];
-  const critical = Array.isArray(item.critical) ? item.critical : [];
-  const children = Array.isArray(item.children) ? item.children : [];
-  const cls = nested ? 'bls-standard bls-standard--nested' : 'bls-standard';
-
-  return `<details class="${cls}">
-    <summary>
-      <span class="bls-standard-title">${escHtml(item.title)}</span>
-      <span class="bls-standard-chevron" aria-hidden="true"></span>
-    </summary>
-    <div class="bls-standard-body">
-      ${critical.length ? `<div class="bls-critical"><strong>Critical:</strong> ${critical.map(escHtml).join(' ')}</div>` : ''}
-      ${keyPoints.length ? `<ul class="bls-points">${keyPoints.map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>` : ''}
-      ${children.length ? `<div class="bls-children">${children.map(child => renderBlsStandardItem(child, true)).join('')}</div>` : ''}
-    </div>
-  </details>`;
-}
-
-function renderBlsGroupDetail(group) {
-  const content = (typeof BLS_GROUP_CONTENT !== 'undefined') ? BLS_GROUP_CONTENT[group.id] : null;
-  if (!content) return;
-
-  const standards = Array.isArray(content.standards) ? content.standards : [];
-  const lead = content.lead || 'BLS standards quick-use reference.';
-
+function renderBlsStandardDetail(standard, group) {
   let html = '';
   html += `<div class="detail-scope-banner bg-navy">PRIMARY CARE PARAMEDIC</div>`;
-  html += `<div class="detail-cat-banner bg-purple">BLS Standards</div>`;
-  html += `<div class="detail-title">${escHtml(group.fullTitle || group.title)}</div>`;
-  html += `<div class="detail-auth">Mobile-focused BLS quick reference for rapid field access. Confirm final decisions with current MOH BLS PCS and local service policy.</div>`;
+  html += `<div class="detail-cat-banner bg-purple">BLS Standards — ${escHtml(group.title)}</div>`;
+  html += `<div class="detail-title">${escHtml(standard.title)}</div>`;
+  html += `<div class="detail-auth">BLS PCS v3.4 quick reference. Confirm with current MOH BLS PCS and local service policy.</div>`;
   html += renderMyNotesAnchor();
 
-  html += `<div class="section-card">
-    <div class="section-heading">${escHtml(group.title)}</div>
-    <p class="bls-lead">${escHtml(lead)}</p>
-    <div class="bls-standards-wrap">${standards.map(item => renderBlsStandardItem(item)).join('')}</div>
-  </div>`;
+  const critical = Array.isArray(standard.critical) ? standard.critical : [];
+  const keyPoints = Array.isArray(standard.keyPoints) ? standard.keyPoints : [];
+  const children = Array.isArray(standard.children) ? standard.children : [];
+
+  if (critical.length) {
+    html += `<div class="section-card">
+      <div class="section-heading red">Critical</div>
+      ${critical.map(c => `<div class="bls-critical"><strong>⚠</strong> ${escHtml(c)}</div>`).join('')}
+    </div>`;
+  }
+
+  if (keyPoints.length) {
+    html += `<div class="section-card">
+      <div class="section-heading">Key Points</div>
+      <ul class="bls-points">${keyPoints.map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>
+    </div>`;
+  }
+
+  if (children.length) {
+    children.forEach(child => {
+      const ckp = Array.isArray(child.keyPoints) ? child.keyPoints : [];
+      html += `<div class="section-card">
+        <div class="section-heading">${escHtml(child.title)}</div>
+        ${ckp.length ? `<ul class="bls-points">${ckp.map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>` : ''}
+      </div>`;
+    });
+  }
 
   html += `<div class="section-card"><div class="section-heading">Rapid Use Notes</div>
     <ul class="bls-points">
@@ -2092,7 +2092,7 @@ function renderBlsGroupDetail(group) {
     </ul>
   </div>`;
 
-  html += renderMyNotesSection('bls-' + group.id);
+  html += renderMyNotesSection(standard.id || ('bls-' + group.id));
 
   $('detail-content').innerHTML = html;
   ensureMyNotesMounted();
@@ -3174,26 +3174,25 @@ function buildSearchIndex() {
     });
   });
   if (typeof BLS_GROUPS !== 'undefined' && typeof BLS_GROUP_CONTENT !== 'undefined') {
-    const gatherTitles = (items, acc = []) => {
-      (items || []).forEach(item => {
-        if (item.title) acc.push(item.title);
-        if (item.keyPoints) acc.push(...item.keyPoints);
-        if (item.critical) acc.push(...item.critical);
-        if (item.children) gatherTitles(item.children, acc);
-      });
-      return acc;
-    };
-
     BLS_GROUPS.forEach(group => {
       const c = BLS_GROUP_CONTENT[group.id] || {};
-      const searchable = gatherTitles(c.standards || []);
-      index.push({
-        id: group.id,
-        title: group.title,
-        catLabel: 'BLS Standards',
-        text: [group.title, group.fullTitle || '', c.lead || '', ...searchable].join(' ').toLowerCase(),
-        type: 'bls-group',
-        data: group,
+      const standards = Array.isArray(c.standards) ? c.standards : [];
+      standards.forEach(std => {
+        const childTexts = [];
+        if (std.children) {
+          std.children.forEach(child => {
+            if (child.title) childTexts.push(child.title);
+            if (child.keyPoints) childTexts.push(...child.keyPoints);
+          });
+        }
+        index.push({
+          id: std.id || std.title,
+          title: std.title,
+          catLabel: 'BLS — ' + group.title,
+          text: [std.title, ...(std.keyPoints || []), ...(std.critical || []), ...childTexts].join(' ').toLowerCase(),
+          type: 'bls-standard',
+          data: { standard: std, group: group },
+        });
       });
     });
   }
@@ -3948,11 +3947,7 @@ function init() {
 
   // Build PCP list
   buildCategoryList($('pcp-list'), getDirectivesByCategory, directive => {
-    if (directive.type === 'bls-group') {
-      renderBlsGroupDetail(directive);
-    } else {
-      renderDirectiveDetail(directive);
-    }
+    renderDirectiveDetail(directive);
     showView('view-detail', headerTitleFromItem(directive));
   });
 
@@ -4065,9 +4060,9 @@ function init() {
       if (result.type === 'directive') {
         renderDirectiveDetail(result.data);
         showView('view-detail', headerTitleFromItem(result.data));
-      } else if (result.type === 'bls-group') {
-        renderBlsGroupDetail(result.data);
-        showView('view-detail', headerTitleFromItem(result.data));
+      } else if (result.type === 'bls-standard') {
+        renderBlsStandardDetail(result.data.standard, result.data.group);
+        showView('view-detail', headerTitleFromItem(result.data.standard));
       } else if (result.type === 'palliative') {
         renderPalliativeDetail(result.data);
         showView('view-detail', headerTitleFromItem(result.data));
