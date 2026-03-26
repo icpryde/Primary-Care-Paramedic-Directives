@@ -54,3 +54,9 @@ After updates are published, fully close the app and open it again so your devic
 
 - **iPhone / iPad:** Swipe up from the bottom (or double-click Home), find the app in the app switcher, swipe it up to close, then reopen from the home screen.
 - **Android:** Open Recents, swipe the app away, then reopen from the home screen or app list.
+
+## Disclaimer
+
+This project is provided as a convenience reference only and is considered beta software. It is not an official Ministry of Health, base hospital, employer, or paramedic service product, and nothing here should be treated as a substitute for the current Ontario ALS or BLS Patient Care Standards, the Companion Document, your service’s policies, medical direction, or other authoritative sources. Clinical standards, protocols, and drug information change over time, and errors or omissions may be present in this app or repository.
+
+You are solely responsible for confirming any information before you rely on it in practice. The author and contributors offer no warranty, express or implied, regarding accuracy, completeness, or fitness for any particular purpose, and they assume no liability for any loss, injury, or other outcome arising from use of or reliance on this software or its content. Use is entirely at your own risk.
