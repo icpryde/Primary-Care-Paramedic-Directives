@@ -67,7 +67,23 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Attach APK to Release
+      - name: Publish APK to Latest release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Build
+          body: |
+            Automatically updated with every push to `main`.
+
+            **iOS:** Download the `.ipa` below and sideload via AltStore, TrollStore, or Xcode.
+            **Android:** Download the `.apk` below and install directly.
+          prerelease: true
+          make_latest: true
+          files: Directives-unsigned.apk
+          overwrite_files: true
+
+      - name: Attach APK to tagged Release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
