@@ -1,0 +1,77 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-ipa:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web bundle
+        run: npm run build:web
+
+      - name: Ensure iOS platform exists
+        run: |
+          if [ -d "ios/App/App.xcodeproj" ]; then
+            echo "iOS platform already present"
+          else
+            npx cap add ios
+          fi
+
+      - name: Sync iOS project
+        run: npx cap sync ios
+
+      - name: Build unsigned app for iphoneos
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package unsigned IPA
+        run: |
+          mkdir -p build/Payload
+          cp -R build/Build/Products/Release-iphoneos/App.app build/Payload/App.app
+          cd build
+          /usr/bin/zip -qry Directives-unsigned.ipa Payload
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Directives-unsigned-ipa
+          path: build/Directives-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Attach IPA to Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/Directives-unsigned.ipa
+          overwrite_files: true

@@ -1,0 +1,32 @@
+{
+  "name": "directives",
+  "version": "1.0.1",
+  "description": "**Live app:** [https://icpryde.github.io/Primary-Care-Paramedic-Directives/](https://icpryde.github.io/Primary-Care-Paramedic-Directives/)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:web": "node scripts/build-web.mjs",
+    "version:ios": "node scripts/bump-ios-version.mjs",
+    "cap:add:ios": "npm run build:web && npx cap add ios",
+    "cap:sync:ios": "npm run build:web && npx cap sync ios",
+    "cap:open:ios": "npx cap open ios",
+    "ipa:update": "npm run version:ios && npm run cap:sync:ios && npx cap open ios"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/icpryde/Primary-Care-Paramedic-Directives.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/icpryde/Primary-Care-Paramedic-Directives/issues"
+  },
+  "homepage": "https://github.com/icpryde/Primary-Care-Paramedic-Directives#readme",
+  "dependencies": {
+    "@capacitor/cli": "^8.3.0",
+    "@capacitor/core": "^8.3.0",
+    "@capacitor/ios": "^8.3.0"
+  }
+}

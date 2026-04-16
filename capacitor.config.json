@@ -1,0 +1,8 @@
+{
+  "appId": "com.pcpdirectives.app",
+  "appName": "PCP Medical Directives",
+  "webDir": "dist",
+  "ios": {
+    "backgroundColor": "#0D2B55"
+  }
+}

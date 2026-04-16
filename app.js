@@ -4376,8 +4376,8 @@ function init() {
   const activeView = document.querySelector('.view.active');
   if (activeView) updateBackButtonVisibility(activeView.id);
 
-  // Register Service Worker
-  if ('serviceWorker' in navigator) {
+  // Register Service Worker only for browser/PWA mode.
+  if (!isNativeWrapper() && 'serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
       .then(registration => registration.update().catch(() => {}))
       .catch(err => console.log('SW reg failed:', err));
@@ -4386,9 +4386,22 @@ function init() {
 
 document.addEventListener('DOMContentLoaded', init);
 
+function isNativeWrapper() {
+  const cap = window.Capacitor;
+  if (cap && typeof cap.isNativePlatform === 'function') {
+    return cap.isNativePlatform();
+  }
+  return window.location.protocol === 'capacitor:';
+}
+
 // Always fetch sw.js fresh so the footer shows the live server version,
 // not whatever version is frozen in the service worker cache.
 (function fetchAppVersion() {
+  if (isNativeWrapper()) {
+    var nativeTag = document.getElementById('app-version-tag');
+    if (nativeTag) nativeTag.textContent = 'App iOS bundle';
+    return;
+  }
   fetch('sw.js', { cache: 'no-store' })
     .then(function(r) { return r.text(); })
     .then(function(text) {
