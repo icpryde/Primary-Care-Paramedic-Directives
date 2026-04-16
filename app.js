@@ -518,14 +518,15 @@ function setupEdgeSwipeNavigation() {
 
   let startX = 0;
   let startY = 0;
-  let currentX = 0;
   let fromLeftEdge = false;
   let fromRightEdge = false;
-  let backDragActive = false;
+  let dragActive = false;
+  let swipeMode = null;
   let rollbackTimer = null;
 
   let swipeCurrent = null;
   let swipePrev = null;
+  let swipeNext = null;
 
   const clearRollbackTimer = () => {
     if (rollbackTimer) {
@@ -534,10 +535,11 @@ function setupEdgeSwipeNavigation() {
     }
   };
 
-  const resetSwipeLayers = ({ keepPrevVisible = false } = {}) => {
+  const resetSwipeLayers = () => {
     clearRollbackTimer();
-    document.body.classList.remove('ios-swipe-back-active');
-    backDragActive = false;
+    document.body.classList.remove('ios-swipe-back-active', 'ios-swipe-forward-active');
+    dragActive = false;
+    swipeMode = null;
 
     if (swipeCurrent) {
       swipeCurrent.classList.remove('view-swipe-current');
@@ -545,6 +547,7 @@ function setupEdgeSwipeNavigation() {
       swipeCurrent.style.transition = '';
       swipeCurrent.style.willChange = '';
       swipeCurrent.style.boxShadow = '';
+      swipeCurrent.style.zIndex = '';
     }
 
     if (swipePrev) {
@@ -553,13 +556,28 @@ function setupEdgeSwipeNavigation() {
       swipePrev.style.transition = '';
       swipePrev.style.willChange = '';
       swipePrev.style.opacity = '';
-      if (!keepPrevVisible && !swipePrev.classList.contains('active')) {
+      swipePrev.style.zIndex = '';
+      if (!swipePrev.classList.contains('active')) {
         swipePrev.hidden = true;
+      }
+    }
+
+    if (swipeNext) {
+      swipeNext.classList.remove('view-swipe-next');
+      swipeNext.style.transform = '';
+      swipeNext.style.transition = '';
+      swipeNext.style.willChange = '';
+      swipeNext.style.opacity = '';
+      swipeNext.style.boxShadow = '';
+      swipeNext.style.zIndex = '';
+      if (!swipeNext.classList.contains('active')) {
+        swipeNext.hidden = true;
       }
     }
 
     swipeCurrent = null;
     swipePrev = null;
+    swipeNext = null;
   };
 
   const hasBlockingOverlay = () => {
@@ -581,6 +599,7 @@ function setupEdgeSwipeNavigation() {
 
     swipeCurrent = current;
     swipePrev = prev;
+    swipeNext = null;
 
     swipePrev.hidden = false;
     swipePrev.classList.add('view-swipe-prev');
@@ -591,10 +610,44 @@ function setupEdgeSwipeNavigation() {
     swipePrev.style.transition = 'none';
     swipeCurrent.style.willChange = 'transform';
     swipePrev.style.willChange = 'transform, opacity';
+    swipePrev.style.zIndex = '97';
+    swipeCurrent.style.zIndex = '98';
     swipeCurrent.style.transform = 'translate3d(0px, 0, 0)';
     swipeCurrent.style.boxShadow = '-6px 0 18px rgba(0, 0, 0, 0.2)';
     swipePrev.style.transform = `translate3d(${PREV_START_OFFSET}%, 0, 0)`;
     swipePrev.style.opacity = String(PREV_START_OPACITY);
+
+    return true;
+  };
+
+  const prepareForwardSwipe = () => {
+    const current = document.querySelector('.view.active');
+    if (!current || !state.forwardStack.length) return false;
+    if (hasBlockingOverlay()) return false;
+
+    const nextState = state.forwardStack[state.forwardStack.length - 1];
+    const next = nextState ? $(nextState.viewId) : null;
+    if (!next || next === current) return false;
+
+    swipeCurrent = current;
+    swipePrev = null;
+    swipeNext = next;
+
+    swipeNext.hidden = false;
+    swipeCurrent.classList.add('view-swipe-current');
+    swipeNext.classList.add('view-swipe-next');
+    document.body.classList.add('ios-swipe-forward-active');
+
+    swipeCurrent.style.transition = 'none';
+    swipeNext.style.transition = 'none';
+    swipeCurrent.style.willChange = 'transform';
+    swipeNext.style.willChange = 'transform, box-shadow';
+    swipeCurrent.style.zIndex = '97';
+    swipeNext.style.zIndex = '98';
+    swipeCurrent.style.transform = 'translate3d(0px, 0, 0)';
+    swipeCurrent.style.boxShadow = 'none';
+    swipeNext.style.transform = 'translate3d(100%, 0, 0)';
+    swipeNext.style.boxShadow = '6px 0 18px rgba(0, 0, 0, 0.2)';
 
     return true;
   };
@@ -612,6 +665,17 @@ function setupEdgeSwipeNavigation() {
     swipePrev.style.opacity = String(prevOpacity);
   };
 
+  const updateForwardSwipe = dx => {
+    if (!swipeCurrent || !swipeNext) return;
+    const width = Math.max(window.innerWidth, 1);
+    const travel = Math.max(0, Math.min(-dx, width));
+    const progress = travel / width;
+    const nextOffset = (1 - progress) * 100;
+
+    swipeCurrent.style.transform = `translate3d(${-travel}px, 0, 0)`;
+    swipeNext.style.transform = `translate3d(${nextOffset}%, 0, 0)`;
+  };
+
   const animateBackOutcome = shouldCommit => {
     if (!swipeCurrent || !swipePrev) {
       resetSwipeLayers();
@@ -624,8 +688,8 @@ function setupEdgeSwipeNavigation() {
       if (finished) return;
       finished = true;
       if (shouldCommit) {
-        resetSwipeLayers({ keepPrevVisible: true });
         goBack();
+        requestAnimationFrame(resetSwipeLayers);
       } else {
         resetSwipeLayers();
       }
@@ -651,6 +715,42 @@ function setupEdgeSwipeNavigation() {
     swipeCurrent.addEventListener('transitionend', finish, { once: true });
   };
 
+  const animateForwardOutcome = shouldCommit => {
+    if (!swipeCurrent || !swipeNext) {
+      resetSwipeLayers();
+      return;
+    }
+
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      if (shouldCommit) {
+        goForward();
+        requestAnimationFrame(resetSwipeLayers);
+      } else {
+        resetSwipeLayers();
+      }
+    };
+
+    swipeCurrent.style.transition = 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1)';
+    swipeNext.style.transition = 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 220ms ease';
+
+    if (shouldCommit) {
+      swipeCurrent.style.transform = 'translate3d(-100%, 0, 0)';
+      swipeNext.style.transform = 'translate3d(0%, 0, 0)';
+      swipeNext.style.boxShadow = '2px 0 6px rgba(0, 0, 0, 0.12)';
+    } else {
+      swipeCurrent.style.transform = 'translate3d(0px, 0, 0)';
+      swipeNext.style.transform = 'translate3d(100%, 0, 0)';
+      swipeNext.style.boxShadow = '6px 0 18px rgba(0, 0, 0, 0.2)';
+    }
+
+    clearRollbackTimer();
+    rollbackTimer = setTimeout(finish, 240);
+    swipeNext.addEventListener('transitionend', finish, { once: true });
+  };
+
   document.body.addEventListener('touchstart', e => {
     resetSwipeLayers();
     if (e.touches.length !== 1) {
@@ -664,7 +764,6 @@ function setupEdgeSwipeNavigation() {
     const t = e.touches[0];
     startX = t.clientX;
     startY = t.clientY;
-    currentX = startX;
     const w = window.innerWidth;
     fromLeftEdge = startX <= EDGE;
     fromRightEdge = startX >= w - EDGE;
@@ -675,7 +774,7 @@ function setupEdgeSwipeNavigation() {
     if (e.touches.length !== 1) return;
 
     const t = e.touches[0];
-    currentX = t.clientX;
+    const currentX = t.clientX;
     const currentY = t.clientY;
     const dx = currentX - startX;
     const dy = currentY - startY;
@@ -683,30 +782,52 @@ function setupEdgeSwipeNavigation() {
 
     if (Math.abs(dy) > absDx * VERTICAL_RATIO_CANCEL && Math.abs(dy) > 8) {
       fromLeftEdge = fromRightEdge = false;
-      if (backDragActive) animateBackOutcome(false);
+      if (dragActive) {
+        if (swipeMode === 'back') animateBackOutcome(false);
+        if (swipeMode === 'forward') animateForwardOutcome(false);
+      }
       return;
     }
 
-    if (!fromLeftEdge) return;
-    if (dx <= 0) return;
-
-    if (!backDragActive) {
-      if (dx < START_DRAG_MIN) return;
-      if (!prepareBackSwipe()) {
-        fromLeftEdge = false;
-        return;
+    if (fromLeftEdge) {
+      if (dx <= 0) return;
+      if (!dragActive) {
+        if (dx < START_DRAG_MIN) return;
+        if (!prepareBackSwipe()) {
+          fromLeftEdge = false;
+          return;
+        }
+        dragActive = true;
+        swipeMode = 'back';
       }
-      backDragActive = true;
+      e.preventDefault();
+      updateBackSwipe(dx);
+      return;
     }
 
-    e.preventDefault();
-    updateBackSwipe(dx);
+    if (fromRightEdge) {
+      if (dx >= 0) return;
+      if (!dragActive) {
+        if (-dx < START_DRAG_MIN) return;
+        if (!prepareForwardSwipe()) {
+          fromRightEdge = false;
+          return;
+        }
+        dragActive = true;
+        swipeMode = 'forward';
+      }
+      e.preventDefault();
+      updateForwardSwipe(dx);
+    }
   }, { passive: false });
 
   document.body.addEventListener('touchend', e => {
-    if (!fromLeftEdge && !fromRightEdge && !backDragActive) return;
+    if (!fromLeftEdge && !fromRightEdge && !dragActive) return;
     if (e.changedTouches.length !== 1) {
-      if (backDragActive) animateBackOutcome(false);
+      if (dragActive) {
+        if (swipeMode === 'back') animateBackOutcome(false);
+        if (swipeMode === 'forward') animateForwardOutcome(false);
+      }
       fromLeftEdge = fromRightEdge = false;
       return;
     }
@@ -717,27 +838,36 @@ function setupEdgeSwipeNavigation() {
     const absDx = Math.abs(dx);
 
     if (Math.abs(dy) > absDx * VERTICAL_RATIO_CANCEL) {
-      if (backDragActive) animateBackOutcome(false);
+      if (dragActive) {
+        if (swipeMode === 'back') animateBackOutcome(false);
+        if (swipeMode === 'forward') animateForwardOutcome(false);
+      }
       fromLeftEdge = fromRightEdge = false;
       return;
     }
 
-    if (backDragActive) {
+    if (dragActive && swipeMode === 'back') {
       const threshold = Math.max(SWIPE_MIN, window.innerWidth * COMMIT_RATIO);
       animateBackOutcome(dx > threshold);
       fromLeftEdge = fromRightEdge = false;
       return;
     }
 
-    if (fromRightEdge && dx < -SWIPE_MIN && state.forwardStack.length > 0) {
-      goForward();
+    if (dragActive && swipeMode === 'forward') {
+      const threshold = Math.max(SWIPE_MIN, window.innerWidth * COMMIT_RATIO);
+      animateForwardOutcome(-dx > threshold);
+      fromLeftEdge = fromRightEdge = false;
+      return;
     }
 
     fromLeftEdge = fromRightEdge = false;
   }, { passive: true });
 
   document.body.addEventListener('touchcancel', () => {
-    if (backDragActive) animateBackOutcome(false);
+    if (dragActive) {
+      if (swipeMode === 'back') animateBackOutcome(false);
+      if (swipeMode === 'forward') animateForwardOutcome(false);
+    }
     fromLeftEdge = fromRightEdge = false;
   }, { passive: true });
 }

@@ -644,17 +644,20 @@ body.help-modal-open {
 .view { display: none; min-height: calc(100vh - var(--header-bar) - var(--safe-top)); }
 .view.active { display: block; }
 
-body.ios-swipe-back-active {
+body.ios-swipe-back-active,
+body.ios-swipe-forward-active {
   overflow: hidden;
   touch-action: none;
 }
 
-body.ios-swipe-back-active .view {
+body.ios-swipe-back-active .view,
+body.ios-swipe-forward-active .view {
   pointer-events: none;
 }
 
 .view-swipe-prev,
-.view-swipe-current {
+.view-swipe-current,
+.view-swipe-next {
   display: block !important;
   position: fixed;
   top: calc(var(--header-bar) + var(--safe-top));
@@ -671,6 +674,12 @@ body.ios-swipe-back-active .view {
 }
 
 .view-swipe-current {
+  z-index: 98;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+.view-swipe-next {
   z-index: 98;
   background: var(--bg);
   pointer-events: none;
@@ -1534,6 +1543,7 @@ body.ios-swipe-back-active .view {
 }
 .view.active { animation: fadeIn 0.15s ease; }
 body.ios-swipe-back-active .view.active { animation: none; }
+body.ios-swipe-forward-active .view.active { animation: none; }
 body.ios-native-nav-commit .view.active { animation: none; }
 
 /* ── Flowchart ────────────────────────────────────────── */
