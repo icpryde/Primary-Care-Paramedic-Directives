@@ -45,6 +45,10 @@ body {
   padding-bottom: var(--safe-bot);
 }
 
+body.is-native-wrapper {
+  transition: padding-top 0.16s ease;
+}
+
 /* ── Header ───────────────────────────────────────────── */
 #app-header {
   position: fixed;
@@ -58,6 +62,10 @@ body {
   grid-template-rows: minmax(var(--header-bar), auto);
   align-items: center;
   box-sizing: border-box;
+}
+
+body.is-native-wrapper #app-header {
+  transition: height 0.16s ease;
 }
 
 /* Top-right help: spans full header row so it does not wrap to a second grid row */
@@ -1526,6 +1534,7 @@ body.ios-swipe-back-active .view {
 }
 .view.active { animation: fadeIn 0.15s ease; }
 body.ios-swipe-back-active .view.active { animation: none; }
+body.ios-native-nav-commit .view.active { animation: none; }
 
 /* ── Flowchart ────────────────────────────────────────── */
 .flowchart-wrap {

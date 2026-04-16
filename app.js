@@ -165,44 +165,85 @@ function showView(viewId, title, pushHistory = true) {
   if (viewId === 'view-medications') medicationsSyncAndRender();
 }
 
+let nativeNavCommitDepth = 0;
+let nativeNavCommitTimer = null;
+
+function beginNativeNavCommit() {
+  if (!isNativeWrapper()) return () => {};
+
+  nativeNavCommitDepth += 1;
+  document.body.classList.add('ios-native-nav-commit');
+  if (nativeNavCommitTimer) {
+    clearTimeout(nativeNavCommitTimer);
+    nativeNavCommitTimer = null;
+  }
+
+  let closed = false;
+  return () => {
+    if (closed) return;
+    closed = true;
+    nativeNavCommitDepth = Math.max(0, nativeNavCommitDepth - 1);
+    if (nativeNavCommitDepth !== 0) return;
+    nativeNavCommitTimer = setTimeout(() => {
+      if (nativeNavCommitDepth === 0) {
+        document.body.classList.remove('ios-native-nav-commit');
+      }
+      nativeNavCommitTimer = null;
+    }, 180);
+  };
+}
+
+function withNativeNavCommit(task) {
+  const endCommit = beginNativeNavCommit();
+  try {
+    task();
+  } finally {
+    requestAnimationFrame(() => requestAnimationFrame(endCommit));
+  }
+}
+
 function goBack() {
   if (!state.history.length) return;
-  const cur = document.querySelector('.view.active');
-  if (cur) {
-    state.forwardStack.push({
-      viewId: cur.id,
-      title: $('header-title').textContent,
-      scrollY: window.scrollY,
-    });
-  }
-  const prev = state.history.pop();
-  if (cur) { cur.classList.remove('active'); cur.hidden = true; }
-  const target = $(prev.viewId);
-  target.hidden = false;
-  target.classList.add('active');
-  $('header-title').textContent = prev.title;
-  updateBackButtonVisibility(target.id);
-  requestAnimationFrame(() => window.scrollTo(0, prev.scrollY || 0));
+  withNativeNavCommit(() => {
+    const cur = document.querySelector('.view.active');
+    if (cur) {
+      state.forwardStack.push({
+        viewId: cur.id,
+        title: $('header-title').textContent,
+        scrollY: window.scrollY,
+      });
+    }
+    const prev = state.history.pop();
+    if (cur) { cur.classList.remove('active'); cur.hidden = true; }
+    const target = $(prev.viewId);
+    target.hidden = false;
+    target.classList.add('active');
+    $('header-title').textContent = prev.title;
+    updateBackButtonVisibility(target.id);
+    requestAnimationFrame(() => window.scrollTo(0, prev.scrollY || 0));
+  });
 }
 
 function goForward() {
   if (!state.forwardStack.length) return;
-  const cur = document.querySelector('.view.active');
-  if (cur) {
-    state.history.push({
-      viewId: cur.id,
-      title: $('header-title').textContent,
-      scrollY: window.scrollY,
-    });
-  }
-  const next = state.forwardStack.pop();
-  if (cur) { cur.classList.remove('active'); cur.hidden = true; }
-  const target = $(next.viewId);
-  target.hidden = false;
-  target.classList.add('active');
-  $('header-title').textContent = next.title;
-  updateBackButtonVisibility(next.viewId);
-  requestAnimationFrame(() => window.scrollTo(0, next.scrollY || 0));
+  withNativeNavCommit(() => {
+    const cur = document.querySelector('.view.active');
+    if (cur) {
+      state.history.push({
+        viewId: cur.id,
+        title: $('header-title').textContent,
+        scrollY: window.scrollY,
+      });
+    }
+    const next = state.forwardStack.pop();
+    if (cur) { cur.classList.remove('active'); cur.hidden = true; }
+    const target = $(next.viewId);
+    target.hidden = false;
+    target.classList.add('active');
+    $('header-title').textContent = next.title;
+    updateBackButtonVisibility(next.viewId);
+    requestAnimationFrame(() => window.scrollTo(0, next.scrollY || 0));
+  });
 }
 
 function updateBackButtonVisibility(activeViewId) {
@@ -4318,6 +4359,10 @@ function initBurnCalculator() {
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 function init() {
+  if (isNativeWrapper()) {
+    document.body.classList.add('is-native-wrapper');
+  }
+
   // Home nav buttons
   document.querySelectorAll('.home-nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
