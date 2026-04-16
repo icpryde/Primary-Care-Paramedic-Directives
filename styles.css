@@ -105,6 +105,12 @@ body.app-on-home #app-header {
   pointer-events: none;
 }
 
+body.is-native-wrapper .header-brand-stack {
+  transition: opacity 0.16s ease, transform 0.18s ease;
+  transform-origin: left center;
+  will-change: opacity, transform;
+}
+
 body.app-on-home .header-brand-stack {
   grid-column: 1;
   align-items: flex-start;
@@ -217,6 +223,20 @@ body.app-on-home .header-paramedic-line {
   justify-content: center;
   -webkit-tap-highlight-color: transparent;
 }
+
+body.is-native-wrapper .header-logo-btn {
+  transition: opacity 0.16s ease, transform 0.18s ease;
+  transform-origin: center center;
+  will-change: opacity, transform;
+}
+
+body.is-native-wrapper.app-on-home.ios-native-nav-commit .header-brand-stack,
+body.is-native-wrapper.app-on-home.ios-native-nav-commit .header-logo-btn {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.96);
+  pointer-events: none;
+}
+
 body.app-on-home .header-logo-btn {
   min-width: 120px;
   min-height: 80px;
@@ -846,6 +866,12 @@ body.ios-swipe-forward-active .view {
   max-height: calc(100dvh - var(--header-bar) - var(--safe-top) - 80px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+.inline-search-results {
+  margin: 0 12px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 .search-result-item {
   padding: 13px 16px;

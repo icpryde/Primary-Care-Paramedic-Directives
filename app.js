@@ -870,10 +870,23 @@ function setupEdgeSwipeNavigation() {
 }
 
 // ─── Flowchart Viewer ────────────────────────────────────────────────────────
-function openFlowchartPdf(pdfUrl) {
+async function openFlowchartPdf(pdfUrl) {
+  if (!pdfUrl) return;
   const isPdf = /\.pdf(?:[?#]|$)/i.test(String(pdfUrl || ''));
   if (isPdf && isNativeWrapper()) {
-    window.location.assign(pdfUrl);
+    const browser = window.Capacitor?.Plugins?.Browser;
+    if (browser && typeof browser.open === 'function') {
+      try {
+        await browser.open({
+          url: pdfUrl,
+          presentationStyle: 'fullscreen',
+        });
+        return;
+      } catch (_) {
+        // Fall through to a webview-compatible fallback.
+      }
+    }
+    window.open(pdfUrl, '_blank');
     return;
   }
   window.open(pdfUrl, '_blank');
@@ -3482,13 +3495,6 @@ function buildMedicationsView() {
         renderMedicationsList();
       });
     });
-    const searchInp = $('medications-search');
-    if (searchInp) {
-      searchInp.addEventListener('input', e => {
-        medicationsUI.search = e.target.value;
-        renderMedicationsList();
-      });
-    }
     const medList = $('medications-list');
     if (medList && !medList.dataset.clickBound) {
       medList.dataset.clickBound = '1';
@@ -4010,13 +4016,108 @@ function performSearch(query, containerEl, onResultClick) {
 
   containerEl.innerHTML = results.slice(0, 20).map((r, i) =>
     `<div class="search-result-item" data-idx="${i}">
-      <div class="search-result-title">${r.title}</div>
-      <div class="search-result-cat">${r.catLabel}</div>
+      <div class="search-result-title">${escapeHtml(r.title)}</div>
+      <div class="search-result-cat">${escapeHtml(r.catLabel)}</div>
     </div>`
   ).join('');
 
   containerEl.querySelectorAll('.search-result-item').forEach((el, i) => {
     el.addEventListener('click', () => onResultClick(results[i]));
+  });
+}
+
+function openSearchResult(result, options = {}) {
+  const sourceInput = options.sourceInput || null;
+  const sourceResults = options.sourceResults || null;
+
+  if (sourceInput) {
+    sourceInput.value = '';
+    sourceInput.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  if (sourceResults) sourceResults.hidden = true;
+  setHomeSearchOverlay(false);
+
+  if (result.type === 'directive') {
+    renderDirectiveDetail(result.data);
+    showView('view-detail', headerTitleFromItem(result.data));
+  } else if (result.type === 'bls-standard') {
+    renderBlsStandardDetail(result.data.standard, result.data.group);
+    showView('view-detail', headerTitleFromItem(result.data.standard));
+  } else if (result.type === 'palliative') {
+    renderPalliativeDetail(result.data);
+    showView('view-detail', headerTitleFromItem(result.data));
+  } else if (result.type === 'reference') {
+    renderReferenceDetail(result.data);
+    showView('view-detail', headerTitleFromItem(result.data));
+  } else if (result.type === 'specialevent') {
+    renderSpecialEventDetail(result.data);
+    showView('view-detail', headerTitleFromItem(result.data));
+  } else if (result.type === 'contact') {
+    renderContactDetail(result.data.id, result.data.title);
+    showView('view-detail', headerTitleFromItem(result.data));
+  } else if (result.type === 'destination') {
+    renderDestinationDetail(result.data.id, result.data.title);
+    showView('view-detail', headerTitleFromItem(result.data));
+  } else if (result.type === 'calc-hub') {
+    showView('view-calculators', 'Calculators');
+  } else if (result.type === 'calc-burn') {
+    showView('view-burn', 'Burn %');
+  } else if (result.type === 'calc-iv-therapy') {
+    showView('view-iv-therapy', 'IV Therapy');
+  } else if (result.type === 'calc-parkland') {
+    showView('view-parkland-burn', 'Parkland');
+  } else if (result.type === 'calc-gcs') {
+    renderCalculatorDetail('gcs');
+  } else if (result.type === 'calc-pcs') {
+    renderCalculatorDetail('pcs');
+  } else if (result.type === 'calc-lams') {
+    showView('view-lams', 'LAMS Calculator');
+  } else if (result.type === 'calc-pediatric-values') {
+    showView('view-ped-calc', 'Pediatric Values Calculator');
+  } else if (result.type === 'calc-o2-duration') {
+    showView('view-o2-duration', 'O₂ Duration');
+  } else if (result.type === 'calc-weight-convert') {
+    showView('view-weight-convert', 'Weight Converter');
+  } else if (result.type === 'calc-dosage') {
+    showView('view-dosage-calc', 'Dosage Calc');
+  } else if (result.type === 'presepsis') {
+    showView('view-presepsis', 'Pre-Sepsis');
+  } else if (result.type === 'med-hub') {
+    medicationsOpenFromSearch(null);
+  } else if (result.type === 'med-drug') {
+    medicationsOpenFromSearch(result.data);
+  } else {
+    renderCompanionDetail(result.data);
+    showView('view-detail', headerTitleFromItem(result.data));
+  }
+}
+
+function ensureInlineSearchResultsContainer(inputId) {
+  const input = $(inputId);
+  if (!input) return null;
+  const wrap = input.closest('.search-bar-wrap');
+  if (!wrap || !wrap.parentElement) return null;
+
+  const existing = wrap.parentElement.querySelector(`.inline-search-results[data-search-for="${inputId}"]`);
+  if (existing) return existing;
+
+  const container = document.createElement('div');
+  container.className = 'search-results inline-search-results';
+  container.hidden = true;
+  container.dataset.searchFor = inputId;
+  wrap.insertAdjacentElement('afterend', container);
+  return container;
+}
+
+function bindUniversalSearchInput(inputId, containerEl) {
+  const input = $(inputId);
+  if (!input || !containerEl || input.dataset.universalSearchBound) return;
+  input.dataset.universalSearchBound = '1';
+
+  input.addEventListener('input', e => {
+    performSearch(e.target.value, containerEl, result => {
+      openSearchResult(result, { sourceInput: input, sourceResults: containerEl });
+    });
   });
 }
 
@@ -4578,147 +4679,24 @@ function init() {
 
   initSearchClearButtons();
 
-  // PCP search
-  $('pcp-search').addEventListener('input', e => {
-    const q = e.target.value;
-    if (!q.trim()) {
-      $('pcp-list').querySelectorAll('.directive-row').forEach(r => { r.style.display = ''; });
-      $('pcp-list').querySelectorAll('.cat-items').forEach(el => {
-        el.style.display = '';
-        el.classList.add('collapsed');
-      });
-      $('pcp-list').querySelectorAll('.cat-header').forEach(el => {
-        el.style.display = '';
-        el.classList.add('collapsed');
-      });
-      return;
-    }
-    const lq = q.toLowerCase();
-    $('pcp-list').querySelectorAll('.cat-items').forEach(section => {
-      let hasVisible = false;
-      section.querySelectorAll('.directive-row').forEach(row => {
-        const title = row.querySelector('.directive-row-title').textContent.toLowerCase();
-        const matches = title.includes(lq);
-        row.style.display = matches ? '' : 'none';
-        if (matches) hasVisible = true;
-      });
-      const header = section.previousElementSibling;
-      if (hasVisible) {
-        section.classList.remove('collapsed');
-        header.classList.remove('collapsed');
-        section.style.display = '';
-        header.style.display = '';
-      } else {
-        section.style.display = 'none';
-        header.style.display = 'none';
-      }
-    });
-  });
+  const globalSearchInput = $('global-search');
+  if (globalSearchInput) {
+    bindUniversalSearchInput('global-search', $('search-results'));
+  }
 
-  // Companion search
-  $('comp-search').addEventListener('input', e => {
-    const q = e.target.value;
-    if (!q.trim()) {
-      $('companion-list').querySelectorAll('.directive-row').forEach(r => { r.style.display = ''; });
-      $('companion-list').querySelectorAll('.cat-items').forEach(el => {
-        el.style.display = '';
-        el.classList.add('collapsed');
-      });
-      $('companion-list').querySelectorAll('.cat-header').forEach(el => {
-        el.style.display = '';
-        el.classList.add('collapsed');
-      });
-      return;
-    }
-    const lq = q.toLowerCase();
-    $('companion-list').querySelectorAll('.cat-items').forEach(section => {
-      let hasVisible = false;
-      section.querySelectorAll('.directive-row').forEach(row => {
-        const title = row.querySelector('.directive-row-title').textContent.toLowerCase();
-        const matches = title.includes(lq);
-        row.style.display = matches ? '' : 'none';
-        if (matches) hasVisible = true;
-      });
-      const header = section.previousElementSibling;
-      if (hasVisible) {
-        section.classList.remove('collapsed');
-        header.classList.remove('collapsed');
-        section.style.display = '';
-        header.style.display = '';
-      } else {
-        section.style.display = 'none';
-        header.style.display = 'none';
-      }
-    });
-  });
-
-  bindFlatListSearch('ref-search', 'references-list');
-  bindFlatListSearch('special-event-search', 'special-event-list');
-  bindFlatListSearch('special-search', 'special-list');
-  bindFlatListSearch('calculators-search', 'calculators-list');
-  bindFlatListSearch('contact-search', 'contact-list');
-  bindFlatListSearch('destination-search', 'destination-list');
-
-  // Global search on home
-  $('global-search').addEventListener('input', e => {
-    performSearch(e.target.value, $('search-results'), result => {
-      $('global-search').value = '';
-      $('search-results').hidden = true;
-      setHomeSearchOverlay(false);
-      if (result.type === 'directive') {
-        renderDirectiveDetail(result.data);
-        showView('view-detail', headerTitleFromItem(result.data));
-      } else if (result.type === 'bls-standard') {
-        renderBlsStandardDetail(result.data.standard, result.data.group);
-        showView('view-detail', headerTitleFromItem(result.data.standard));
-      } else if (result.type === 'palliative') {
-        renderPalliativeDetail(result.data);
-        showView('view-detail', headerTitleFromItem(result.data));
-      } else if (result.type === 'reference') {
-        renderReferenceDetail(result.data);
-        showView('view-detail', headerTitleFromItem(result.data));
-      } else if (result.type === 'specialevent') {
-        renderSpecialEventDetail(result.data);
-        showView('view-detail', headerTitleFromItem(result.data));
-      } else if (result.type === 'contact') {
-        renderContactDetail(result.data.id, result.data.title);
-        showView('view-detail', headerTitleFromItem(result.data));
-      } else if (result.type === 'destination') {
-        renderDestinationDetail(result.data.id, result.data.title);
-        showView('view-detail', headerTitleFromItem(result.data));
-      } else if (result.type === 'calc-hub') {
-        showView('view-calculators', 'Calculators');
-      } else if (result.type === 'calc-burn') {
-        showView('view-burn', 'Burn %');
-      } else if (result.type === 'calc-iv-therapy') {
-        showView('view-iv-therapy', 'IV Therapy');
-      } else if (result.type === 'calc-parkland') {
-        showView('view-parkland-burn', 'Parkland');
-      } else if (result.type === 'calc-gcs') {
-        renderCalculatorDetail('gcs');
-      } else if (result.type === 'calc-pcs') {
-        renderCalculatorDetail('pcs');
-      } else if (result.type === 'calc-lams') {
-        showView('view-lams', 'LAMS Calculator');
-      } else if (result.type === 'calc-pediatric-values') {
-        showView('view-ped-calc', 'Pediatric Values Calculator');
-      } else if (result.type === 'calc-o2-duration') {
-        showView('view-o2-duration', 'O₂ Duration');
-      } else if (result.type === 'calc-weight-convert') {
-        showView('view-weight-convert', 'Weight Converter');
-      } else if (result.type === 'calc-dosage') {
-        showView('view-dosage-calc', 'Dosage Calc');
-      } else if (result.type === 'presepsis') {
-        showView('view-presepsis', 'Pre-Sepsis');
-      } else if (result.type === 'med-hub') {
-        medicationsOpenFromSearch(null);
-      } else if (result.type === 'med-drug') {
-        medicationsOpenFromSearch(result.data);
-      } else {
-        renderCompanionDetail(result.data);
-        showView('view-detail', headerTitleFromItem(result.data));
-      }
-    });
+  [
+    'pcp-search',
+    'special-event-search',
+    'calculators-search',
+    'medications-search',
+    'contact-search',
+    'destination-search',
+    'special-search',
+    'comp-search',
+    'ref-search',
+  ].forEach(inputId => {
+    const container = ensureInlineSearchResultsContainer(inputId);
+    if (container) bindUniversalSearchInput(inputId, container);
   });
 
   setupPinchZoomBlock();
