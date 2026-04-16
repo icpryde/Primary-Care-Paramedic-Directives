@@ -870,23 +870,22 @@ function setupEdgeSwipeNavigation() {
 }
 
 // ─── Flowchart Viewer ────────────────────────────────────────────────────────
-async function openFlowchartPdf(pdfUrl) {
+function openFlowchartPdf(pdfUrl) {
   if (!pdfUrl) return;
   const isPdf = /\.pdf(?:[?#]|$)/i.test(String(pdfUrl || ''));
   if (isPdf && isNativeWrapper()) {
     const browser = window.Capacitor?.Plugins?.Browser;
     if (browser && typeof browser.open === 'function') {
-      try {
-        await browser.open({
-          url: pdfUrl,
-          presentationStyle: 'fullscreen',
-        });
-        return;
-      } catch (_) {
-        // Fall through to a webview-compatible fallback.
-      }
+      // Fire without await so the user-gesture context is preserved on iOS.
+      browser.open({
+        url: pdfUrl,
+        presentationStyle: 'fullscreen',
+      }).catch(() => {
+        window.location.assign(pdfUrl);
+      });
+      return;
     }
-    window.open(pdfUrl, '_blank');
+    window.location.assign(pdfUrl);
     return;
   }
   window.open(pdfUrl, '_blank');
