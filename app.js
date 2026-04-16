@@ -215,12 +215,11 @@ function restoreViewScroll(scrollY) {
 function commitHistoryViewTransition(cur, target, title, scrollY) {
   if (!target) return;
 
-  // Stage target in layout but keep it hidden until the swap frame.
-  target.hidden = false;
-  target.classList.add('active');
-  target.style.visibility = 'hidden';
+  const swipeCommitActive =
+    document.body.classList.contains('ios-swipe-back-active') ||
+    document.body.classList.contains('ios-swipe-forward-active');
 
-  requestAnimationFrame(() => {
+  const finalizeSwap = () => {
     if (cur) {
       cur.classList.remove('active');
       cur.hidden = true;
@@ -229,6 +228,24 @@ function commitHistoryViewTransition(cur, target, title, scrollY) {
     $('header-title').textContent = title;
     updateBackButtonVisibility(target.id);
     restoreViewScroll(scrollY);
+  };
+
+  // During swipe commit, target is already visible in a swipe layer.
+  // Avoid hiding it for one frame, which causes a blink/flicker.
+  if (swipeCommitActive) {
+    target.hidden = false;
+    target.classList.add('active');
+    finalizeSwap();
+    return;
+  }
+
+  // Stage target in layout but keep it hidden until the swap frame.
+  target.hidden = false;
+  target.classList.add('active');
+  target.style.visibility = 'hidden';
+
+  requestAnimationFrame(() => {
+    finalizeSwap();
   });
 }
 
