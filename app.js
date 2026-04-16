@@ -476,6 +476,8 @@ function closeInstallHelpModal() {
 function setupPinchZoomBlock() {
   const shouldBlockZoom = target => {
     if (document.documentElement.classList.contains('ref-image-viewer-open')) return false;
+    if (document.documentElement.classList.contains('pdf-viewer-open')) return false;
+    if (target?.closest?.('#pdf-viewer')) return false;
     return !target?.closest?.('#ref-image-viewer');
   };
 
@@ -582,8 +584,10 @@ function setupEdgeSwipeNavigation() {
   const hasBlockingOverlay = () => {
     if (document.documentElement.classList.contains('ref-image-viewer-open')) return true;
     if (document.documentElement.classList.contains('help-modal-open')) return true;
+    if (document.documentElement.classList.contains('pdf-viewer-open')) return true;
     if (document.body.classList.contains('ref-image-viewer-open')) return true;
     if (document.body.classList.contains('help-modal-open')) return true;
+    if (document.body.classList.contains('pdf-viewer-open')) return true;
     return false;
   };
 
@@ -872,23 +876,34 @@ function setupEdgeSwipeNavigation() {
 // ─── Flowchart Viewer ────────────────────────────────────────────────────────
 function openFlowchartPdf(pdfUrl) {
   if (!pdfUrl) return;
-  const isPdf = /\.pdf(?:[?#]|$)/i.test(String(pdfUrl || ''));
-  if (isPdf && isNativeWrapper()) {
-    const browser = window.Capacitor?.Plugins?.Browser;
-    if (browser && typeof browser.open === 'function') {
-      // Fire without await so the user-gesture context is preserved on iOS.
-      browser.open({
-        url: pdfUrl,
-        presentationStyle: 'fullscreen',
-      }).catch(() => {
-        window.location.assign(pdfUrl);
-      });
-      return;
-    }
-    window.location.assign(pdfUrl);
-    return;
-  }
-  window.open(pdfUrl, '_blank');
+  openPdfViewer(pdfUrl);
+}
+
+function openPdfViewer(url) {
+  const modal = $('pdf-viewer');
+  const frame = $('pdf-viewer-frame');
+  if (!modal || !frame) { window.open(url, '_blank'); return; }
+  frame.src = url;
+  modal.hidden = false;
+  modal.setAttribute('aria-hidden', 'false');
+  document.documentElement.classList.add('pdf-viewer-open');
+  document.body.classList.add('pdf-viewer-open');
+}
+
+function closePdfViewer() {
+  const modal = $('pdf-viewer');
+  const frame = $('pdf-viewer-frame');
+  if (modal) { modal.hidden = true; modal.setAttribute('aria-hidden', 'true'); }
+  if (frame) { frame.src = ''; }
+  document.documentElement.classList.remove('pdf-viewer-open');
+  document.body.classList.remove('pdf-viewer-open');
+}
+
+function initPdfViewer() {
+  const modal = $('pdf-viewer');
+  if (!modal || modal.dataset.bound) return;
+  modal.dataset.bound = '1';
+  modal.querySelector('.pdf-viewer-close')?.addEventListener('click', closePdfViewer);
 }
 
 // ─── Reference image viewer (pinch zoom + pan, in-app for PWA) ───────────────
@@ -4633,6 +4648,11 @@ function init() {
   initLogoPicker();
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
+    const pv = $('pdf-viewer');
+    if (pv && !pv.hidden) {
+      closePdfViewer();
+      return;
+    }
     const rv = $('ref-image-viewer');
     if (rv && !rv.hidden) {
       closeRefImageViewer();
@@ -4720,6 +4740,7 @@ function init() {
   bronchoCalcInit();
   croupCalcInit();
   initRefImageViewer();
+  initPdfViewer();
 
   const activeView = document.querySelector('.view.active');
   if (activeView) updateBackButtonVisibility(activeView.id);

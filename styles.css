@@ -654,6 +654,60 @@ body.ref-image-viewer-open {
   touch-action: none;
 }
 
+/* ── In-app PDF viewer ──────────────────────────────────── */
+.pdf-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+.pdf-viewer[hidden] {
+  display: none !important;
+}
+.pdf-viewer-topbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 12px;
+  flex-shrink: 0;
+  background: #f2f2f7;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.pdf-viewer-close {
+  padding: 9px 20px;
+  border-radius: 10px;
+  border: none;
+  background: var(--blue);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.pdf-viewer-close:active {
+  opacity: 0.75;
+}
+.pdf-viewer-body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+.pdf-viewer-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+html.pdf-viewer-open,
+body.pdf-viewer-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
 html.help-modal-open,
 body.help-modal-open {
   overflow: hidden;
