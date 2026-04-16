@@ -78,7 +78,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for asset in $(gh release view latest --json assets -q '.assets[].name' 2>/dev/null | grep -E '\.(apk|ipa)$'); do
+          for asset in $(gh release view latest --json assets -q '.assets[].name' 2>/dev/null | grep -E '\.apk$'); do
             echo "Deleting old asset: $asset"
             gh release delete-asset latest "$asset" --yes 2>/dev/null || true
           done
