@@ -1468,6 +1468,16 @@
     <div id="detail-content" class="detail-content"></div>
   </div>
 
+  <!-- In-app PDF viewer: WKWebView renders PDF natively in iframe with pinch zoom -->
+  <div id="pdf-viewer" class="pdf-viewer" hidden aria-hidden="true">
+    <div class="pdf-viewer-topbar">
+      <button type="button" class="pdf-viewer-close" aria-label="Close PDF">Done</button>
+    </div>
+    <div class="pdf-viewer-body">
+      <iframe id="pdf-viewer-frame" class="pdf-viewer-frame" src="" title="PDF Viewer" allowfullscreen></iframe>
+    </div>
+  </div>
+
   <!-- Reference image: pinch-zoom + pan (Medical References charts) -->
   <div id="ref-image-viewer" class="ref-image-viewer" hidden aria-hidden="true">
     <div class="ref-image-viewer-backdrop" tabindex="-1"></div>
