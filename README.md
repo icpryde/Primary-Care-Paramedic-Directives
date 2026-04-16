@@ -55,50 +55,12 @@ After updates are published, fully close the app and open it again so your devic
 - **iPhone / iPad:** Swipe up from the bottom (or double-click Home), find the app in the app switcher, swipe it up to close, then reopen from the home screen.
 - **Android:** Open Recents, swipe the app away, then reopen from the home screen or app list.
 
-## iOS IPA sideload build (Capacitor)
+## Install iOS or Android app
 
-This project can also be packaged as an IPA for iPhone/iPad sideloading while keeping the web app deployment unchanged.
+Pre-built `.ipa` (iOS) and `.apk` (Android) files are available on the [Releases page](https://github.com/icpryde/Primary-Care-Paramedic-Directives/releases). These are automatically built and updated with every push to `main`.
 
-### One-time setup
-
-1. Install dependencies:
-	- `npm install`
-2. Generate iOS project from the current web app:
-	- `npm run cap:add:ios`
-
-### Update and rebuild IPA after content changes
-
-1. Run one command:
-	- `npm run ipa:update`
-2. What this does automatically:
-	- Increments app version (`package.json`) and iOS build number
-	- Syncs latest web files into the iOS app bundle
-	- Opens Xcode
-3. In Xcode, build archive and export IPA:
-	- Product -> Archive
-	- Organizer -> Distribute App -> Ad Hoc -> Export IPA
-4. Sign and install with Signulous.
-
-### Notes
-
-- The native wrapper uses bundled files from `dist/`.
-- `npm run cap:sync:ios` always rebuilds `dist/` first, so your latest app.js/data/assets changes are included.
-- IPA builds use `icons/icon-512.png` as the iOS app icon (auto-resized to 1024x1024 during build).
-- `npm run ipa:update` increments version/build each run so side-loaded installs are clearly newer.
-- Service worker registration is automatically skipped in native wrapper mode to avoid stale cache behavior inside the iOS WebView.
-
-### Download IPA from GitHub
-
-This repo includes a GitHub Actions workflow at `.github/workflows/build-ipa.yml` that builds an **unsigned IPA**.
-It runs automatically on pushes to `main`, and can also be run manually.
-
-1. In GitHub, open **Actions** -> **Build iOS IPA** -> **Run workflow**.
-2. When it completes, download the artifact named **Directives-unsigned-ipa**.
-3. Upload that IPA to Signulous for signing/install.
-
-If you publish a GitHub Release, the same workflow also attaches `Directives-unsigned.ipa` directly to the Release assets.
-
-The web app deployment remains separate and continues working normally through the existing Pages workflow.
+- **iOS:** Download the `.ipa` file and sideload via AltStore, TrollStore, Signulous, or Xcode.
+- **Android:** Download the `.apk` file and install directly on your device.
 
 ## Disclaimer
 
