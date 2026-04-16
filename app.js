@@ -2742,10 +2742,11 @@ function renderDirectiveDetail(directive) {
 
     // Flowchart thumbnail + PDF link (if present)
     if (directive.flowchartPdf) {
+      const fullImg = directive.flowchartPdf.replace(/\.pdf$/i, '-full.png');
       html += `<div class="flowchart-wrap">
         <div class="flowchart-label">Treatment Flowchart (tap to view full size)</div>
         <img class="flowchart-thumb" src="${directive.flowchartThumb}" alt="Treatment Flowchart"
-             onclick="openRefImageViewer('${directive.flowchartThumb}', 'Treatment Flowchart')" />
+             onclick="openRefImageViewer('${fullImg}', 'Treatment Flowchart')" />
       </div>`;
     }
 

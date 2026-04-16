@@ -291,7 +291,7 @@ const REFERENCES = [
     content: `
       <div class="ref-image-wrap">
         <img src="assets/cpr-guidelines-thumb.png" alt="CPR Guidelines Chart"
-             onclick="openRefImageViewer('assets/cpr-guidelines-thumb.png', 'CPR Guidelines Chart')" />
+             onclick="openRefImageViewer('assets/cpr-guidelines-full.png', 'CPR Guidelines Chart')" />
         <div class="flowchart-label">Summary of High-Quality CPR (tap to view full size)</div>
       </div>
 

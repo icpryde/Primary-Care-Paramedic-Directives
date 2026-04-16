@@ -71,10 +71,11 @@ function blsSourceFooter() {
 }
 
 function flowchartBlock(label, pdfPath, thumbPath) {
+  const fullImg = esc(pdfPath).replace(/\.pdf$/i, '-full.png');
   return `<div class="flowchart-wrap destination-flowchart-wrap">
     <div class="flowchart-label">${esc(label)}</div>
     <img class="flowchart-thumb" src="${esc(thumbPath)}" alt="${esc(label)}"
-         onclick="openRefImageViewer('${esc(thumbPath)}', '${esc(label)}')" />
+         onclick="openRefImageViewer('${fullImg}', '${esc(label)}')" />
   </div>`;
 }
 
