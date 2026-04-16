@@ -202,6 +202,16 @@ function withNativeNavCommit(task) {
   }
 }
 
+function restoreViewScroll(scrollY) {
+  const y = scrollY || 0;
+  window.scrollTo(0, y);
+  requestAnimationFrame(() => {
+    if (Math.abs(window.scrollY - y) > 1) {
+      window.scrollTo(0, y);
+    }
+  });
+}
+
 function goBack() {
   if (!state.history.length) return;
   withNativeNavCommit(() => {
@@ -220,7 +230,7 @@ function goBack() {
     target.classList.add('active');
     $('header-title').textContent = prev.title;
     updateBackButtonVisibility(target.id);
-    requestAnimationFrame(() => window.scrollTo(0, prev.scrollY || 0));
+    restoreViewScroll(prev.scrollY);
   });
 }
 
@@ -242,7 +252,7 @@ function goForward() {
     target.classList.add('active');
     $('header-title').textContent = next.title;
     updateBackButtonVisibility(next.viewId);
-    requestAnimationFrame(() => window.scrollTo(0, next.scrollY || 0));
+    restoreViewScroll(next.scrollY);
   });
 }
 
