@@ -6,9 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:web": "node scripts/build-web.mjs",
+    "ios:icon": "bash scripts/apply-ios-icon.sh",
     "version:ios": "node scripts/bump-ios-version.mjs",
     "cap:add:ios": "npm run build:web && npx cap add ios",
-    "cap:sync:ios": "npm run build:web && npx cap sync ios",
+    "cap:sync:ios": "npm run build:web && npx cap sync ios && npm run ios:icon",
     "cap:open:ios": "npx cap open ios",
     "ipa:update": "npm run version:ios && npm run cap:sync:ios && npx cap open ios"
   },

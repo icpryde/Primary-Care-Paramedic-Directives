@@ -41,6 +41,9 @@ jobs:
       - name: Sync iOS project
         run: npx cap sync ios
 
+      - name: Apply repository app icon
+        run: npm run ios:icon
+
       - name: Build unsigned app for iphoneos
         run: |
           xcodebuild \

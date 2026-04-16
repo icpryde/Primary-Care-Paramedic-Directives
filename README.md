@@ -83,6 +83,7 @@ This project can also be packaged as an IPA for iPhone/iPad sideloading while ke
 
 - The native wrapper uses bundled files from `dist/`.
 - `npm run cap:sync:ios` always rebuilds `dist/` first, so your latest app.js/data/assets changes are included.
+- IPA builds use `icons/icon-512.png` as the iOS app icon (auto-resized to 1024x1024 during build).
 - `npm run ipa:update` increments version/build each run so side-loaded installs are clearly newer.
 - Service worker registration is automatically skipped in native wrapper mode to avoid stale cache behavior inside the iOS WebView.
 
