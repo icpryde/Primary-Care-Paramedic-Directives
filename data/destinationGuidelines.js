@@ -74,7 +74,7 @@ function flowchartBlock(label, pdfPath, thumbPath) {
   return `<div class="flowchart-wrap destination-flowchart-wrap">
     <div class="flowchart-label">${esc(label)}</div>
     <img class="flowchart-thumb" src="${esc(thumbPath)}" alt="${esc(label)}"
-         onclick="openFlowchartPdf('${esc(pdfPath)}')" />
+         onclick="openRefImageViewer('${esc(thumbPath)}', '${esc(label)}')" />
   </div>`;
 }
 

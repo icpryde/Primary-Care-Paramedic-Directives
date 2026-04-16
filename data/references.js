@@ -6,7 +6,7 @@ const REFERENCES = [
     title: '12 Lead ECG Placement',
     content: `
       <div class="ref-image-wrap">
-        <img src="assets/12-lead-ecg.png" alt="12 Lead ECG Placement" onclick="openFlowchartPdf('assets/12-lead-ecg.png')" />
+        <img src="assets/12-lead-ecg.png" alt="12 Lead ECG Placement" onclick="openRefImageViewer('assets/12-lead-ecg.png', '12 Lead ECG Placement')" />
       </div>
 
       <h3 class="ref-subheading">PRECORDIAL LEADS:</h3>
@@ -38,7 +38,7 @@ const REFERENCES = [
     title: '15 Lead ECG Placement',
     content: `
       <div class="ref-image-wrap">
-        <img src="assets/v4r-ecg.png" alt="V4R Lead Placement" onclick="openFlowchartPdf('assets/v4r-ecg.png')" />
+        <img src="assets/v4r-ecg.png" alt="V4R Lead Placement" onclick="openRefImageViewer('assets/v4r-ecg.png', 'V4R Lead Placement')" />
       </div>
 
       <h3 class="ref-subheading">V4R LEAD PLACEMENT</h3>
@@ -48,7 +48,7 @@ const REFERENCES = [
       <p class="ref-body-text">Place V4R in the mirror position of V4 on the right side of the chest. All standard 12-lead electrode positions remain unchanged.</p>
 
       <div class="ref-image-wrap" style="margin-top:20px;">
-        <img src="assets/15-lead-v8-v9.png" alt="V8-V9 Posterior Lead Placement" onclick="openFlowchartPdf('assets/15-lead-v8-v9.png')" />
+        <img src="assets/15-lead-v8-v9.png" alt="V8-V9 Posterior Lead Placement" onclick="openRefImageViewer('assets/15-lead-v8-v9.png', 'V8-V9 Posterior Lead Placement')" />
       </div>
 
       <h3 class="ref-subheading">POSTERIOR LEADS (V8 &amp; V9)</h3>
@@ -291,8 +291,8 @@ const REFERENCES = [
     content: `
       <div class="ref-image-wrap">
         <img src="assets/cpr-guidelines-thumb.png" alt="CPR Guidelines Chart"
-             onclick="openFlowchartPdf('assets/cpr-guidelines.pdf')" />
-        <div class="flowchart-label">Summary of High-Quality CPR (tap to view full PDF)</div>
+             onclick="openRefImageViewer('assets/cpr-guidelines-thumb.png', 'CPR Guidelines Chart')" />
+        <div class="flowchart-label">Summary of High-Quality CPR (tap to view full size)</div>
       </div>
 
       <h3 class="ref-subheading">CPR NOTES:</h3>

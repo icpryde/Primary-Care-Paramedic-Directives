@@ -476,8 +476,6 @@ function closeInstallHelpModal() {
 function setupPinchZoomBlock() {
   const shouldBlockZoom = target => {
     if (document.documentElement.classList.contains('ref-image-viewer-open')) return false;
-    if (document.documentElement.classList.contains('pdf-viewer-open')) return false;
-    if (target?.closest?.('#pdf-viewer')) return false;
     return !target?.closest?.('#ref-image-viewer');
   };
 
@@ -584,10 +582,8 @@ function setupEdgeSwipeNavigation() {
   const hasBlockingOverlay = () => {
     if (document.documentElement.classList.contains('ref-image-viewer-open')) return true;
     if (document.documentElement.classList.contains('help-modal-open')) return true;
-    if (document.documentElement.classList.contains('pdf-viewer-open')) return true;
     if (document.body.classList.contains('ref-image-viewer-open')) return true;
     if (document.body.classList.contains('help-modal-open')) return true;
-    if (document.body.classList.contains('pdf-viewer-open')) return true;
     return false;
   };
 
@@ -871,39 +867,6 @@ function setupEdgeSwipeNavigation() {
     }
     fromLeftEdge = fromRightEdge = false;
   }, { passive: true });
-}
-
-// ─── Flowchart Viewer ────────────────────────────────────────────────────────
-function openFlowchartPdf(pdfUrl) {
-  if (!pdfUrl) return;
-  openPdfViewer(pdfUrl);
-}
-
-function openPdfViewer(url) {
-  const modal = $('pdf-viewer');
-  const frame = $('pdf-viewer-frame');
-  if (!modal || !frame) { window.open(url, '_blank'); return; }
-  frame.src = url;
-  modal.hidden = false;
-  modal.setAttribute('aria-hidden', 'false');
-  document.documentElement.classList.add('pdf-viewer-open');
-  document.body.classList.add('pdf-viewer-open');
-}
-
-function closePdfViewer() {
-  const modal = $('pdf-viewer');
-  const frame = $('pdf-viewer-frame');
-  if (modal) { modal.hidden = true; modal.setAttribute('aria-hidden', 'true'); }
-  if (frame) { frame.src = ''; }
-  document.documentElement.classList.remove('pdf-viewer-open');
-  document.body.classList.remove('pdf-viewer-open');
-}
-
-function initPdfViewer() {
-  const modal = $('pdf-viewer');
-  if (!modal || modal.dataset.bound) return;
-  modal.dataset.bound = '1';
-  modal.querySelector('.pdf-viewer-close')?.addEventListener('click', closePdfViewer);
 }
 
 // ─── Reference image viewer (pinch zoom + pan, in-app for PWA) ───────────────
@@ -2780,9 +2743,9 @@ function renderDirectiveDetail(directive) {
     // Flowchart thumbnail + PDF link (if present)
     if (directive.flowchartPdf) {
       html += `<div class="flowchart-wrap">
-        <div class="flowchart-label">Treatment Flowchart (tap to view full PDF)</div>
+        <div class="flowchart-label">Treatment Flowchart (tap to view full size)</div>
         <img class="flowchart-thumb" src="${directive.flowchartThumb}" alt="Treatment Flowchart"
-             onclick="openFlowchartPdf('${directive.flowchartPdf}')" />
+             onclick="openRefImageViewer('${directive.flowchartThumb}', 'Treatment Flowchart')" />
       </div>`;
     }
 
@@ -4648,11 +4611,6 @@ function init() {
   initLogoPicker();
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    const pv = $('pdf-viewer');
-    if (pv && !pv.hidden) {
-      closePdfViewer();
-      return;
-    }
     const rv = $('ref-image-viewer');
     if (rv && !rv.hidden) {
       closeRefImageViewer();
@@ -4740,7 +4698,6 @@ function init() {
   bronchoCalcInit();
   croupCalcInit();
   initRefImageViewer();
-  initPdfViewer();
 
   const activeView = document.querySelector('.view.active');
   if (activeView) updateBackButtonVisibility(activeView.id);
