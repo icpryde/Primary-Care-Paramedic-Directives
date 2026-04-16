@@ -212,43 +212,6 @@ function restoreViewScroll(scrollY) {
   });
 }
 
-function commitHistoryViewTransition(cur, target, title, scrollY) {
-  if (!target) return;
-
-  const swipeCommitActive =
-    document.body.classList.contains('ios-swipe-back-active') ||
-    document.body.classList.contains('ios-swipe-forward-active');
-
-  const finalizeSwap = () => {
-    if (cur) {
-      cur.classList.remove('active');
-      cur.hidden = true;
-    }
-    target.style.visibility = '';
-    $('header-title').textContent = title;
-    updateBackButtonVisibility(target.id);
-    restoreViewScroll(scrollY);
-  };
-
-  // During swipe commit, target is already visible in a swipe layer.
-  // Avoid hiding it for one frame, which causes a blink/flicker.
-  if (swipeCommitActive) {
-    target.hidden = false;
-    target.classList.add('active');
-    finalizeSwap();
-    return;
-  }
-
-  // Stage target in layout but keep it hidden until the swap frame.
-  target.hidden = false;
-  target.classList.add('active');
-  target.style.visibility = 'hidden';
-
-  requestAnimationFrame(() => {
-    finalizeSwap();
-  });
-}
-
 function goBack() {
   if (!state.history.length) return;
   withNativeNavCommit(() => {
@@ -261,8 +224,8 @@ function goBack() {
       });
     }
     const prev = state.history.pop();
-    const target = $(prev.viewId);
-    commitHistoryViewTransition(cur, target, prev.title, prev.scrollY);
+    showView(prev.viewId, prev.title, false);
+    restoreViewScroll(prev.scrollY);
   });
 }
 
@@ -278,8 +241,8 @@ function goForward() {
       });
     }
     const next = state.forwardStack.pop();
-    const target = $(next.viewId);
-    commitHistoryViewTransition(cur, target, next.title, next.scrollY);
+    showView(next.viewId, next.title, false);
+    restoreViewScroll(next.scrollY);
   });
 }
 
@@ -551,7 +514,6 @@ function setupEdgeSwipeNavigation() {
   const START_DRAG_MIN = 10;
   const VERTICAL_RATIO_CANCEL = 1.25;
   const PREV_START_OFFSET = -32;
-  const PREV_START_OPACITY = 0.65;
 
   let startX = 0;
   let startY = 0;
@@ -646,13 +608,13 @@ function setupEdgeSwipeNavigation() {
     swipeCurrent.style.transition = 'none';
     swipePrev.style.transition = 'none';
     swipeCurrent.style.willChange = 'transform';
-    swipePrev.style.willChange = 'transform, opacity';
+    swipePrev.style.willChange = 'transform';
     swipePrev.style.zIndex = '97';
     swipeCurrent.style.zIndex = '98';
     swipeCurrent.style.transform = 'translate3d(0px, 0, 0)';
     swipeCurrent.style.boxShadow = '-6px 0 18px rgba(0, 0, 0, 0.2)';
     swipePrev.style.transform = `translate3d(${PREV_START_OFFSET}%, 0, 0)`;
-    swipePrev.style.opacity = String(PREV_START_OPACITY);
+    swipePrev.style.opacity = '1';
 
     return true;
   };
@@ -695,11 +657,9 @@ function setupEdgeSwipeNavigation() {
     const clamped = Math.max(0, Math.min(dx, width));
     const progress = clamped / width;
     const prevOffset = PREV_START_OFFSET * (1 - progress);
-    const prevOpacity = PREV_START_OPACITY + (1 - PREV_START_OPACITY) * progress;
 
     swipeCurrent.style.transform = `translate3d(${clamped}px, 0, 0)`;
     swipePrev.style.transform = `translate3d(${prevOffset}%, 0, 0)`;
-    swipePrev.style.opacity = String(prevOpacity);
   };
 
   const updateForwardSwipe = dx => {
@@ -733,7 +693,7 @@ function setupEdgeSwipeNavigation() {
     };
 
     swipeCurrent.style.transition = 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 220ms ease';
-    swipePrev.style.transition = 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 220ms ease';
+    swipePrev.style.transition = 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1)';
 
     if (shouldCommit) {
       swipeCurrent.style.transform = `translate3d(${width}px, 0, 0)`;
@@ -744,7 +704,7 @@ function setupEdgeSwipeNavigation() {
       swipeCurrent.style.transform = 'translate3d(0px, 0, 0)';
       swipeCurrent.style.boxShadow = '-6px 0 18px rgba(0, 0, 0, 0.2)';
       swipePrev.style.transform = `translate3d(${PREV_START_OFFSET}%, 0, 0)`;
-      swipePrev.style.opacity = String(PREV_START_OPACITY);
+      swipePrev.style.opacity = '1';
     }
 
     clearRollbackTimer();
