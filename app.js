@@ -511,6 +511,11 @@ function setupEdgeSwipeNavigation() {
 
 // ─── Flowchart Viewer ────────────────────────────────────────────────────────
 function openFlowchartPdf(pdfUrl) {
+  const isPdf = /\.pdf(?:[?#]|$)/i.test(String(pdfUrl || ''));
+  if (isPdf && isNativeWrapper()) {
+    window.location.assign(pdfUrl);
+    return;
+  }
   window.open(pdfUrl, '_blank');
 }
 
