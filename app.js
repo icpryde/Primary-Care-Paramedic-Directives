@@ -212,6 +212,26 @@ function restoreViewScroll(scrollY) {
   });
 }
 
+function commitHistoryViewTransition(cur, target, title, scrollY) {
+  if (!target) return;
+
+  // Stage target in layout but keep it hidden until the swap frame.
+  target.hidden = false;
+  target.classList.add('active');
+  target.style.visibility = 'hidden';
+
+  requestAnimationFrame(() => {
+    if (cur) {
+      cur.classList.remove('active');
+      cur.hidden = true;
+    }
+    target.style.visibility = '';
+    $('header-title').textContent = title;
+    updateBackButtonVisibility(target.id);
+    restoreViewScroll(scrollY);
+  });
+}
+
 function goBack() {
   if (!state.history.length) return;
   withNativeNavCommit(() => {
@@ -224,13 +244,8 @@ function goBack() {
       });
     }
     const prev = state.history.pop();
-    if (cur) { cur.classList.remove('active'); cur.hidden = true; }
     const target = $(prev.viewId);
-    target.hidden = false;
-    target.classList.add('active');
-    $('header-title').textContent = prev.title;
-    updateBackButtonVisibility(target.id);
-    restoreViewScroll(prev.scrollY);
+    commitHistoryViewTransition(cur, target, prev.title, prev.scrollY);
   });
 }
 
@@ -246,13 +261,8 @@ function goForward() {
       });
     }
     const next = state.forwardStack.pop();
-    if (cur) { cur.classList.remove('active'); cur.hidden = true; }
     const target = $(next.viewId);
-    target.hidden = false;
-    target.classList.add('active');
-    $('header-title').textContent = next.title;
-    updateBackButtonVisibility(next.viewId);
-    restoreViewScroll(next.scrollY);
+    commitHistoryViewTransition(cur, target, next.title, next.scrollY);
   });
 }
 
