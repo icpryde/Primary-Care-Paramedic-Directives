@@ -689,7 +689,7 @@ function setupEdgeSwipeNavigation() {
       finished = true;
       if (shouldCommit) {
         goBack();
-        requestAnimationFrame(resetSwipeLayers);
+        requestAnimationFrame(() => requestAnimationFrame(resetSwipeLayers));
       } else {
         resetSwipeLayers();
       }
@@ -727,7 +727,7 @@ function setupEdgeSwipeNavigation() {
       finished = true;
       if (shouldCommit) {
         goForward();
-        requestAnimationFrame(resetSwipeLayers);
+        requestAnimationFrame(() => requestAnimationFrame(resetSwipeLayers));
       } else {
         resetSwipeLayers();
       }

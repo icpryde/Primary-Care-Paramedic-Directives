@@ -685,6 +685,19 @@ body.ios-swipe-forward-active .view {
   pointer-events: none;
 }
 
+/* Sticky descendants inside fixed swipe layers need local offsets. */
+.view-swipe-prev .search-bar-wrap.sticky,
+.view-swipe-current .search-bar-wrap.sticky,
+.view-swipe-next .search-bar-wrap.sticky {
+  top: 0;
+}
+
+.view-swipe-prev .med-tab-bar,
+.view-swipe-current .med-tab-bar,
+.view-swipe-next .med-tab-bar {
+  top: 56px;
+}
+
 /* ── Home Screen ──────────────────────────────────────── */
 .home-search-bar {
   padding-top: 12px;
