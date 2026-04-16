@@ -636,6 +636,38 @@ body.help-modal-open {
 .view { display: none; min-height: calc(100vh - var(--header-bar) - var(--safe-top)); }
 .view.active { display: block; }
 
+body.ios-swipe-back-active {
+  overflow: hidden;
+  touch-action: none;
+}
+
+body.ios-swipe-back-active .view {
+  pointer-events: none;
+}
+
+.view-swipe-prev,
+.view-swipe-current {
+  display: block !important;
+  position: fixed;
+  top: calc(var(--header-bar) + var(--safe-top));
+  left: 0;
+  right: 0;
+  bottom: var(--safe-bot);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.view-swipe-prev {
+  z-index: 97;
+  background: var(--bg);
+}
+
+.view-swipe-current {
+  z-index: 98;
+  background: var(--bg);
+  pointer-events: none;
+}
+
 /* ── Home Screen ──────────────────────────────────────── */
 .home-search-bar {
   padding-top: 12px;
@@ -1493,6 +1525,7 @@ body.help-modal-open {
   to   { opacity: 1; transform: translateX(0); }
 }
 .view.active { animation: fadeIn 0.15s ease; }
+body.ios-swipe-back-active .view.active { animation: none; }
 
 /* ── Flowchart ────────────────────────────────────────── */
 .flowchart-wrap {

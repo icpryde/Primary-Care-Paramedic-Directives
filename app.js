@@ -465,14 +465,153 @@ function setupPinchZoomBlock() {
 
 /** iOS PWA has no system swipe-back; mimic Safari with edge gestures. */
 function setupEdgeSwipeNavigation() {
+  if (!isNativeWrapper()) return;
+
   const EDGE = 32;
   const SWIPE_MIN = 70;
+  const COMMIT_RATIO = 0.34;
+  const START_DRAG_MIN = 10;
+  const VERTICAL_RATIO_CANCEL = 1.25;
+  const PREV_START_OFFSET = -32;
+  const PREV_START_OPACITY = 0.65;
+
   let startX = 0;
   let startY = 0;
+  let currentX = 0;
   let fromLeftEdge = false;
   let fromRightEdge = false;
+  let backDragActive = false;
+  let rollbackTimer = null;
+
+  let swipeCurrent = null;
+  let swipePrev = null;
+
+  const clearRollbackTimer = () => {
+    if (rollbackTimer) {
+      clearTimeout(rollbackTimer);
+      rollbackTimer = null;
+    }
+  };
+
+  const resetSwipeLayers = ({ keepPrevVisible = false } = {}) => {
+    clearRollbackTimer();
+    document.body.classList.remove('ios-swipe-back-active');
+    backDragActive = false;
+
+    if (swipeCurrent) {
+      swipeCurrent.classList.remove('view-swipe-current');
+      swipeCurrent.style.transform = '';
+      swipeCurrent.style.transition = '';
+      swipeCurrent.style.willChange = '';
+      swipeCurrent.style.boxShadow = '';
+    }
+
+    if (swipePrev) {
+      swipePrev.classList.remove('view-swipe-prev');
+      swipePrev.style.transform = '';
+      swipePrev.style.transition = '';
+      swipePrev.style.willChange = '';
+      swipePrev.style.opacity = '';
+      if (!keepPrevVisible && !swipePrev.classList.contains('active')) {
+        swipePrev.hidden = true;
+      }
+    }
+
+    swipeCurrent = null;
+    swipePrev = null;
+  };
+
+  const hasBlockingOverlay = () => {
+    if (document.documentElement.classList.contains('ref-image-viewer-open')) return true;
+    if (document.documentElement.classList.contains('help-modal-open')) return true;
+    if (document.body.classList.contains('ref-image-viewer-open')) return true;
+    if (document.body.classList.contains('help-modal-open')) return true;
+    return false;
+  };
+
+  const prepareBackSwipe = () => {
+    const current = document.querySelector('.view.active');
+    if (!current || current.id === 'view-home' || !state.history.length) return false;
+    if (hasBlockingOverlay()) return false;
+
+    const prevState = state.history[state.history.length - 1];
+    const prev = prevState ? $(prevState.viewId) : null;
+    if (!prev || prev === current) return false;
+
+    swipeCurrent = current;
+    swipePrev = prev;
+
+    swipePrev.hidden = false;
+    swipePrev.classList.add('view-swipe-prev');
+    swipeCurrent.classList.add('view-swipe-current');
+    document.body.classList.add('ios-swipe-back-active');
+
+    swipeCurrent.style.transition = 'none';
+    swipePrev.style.transition = 'none';
+    swipeCurrent.style.willChange = 'transform';
+    swipePrev.style.willChange = 'transform, opacity';
+    swipeCurrent.style.transform = 'translate3d(0px, 0, 0)';
+    swipeCurrent.style.boxShadow = '-6px 0 18px rgba(0, 0, 0, 0.2)';
+    swipePrev.style.transform = `translate3d(${PREV_START_OFFSET}%, 0, 0)`;
+    swipePrev.style.opacity = String(PREV_START_OPACITY);
+
+    return true;
+  };
+
+  const updateBackSwipe = dx => {
+    if (!swipeCurrent || !swipePrev) return;
+    const width = Math.max(window.innerWidth, 1);
+    const clamped = Math.max(0, Math.min(dx, width));
+    const progress = clamped / width;
+    const prevOffset = PREV_START_OFFSET * (1 - progress);
+    const prevOpacity = PREV_START_OPACITY + (1 - PREV_START_OPACITY) * progress;
+
+    swipeCurrent.style.transform = `translate3d(${clamped}px, 0, 0)`;
+    swipePrev.style.transform = `translate3d(${prevOffset}%, 0, 0)`;
+    swipePrev.style.opacity = String(prevOpacity);
+  };
+
+  const animateBackOutcome = shouldCommit => {
+    if (!swipeCurrent || !swipePrev) {
+      resetSwipeLayers();
+      return;
+    }
+
+    const width = Math.max(window.innerWidth, 1);
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      if (shouldCommit) {
+        resetSwipeLayers({ keepPrevVisible: true });
+        goBack();
+      } else {
+        resetSwipeLayers();
+      }
+    };
+
+    swipeCurrent.style.transition = 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 220ms ease';
+    swipePrev.style.transition = 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 220ms ease';
+
+    if (shouldCommit) {
+      swipeCurrent.style.transform = `translate3d(${width}px, 0, 0)`;
+      swipeCurrent.style.boxShadow = '-2px 0 6px rgba(0, 0, 0, 0.12)';
+      swipePrev.style.transform = 'translate3d(0%, 0, 0)';
+      swipePrev.style.opacity = '1';
+    } else {
+      swipeCurrent.style.transform = 'translate3d(0px, 0, 0)';
+      swipeCurrent.style.boxShadow = '-6px 0 18px rgba(0, 0, 0, 0.2)';
+      swipePrev.style.transform = `translate3d(${PREV_START_OFFSET}%, 0, 0)`;
+      swipePrev.style.opacity = String(PREV_START_OPACITY);
+    }
+
+    clearRollbackTimer();
+    rollbackTimer = setTimeout(finish, 240);
+    swipeCurrent.addEventListener('transitionend', finish, { once: true });
+  };
 
   document.body.addEventListener('touchstart', e => {
+    resetSwipeLayers();
     if (e.touches.length !== 1) {
       fromLeftEdge = fromRightEdge = false;
       return;
@@ -484,27 +623,80 @@ function setupEdgeSwipeNavigation() {
     const t = e.touches[0];
     startX = t.clientX;
     startY = t.clientY;
+    currentX = startX;
     const w = window.innerWidth;
     fromLeftEdge = startX <= EDGE;
     fromRightEdge = startX >= w - EDGE;
   }, { passive: true });
 
-  document.body.addEventListener('touchend', e => {
+  document.body.addEventListener('touchmove', e => {
     if (!fromLeftEdge && !fromRightEdge) return;
-    if (e.changedTouches.length !== 1) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - startX;
-    const dy = t.clientY - startY;
-    if (Math.abs(dy) > Math.abs(dx) * 1.25) {
+    if (e.touches.length !== 1) return;
+
+    const t = e.touches[0];
+    currentX = t.clientX;
+    const currentY = t.clientY;
+    const dx = currentX - startX;
+    const dy = currentY - startY;
+    const absDx = Math.abs(dx);
+
+    if (Math.abs(dy) > absDx * VERTICAL_RATIO_CANCEL && Math.abs(dy) > 8) {
+      fromLeftEdge = fromRightEdge = false;
+      if (backDragActive) animateBackOutcome(false);
+      return;
+    }
+
+    if (!fromLeftEdge) return;
+    if (dx <= 0) return;
+
+    if (!backDragActive) {
+      if (dx < START_DRAG_MIN) return;
+      if (!prepareBackSwipe()) {
+        fromLeftEdge = false;
+        return;
+      }
+      backDragActive = true;
+    }
+
+    e.preventDefault();
+    updateBackSwipe(dx);
+  }, { passive: false });
+
+  document.body.addEventListener('touchend', e => {
+    if (!fromLeftEdge && !fromRightEdge && !backDragActive) return;
+    if (e.changedTouches.length !== 1) {
+      if (backDragActive) animateBackOutcome(false);
       fromLeftEdge = fromRightEdge = false;
       return;
     }
-    if (fromLeftEdge && dx > SWIPE_MIN && state.history.length > 0) {
-      const onHome = document.querySelector('#view-home.active');
-      if (!onHome) goBack();
-    } else if (fromRightEdge && dx < -SWIPE_MIN && state.forwardStack.length > 0) {
+
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    const absDx = Math.abs(dx);
+
+    if (Math.abs(dy) > absDx * VERTICAL_RATIO_CANCEL) {
+      if (backDragActive) animateBackOutcome(false);
+      fromLeftEdge = fromRightEdge = false;
+      return;
+    }
+
+    if (backDragActive) {
+      const threshold = Math.max(SWIPE_MIN, window.innerWidth * COMMIT_RATIO);
+      animateBackOutcome(dx > threshold);
+      fromLeftEdge = fromRightEdge = false;
+      return;
+    }
+
+    if (fromRightEdge && dx < -SWIPE_MIN && state.forwardStack.length > 0) {
       goForward();
     }
+
+    fromLeftEdge = fromRightEdge = false;
+  }, { passive: true });
+
+  document.body.addEventListener('touchcancel', () => {
+    if (backDragActive) animateBackOutcome(false);
     fromLeftEdge = fromRightEdge = false;
   }, { passive: true });
 }
@@ -4358,7 +4550,9 @@ function init() {
   });
 
   setupPinchZoomBlock();
-  setupEdgeSwipeNavigation();
+  if (isNativeWrapper()) {
+    setupEdgeSwipeNavigation();
+  }
 
   initPreSepsisTool();
   initBurnCalculator();
