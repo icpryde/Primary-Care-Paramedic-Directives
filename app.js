@@ -3338,6 +3338,7 @@ function buildCalculatorsView() {
 
 // ─── Medication Information (Field Rx–style reference) ─────────────────────
 const medicationsUI = { tab: 'All', search: '', expandedId: null };
+let medicationsFocusId = null;
 
 function medicationsFilterMeds() {
   if (typeof MEDICATIONS === 'undefined') return [];
@@ -3465,6 +3466,17 @@ function renderMedicationsList() {
       </div>
     `;
   }).join('');
+
+  if (medicationsFocusId != null) {
+    requestAnimationFrame(() => {
+      const card = container.querySelector(`.med-card[data-med-id="${medicationsFocusId}"]`);
+      medicationsFocusId = null;
+      if (!card) return;
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.classList.add('med-card--flash');
+      setTimeout(() => card.classList.remove('med-card--flash'), 1800);
+    });
+  }
 }
 
 function medicationsSyncAndRender() {
@@ -3502,6 +3514,16 @@ function buildMedicationsView() {
         renderMedicationsList();
       });
     }
+
+    const medSearch = $('medications-search');
+    if (medSearch && !medSearch.dataset.medSearchBound) {
+      medSearch.dataset.medSearchBound = '1';
+      medSearch.addEventListener('input', () => {
+        medicationsUI.search = medSearch.value;
+        medicationsUI.expandedId = null;
+        renderMedicationsList();
+      });
+    }
   }
   medicationsSyncAndRender();
 }
@@ -3511,6 +3533,7 @@ function medicationsOpenFromSearch(med) {
   medicationsUI.tab = 'All';
   medicationsUI.search = '';
   medicationsUI.expandedId = med && med.id != null ? med.id : null;
+  medicationsFocusId = med && med.id != null ? med.id : null;
   showView('view-medications', med ? med.name : 'Medications');
 }
 
@@ -5079,7 +5102,6 @@ function init() {
     'pcp-search',
     'special-event-search',
     'calculators-search',
-    'medications-search',
     'contact-search',
     'destination-search',
     'special-search',

@@ -5623,6 +5623,10 @@ body.ios-native-nav-commit .view.active { animation: none; }
   border-color: #93c5fd;
   box-shadow: 0 0 0 1px #93c5fd;
 }
+.med-card--flash {
+  box-shadow: 0 0 0 2px #fde68a, 0 0 0 5px rgba(253, 230, 138, 0.45);
+  transition: box-shadow 0.3s ease;
+}
 .med-card-header {
   width: 100%;
   display: flex;
