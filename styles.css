@@ -232,6 +232,7 @@ body.is-native-wrapper .header-logo-btn {
 
 body.is-native-wrapper.ios-native-nav-commit .header-brand-stack,
 body.is-native-wrapper.ios-native-nav-commit .header-logo-btn {
+  transition: none !important;
   opacity: 0;
   transform: translateY(-10px) scale(0.96);
   pointer-events: none;
