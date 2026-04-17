@@ -268,25 +268,8 @@ function updateBackButtonVisibility(activeViewId) {
   const logoBtn = $('header-logo-btn');
   const helpBtn = $('header-help-btn');
 
-  if (onHome && isNativeWrapper() && nativeNavCommitDepth > 0) {
-    // During an iOS swipe-back, keep the full home header staged until the
-    // gesture commit is complete to avoid intermediate title flicker states.
-    document.body.classList.add('home-header-reveal-pending');
-    if (brand) brand.hidden = false;
-    if (logoBtn) logoBtn.hidden = false;
-    const revealAfterCommit = () => {
-      if (nativeNavCommitDepth > 0) {
-        requestAnimationFrame(revealAfterCommit);
-      } else {
-        document.body.classList.remove('home-header-reveal-pending');
-      }
-    };
-    requestAnimationFrame(revealAfterCommit);
-  } else {
-    document.body.classList.remove('home-header-reveal-pending');
-    if (brand) brand.hidden = !onHome;
-    if (logoBtn) logoBtn.hidden = !onHome;
-  }
+  if (brand) brand.hidden = !onHome;
+  if (logoBtn) logoBtn.hidden = !onHome;
 
   if (helpBtn) helpBtn.hidden = false;
 }
