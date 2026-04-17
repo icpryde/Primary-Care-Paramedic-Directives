@@ -265,10 +265,28 @@ function updateBackButtonVisibility(activeViewId) {
   const back = $('back-btn');
   if (back) back.hidden = onHome || state.history.length === 0;
   const brand = $('header-paramedic-brand');
-  if (brand) brand.hidden = !onHome;
   const logoBtn = $('header-logo-btn');
-  if (logoBtn) logoBtn.hidden = !onHome;
   const helpBtn = $('header-help-btn');
+
+  if (onHome && isNativeWrapper() && nativeNavCommitDepth > 0) {
+    // During an iOS swipe-back, keep brand/logo hidden until the swipe
+    // animation finishes to prevent the flash-before-animate flicker.
+    if (brand) brand.hidden = true;
+    if (logoBtn) logoBtn.hidden = true;
+    const revealAfterCommit = () => {
+      if (nativeNavCommitDepth > 0) {
+        requestAnimationFrame(revealAfterCommit);
+      } else {
+        if (brand) brand.hidden = false;
+        if (logoBtn) logoBtn.hidden = false;
+      }
+    };
+    requestAnimationFrame(revealAfterCommit);
+  } else {
+    if (brand) brand.hidden = !onHome;
+    if (logoBtn) logoBtn.hidden = !onHome;
+  }
+
   if (helpBtn) helpBtn.hidden = false;
 }
 
