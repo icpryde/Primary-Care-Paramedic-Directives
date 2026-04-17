@@ -5706,6 +5706,11 @@ body.ios-native-nav-commit .view.active { animation: none; }
   color: #64748b;
   margin-top: 6px;
 }
+.med-card-brand {
+  font-size: 12px;
+  color: #475569;
+  margin-top: 3px;
+}
 .med-card-preview {
   font-size: 13px;
   color: #475569;

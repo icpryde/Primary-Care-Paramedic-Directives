@@ -3340,11 +3340,30 @@ function buildCalculatorsView() {
 const medicationsUI = { tab: 'All', search: '', expandedId: null };
 let medicationsFocusId = null;
 
+const MED_BRAND_ALIASES = {
+  'Empagliflozin': ['Jardiance'],
+  'Ipratropium': ['Atrovent', 'Ipravent'],
+  'Salbutamol': ['Ventolin'],
+  'Norepinephrine': ['Levophed'],
+  'Tamsulosin': ['Flomax'],
+  'Pantoprazole': ['Pantoloc'],
+  'Bisoprolol': ['Monocor', 'Zebeta'],
+  'Carvedilol': ['Coreg'],
+  'Diltiazem': ['Cardizem'],
+  'Valsartan': ['Diovan'],
+  'Sertraline': ['Zoloft'],
+  'Omeprazole': ['Prilosec'],
+  'Insulin Glargine': ['Lantus', 'Basaglar', 'Toujeo'],
+  'Insulin Aspart': ['NovoRapid', 'Fiasp'],
+};
+
 function medicationsFilterMeds() {
   if (typeof MEDICATIONS === 'undefined') return [];
   const q = medicationsUI.search.trim().toLowerCase();
   return MEDICATIONS.filter(med => {
+    const aliases = MED_BRAND_ALIASES[med.name] || [];
     const matchesSearch = !q || med.name.toLowerCase().includes(q) ||
+      aliases.some(alias => alias.toLowerCase().includes(q)) ||
       med.category.toLowerCase().includes(q) ||
       med.indication.toLowerCase().includes(q) ||
       (med.tags || []).some(tag => tag.toLowerCase().includes(q));
@@ -3406,6 +3425,10 @@ function renderMedicationsList() {
   container.innerHTML = meds.map(med => {
     const expanded = medicationsUI.expandedId === med.id;
     const home = med.type === 'Home Med';
+    const aliases = MED_BRAND_ALIASES[med.name] || [];
+    const brandLine = aliases.length
+      ? `<p class="med-card-brand">Brand: ${escapeHtml(aliases.join(', '))}</p>`
+      : '';
     const badges = `
       ${home
         ? '<span class="med-badge med-badge-home">Home Med</span>'
@@ -3458,6 +3481,7 @@ function renderMedicationsList() {
               <span class="med-badge-row">${badges}</span>
             </div>
             <p class="med-card-category">${escapeHtml(med.category)}</p>
+            ${brandLine}
             ${preview}
           </div>
           ${chevron}
@@ -3990,11 +4014,13 @@ function buildSearchIndex() {
   });
   if (typeof MEDICATIONS !== 'undefined') {
     MEDICATIONS.forEach(m => {
+      const aliases = MED_BRAND_ALIASES[m.name] || [];
+      const searchTitle = aliases.length ? `${m.name} (${aliases.join(', ')})` : m.name;
       index.push({
         id: `med-${m.id}`,
-        title: m.name,
+        title: searchTitle,
         catLabel: 'Medication Information',
-        text: [m.name, m.category, m.indication, ...(m.tags || [])].join(' ').toLowerCase(),
+        text: [m.name, m.category, m.indication, ...(m.tags || []), ...aliases].join(' ').toLowerCase(),
         type: 'med-drug',
         data: m,
       });
