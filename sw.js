@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pcp-directives-v96';
+const CACHE_NAME = 'pcp-directives-v97';
 const BASE = (self.location && self.location.hostname === 'icpryde.github.io')
   ? '/Primary-Care-Paramedic-Directives'
   : '';
