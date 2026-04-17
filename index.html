@@ -118,16 +118,14 @@
       <button class="home-nav-btn cat-reference" data-view="view-references">Medical References</button>
       <button class="home-nav-btn cat-calculators" data-view="view-calculators">Medical Calculators</button>
       <button class="home-nav-btn cat-medications" data-view="view-medications">Medication Information</button>
+      <button class="home-nav-btn cat-ctas" data-view="view-ctas">CTAS Levels</button>
       <button class="home-nav-btn cat-contact" data-view="view-contact">Contact</button>
       <button class="home-nav-btn cat-destination" data-view="view-destination">Destination Guidelines</button>
     </nav>
     <footer class="home-footer">
-      <div class="home-footer-title">ABOUT THE ONTARIO PARAMEDIC CLINICAL GUIDE</div>
-      <div class="home-footer-versions" role="list">
-        <span class="home-footer-tag" role="listitem">ALS PCS 5.4 · 2025-06-02</span>
-        <span class="home-footer-tag" role="listitem">BLS PCS 3.4 · 2023-03-10</span>
-        <span class="home-footer-tag" role="listitem">Companion 5.4 · 2025-06</span>
-        <span id="app-version-tag" class="home-footer-tag" role="listitem">App …</span>
+      <div class="home-footer-compact">
+        <span class="home-footer-label">Ontario Paramedic Clinical Guide</span>
+        <span class="home-footer-tags">ALS 5.4 · BLS 3.4 · Companion 5.4 · <span id="app-version-tag">v…</span></span>
       </div>
     </footer>
   </div>
@@ -1463,6 +1461,30 @@
     </div>
   </div>
 
+  <!-- CTAS LEVELS -->
+  <div id="view-ctas" class="view" hidden>
+    <div class="ctas-top-bar">
+      <div class="search-bar-wrap ctas-search-wrap">
+        <div class="search-bar">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+            <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input id="ctas-search" type="search" placeholder="Search CTAS entries…" autocomplete="off" />
+        </div>
+      </div>
+      <div class="ctas-tab-bar" role="tablist" aria-label="CTAS sections">
+        <button type="button" class="ctas-tab ctas-tab--on" data-ctas-tab="0" role="tab" aria-selected="true">Complaints</button>
+        <button type="button" class="ctas-tab" data-ctas-tab="1" role="tab" aria-selected="false">1st Mod</button>
+        <button type="button" class="ctas-tab" data-ctas-tab="2" role="tab" aria-selected="false">2nd Mod</button>
+        <button type="button" class="ctas-tab" data-ctas-tab="3" role="tab" aria-selected="false">By Level</button>
+      </div>
+    </div>
+    <div id="ctas-search-results" class="ctas-search-results" hidden></div>
+    <div id="ctas-content" class="ctas-content"></div>
+    <p class="ctas-attribution">Referenced from "Prehospital CTAS Paramedic Guide Version 2.0: Adult" — Ontario Ministry of Health</p>
+  </div>
+
   <!-- DIRECTIVE DETAIL -->
   <div id="view-detail" class="view" hidden>
     <div id="detail-content" class="detail-content"></div>
@@ -1492,6 +1514,7 @@
   <script src="data/calculators-content.js"></script>
   <script src="data/medications.js"></script>
   <script src="data/blsStandards.js"></script>
+  <script src="data/ctasData.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

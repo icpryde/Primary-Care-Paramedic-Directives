@@ -162,6 +162,19 @@ function showView(viewId, title, pushHistory = true) {
   if (viewId === 'view-epi-anaphylaxis') epiAnaphylaxisInit();
   if (viewId === 'view-broncho-calc') bronchoCalcInit();
   if (viewId === 'view-croup-calc') croupCalcInit();
+  if (viewId === 'view-ctas') {
+    // Reset CTAS search and re-render current tab
+    const ctasSearchInput = $('ctas-search');
+    if (ctasSearchInput && ctasSearchInput.value) {
+      ctasSearchInput.value = '';
+      ctasSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    const ctasResults = $('ctas-search-results');
+    if (ctasResults) ctasResults.hidden = true;
+    const ctasContent = $('ctas-content');
+    if (ctasContent) ctasContent.hidden = false;
+    ctasSwitchTab(ctasState.activeTab);
+  }
   if (viewId === 'view-medications') medicationsSyncAndRender();
 }
 
@@ -3962,6 +3975,33 @@ function buildSearchIndex() {
       });
     });
   }
+
+  // CTAS entries for global search
+  if (typeof CTAS_SECTIONS !== 'undefined') {
+    index.push({
+      id: 'ctas-hub',
+      title: 'CTAS Levels',
+      catLabel: 'CTAS Levels',
+      text: 'ctas levels triage prehospital presenting complaints modifiers resuscitation emergency urgent'.toLowerCase(),
+      type: 'ctas',
+      data: null,
+    });
+    CTAS_SECTIONS.forEach((section, si) => {
+      section.categories.forEach(cat => {
+        cat.entries.forEach((entry, ei) => {
+          index.push({
+            id: `ctas-${cat.name}-${ei}`,
+            title: `${entry.description} (CTAS ${entry.level})`,
+            catLabel: 'CTAS Levels',
+            text: [cat.name, entry.description, 'ctas', CTAS_LEVEL_LABELS[entry.level] || ''].join(' ').toLowerCase(),
+            type: 'ctas',
+            data: { entry, sectionIndex: si, categoryName: cat.name },
+          });
+        });
+      });
+    });
+  }
+
   return index;
 }
 
@@ -4064,6 +4104,37 @@ function openSearchResult(result, options = {}) {
     medicationsOpenFromSearch(null);
   } else if (result.type === 'med-drug') {
     medicationsOpenFromSearch(result.data);
+  } else if (result.type === 'ctas') {
+    showView('view-ctas', 'CTAS Levels');
+    if (result.data && result.data.sectionIndex != null) {
+      // Switch to the correct tab
+      ctasSwitchTab(result.data.sectionIndex);
+      // Find and open the matching category accordion
+      const content = $('ctas-content');
+      if (content) {
+        const headers = content.querySelectorAll('.ctas-acc-header');
+        headers.forEach(btn => {
+          const titleEl = btn.querySelector('.ctas-acc-title');
+          if (titleEl && titleEl.textContent === result.data.categoryName) {
+            btn.click();
+            // Scroll to the matching entry after accordion opens
+            setTimeout(() => {
+              const body = btn.nextElementSibling;
+              if (body) {
+                const entries = body.querySelectorAll('.ctas-entry-desc');
+                entries.forEach(el => {
+                  if (el.textContent === result.data.entry.description) {
+                    el.closest('.ctas-entry').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.closest('.ctas-entry').style.background = '#fff9db';
+                    setTimeout(() => { el.closest('.ctas-entry').style.background = ''; }, 2000);
+                  }
+                });
+              }
+            }, 350);
+          }
+        });
+      }
+    }
   } else {
     renderCompanionDetail(result.data);
     showView('view-detail', headerTitleFromItem(result.data));
@@ -4563,6 +4634,343 @@ function initBurnCalculator() {
   }
 }
 
+// ── CTAS Levels ──────────────────────────────────────────────────────────────
+
+const CTAS_CATEGORY_ICONS = {
+  Cardiac: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
+  'Mental Health': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 017 7c0 2.5-1.3 4.8-3 6v2H8v-2c-1.7-1.2-3-3.5-3-6a7 7 0 017-7z"/><path d="M9 21h6M10 17v-2.5M14 17v-2.5"/></svg>',
+  Neurologic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8 2 5 5 5 9c0 2.5 1 4.5 3 6l1 1v3h6v-3l1-1c2-1.5 3-3.5 3-6 0-4-3-7-7-7z"/><path d="M9 22h6"/><path d="M12 2v4M8.5 7l3 2M15.5 7l-3 2"/></svg>',
+  'Obstetrics / Gynecology': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M8 21v-3a4 4 0 018 0v3"/><circle cx="12" cy="15" r="2"/></svg>',
+  Gastrointestinal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3 0-5 2-5 5 0 2 1 3.5 2 4.5S11 15 11 17v4h2v-4c0-2 1-3.5 2-4.5S17 10 17 8c0-3-2-5-5-5z"/><path d="M12 3v5"/></svg>',
+  Respiratory: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v7"/><path d="M8 10c-3 0-5 2.5-5 5s2 4 4 4h2c1 0 2-.5 3-1.5"/><path d="M16 10c3 0 5 2.5 5 5s-2 4-4 4h-2c-1 0-2-.5-3-1.5"/></svg>',
+  Other: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8M12 14v8M2 12h8M14 12h8"/><rect x="4" y="4" width="16" height="16" rx="2"/></svg>',
+  Trauma: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l-1 8h3L9 22l1-8H7L8 2z"/></svg>',
+  Environmental: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 11-4 0V4a2 2 0 014 0z"/></svg>',
+  'Oxygen Saturation': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-6 3 12 3-8 2 4h6"/></svg>',
+  'Hemodynamic Stability': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-6 3 12 3-8 2 4h6"/></svg>',
+  'Glasgow Coma Scale': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  Temperature: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 11-4 0V4a2 2 0 014 0z"/><line x1="12" y1="16" x2="12" y2="12"/></svg>',
+  Pain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9" stroke-width="3"/><line x1="15" y1="9" x2="15.01" y2="9" stroke-width="3"/></svg>',
+  'Blood Glucose': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7S6 8 6 13a6 6 0 0012 0c0-5-6-10.3-6-10.3z"/></svg>',
+  'Blood Pressure': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
+  Dehydration: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7S6 8 6 13a6 6 0 0012 0c0-5-6-10.3-6-10.3z"/><path d="M10 16l4-6"/></svg>',
+  Bleeding: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7S6 8 6 13a6 6 0 0012 0c0-5-6-10.3-6-10.3z"/><circle cx="12" cy="14" r="1.5" fill="currentColor"/></svg>',
+};
+
+const CTAS_FALLBACK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
+
+function ctasCategoryIconHtml(name) {
+  return CTAS_CATEGORY_ICONS[name] || CTAS_FALLBACK_ICON;
+}
+
+function ctasBadgeHtml(level, size) {
+  const cls = 'ctas-badge' + (level === 4 ? ' ctas-badge--4' : '') + (size === 'md' ? ' ctas-badge-md' : '');
+  return `<span class="${cls}" style="background:${CTAS_HEX_COLORS[level]}">CTAS ${level}</span>`;
+}
+
+const ctasState = {
+  activeTab: 0,
+  openIndex: null,
+  searchQuery: '',
+};
+
+function renderCtasAccordion(categories, container) {
+  ctasState.openIndex = null;
+  let html = '<div class="ctas-accordion">';
+  categories.forEach((cat, ci) => {
+    html += `<div class="ctas-acc-card">
+      <button class="ctas-acc-header" aria-expanded="false" data-ctas-acc="${ci}">
+        <span class="ctas-acc-icon">${ctasCategoryIconHtml(cat.name)}</span>
+        <span class="ctas-acc-title">${escapeHtml(cat.name)}</span>
+        <span class="ctas-acc-count">${cat.entries.length}</span>
+        <svg class="ctas-acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div class="ctas-acc-body" id="ctas-acc-body-${ci}">
+        <div class="ctas-acc-inner">`;
+    cat.entries.forEach(entry => {
+      html += `<div class="ctas-entry">
+          <span class="ctas-entry-dot" style="background:${CTAS_HEX_COLORS[entry.level]}"></span>
+          <span class="ctas-entry-desc">${escapeHtml(entry.description)}</span>
+          ${ctasBadgeHtml(entry.level)}
+        </div>`;
+    });
+    html += '</div></div></div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+
+  container.querySelectorAll('.ctas-acc-header').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.ctasAcc);
+      const wasOpen = ctasState.openIndex === idx;
+      // Close any open
+      if (ctasState.openIndex !== null) {
+        const prevBtn = container.querySelector(`[data-ctas-acc="${ctasState.openIndex}"]`);
+        const prevBody = container.querySelector(`#ctas-acc-body-${ctasState.openIndex}`);
+        if (prevBtn) prevBtn.setAttribute('aria-expanded', 'false');
+        if (prevBody) prevBody.style.maxHeight = '0';
+      }
+      if (wasOpen) {
+        ctasState.openIndex = null;
+      } else {
+        ctasState.openIndex = idx;
+        btn.setAttribute('aria-expanded', 'true');
+        const body = container.querySelector(`#ctas-acc-body-${idx}`);
+        if (body) body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+}
+
+function renderCtasByLevel(container) {
+  ctasState.openIndex = null;
+  const byLevel = getCtasEntriesByLevel();
+  const levels = [
+    { level: 1, timeframe: 'Immediate' },
+    { level: 2, timeframe: '< 15 min' },
+    { level: 3, timeframe: '< 30 min' },
+    { level: 4, timeframe: '< 60 min' },
+    { level: 5, timeframe: '< 120 min' },
+    { level: 0, timeframe: null },
+  ];
+  let html = '<div class="ctas-bylevel">';
+  levels.forEach(({ level, timeframe }) => {
+    const groups = byLevel[level] || [];
+    const total = groups.reduce((s, g) => s + g.entries.length, 0);
+    const isLight = level === 4;
+    const color = CTAS_HEX_COLORS[level];
+    const desc = CTAS_LEVEL_DESCRIPTIONS[level] || '';
+    // CTAS 0 has no expandable entries
+    if (level === 0) {
+      html += `<div class="ctas-lvl-card">
+        <div class="ctas-lvl-header ctas-lvl-header--static" style="background:${color}">
+          <div>
+            <div class="ctas-lvl-title">CTAS ${level}: ${CTAS_LEVEL_LABELS[level]}</div>
+            <div class="ctas-lvl-sub">${escapeHtml(desc)}</div>
+          </div>
+        </div>
+      </div>`;
+      return;
+    }
+    html += `<div class="ctas-lvl-card">
+      <button class="ctas-lvl-header${isLight ? ' ctas-lvl-header--4' : ''}" aria-expanded="false" data-ctas-lvl="${level}" style="background:${color}">
+        <div>
+          <div class="ctas-lvl-title">CTAS ${level}: ${CTAS_LEVEL_LABELS[level]}</div>
+          <div class="ctas-lvl-sub">${escapeHtml(desc)}</div>
+          <div class="ctas-lvl-meta">${timeframe} · ${total} entries</div>
+        </div>
+        <svg class="ctas-lvl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div class="ctas-lvl-body" id="ctas-lvl-body-${level}"><div class="ctas-lvl-inner">`;
+    groups.forEach(group => {
+      html += `<div class="ctas-lvl-group-header">
+          <span class="ctas-lvl-group-icon">${ctasCategoryIconHtml(group.categoryName)}</span>
+          <span class="ctas-lvl-group-name">${escapeHtml(group.categoryName)}</span>
+          <span class="ctas-lvl-group-section">${escapeHtml(group.sectionName)}</span>
+        </div>`;
+      group.entries.forEach(entry => {
+        html += `<div class="ctas-lvl-entry">
+            <span class="ctas-lvl-entry-dot" style="background:${color}"></span>
+            <span class="ctas-lvl-entry-desc">${escapeHtml(entry.description)}</span>
+          </div>`;
+      });
+    });
+    html += '</div></div></div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+
+  container.querySelectorAll('.ctas-lvl-header').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lvl = Number(btn.dataset.ctasLvl);
+      const wasOpen = ctasState.openIndex === lvl;
+      if (ctasState.openIndex !== null) {
+        const prevBtn = container.querySelector(`[data-ctas-lvl="${ctasState.openIndex}"]`);
+        const prevBody = container.querySelector(`#ctas-lvl-body-${ctasState.openIndex}`);
+        if (prevBtn) prevBtn.setAttribute('aria-expanded', 'false');
+        if (prevBody) prevBody.style.maxHeight = '0';
+      }
+      if (wasOpen) {
+        ctasState.openIndex = null;
+      } else {
+        ctasState.openIndex = lvl;
+        btn.setAttribute('aria-expanded', 'true');
+        const body = container.querySelector(`#ctas-lvl-body-${lvl}`);
+        if (body) body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+}
+
+function ctasHighlightMatch(text, terms) {
+  if (!terms.length) return escapeHtml(text);
+  const escaped = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const re = new RegExp('(' + escaped.join('|') + ')', 'gi');
+  return escapeHtml(text).replace(re, '<mark class="ctas-search-mark">$1</mark>');
+}
+
+function ctasPerformSearch(query) {
+  const resultsEl = $('ctas-search-results');
+  const contentEl = $('ctas-content');
+  const q = query.trim().toLowerCase();
+  ctasState.searchQuery = q;
+
+  if (!q) {
+    resultsEl.hidden = true;
+    resultsEl.innerHTML = '';
+    contentEl.hidden = false;
+    return;
+  }
+
+  const terms = q.split(/\s+/).filter(Boolean);
+  const matches = [];
+
+  CTAS_SECTIONS.forEach(section => {
+    section.categories.forEach(cat => {
+      cat.entries.forEach(entry => {
+        const haystack = (cat.name + ' ' + entry.description).toLowerCase();
+        if (terms.every(t => haystack.includes(t))) {
+          matches.push({
+            sectionName: section.name,
+            categoryName: cat.name,
+            entry: entry,
+          });
+        }
+      });
+    });
+  });
+
+  contentEl.hidden = true;
+  resultsEl.hidden = false;
+
+  if (!matches.length) {
+    resultsEl.innerHTML = '<div class="ctas-search-empty">No matching entries found</div>';
+    return;
+  }
+
+  // Group by section — category
+  const groups = {};
+  matches.forEach(m => {
+    const key = m.sectionName + ' — ' + m.categoryName;
+    if (!groups[key]) groups[key] = { key: key, entries: [] };
+    groups[key].entries.push(m.entry);
+  });
+
+  let html = `<div class="ctas-search-count">${matches.length} result${matches.length !== 1 ? 's' : ''}</div>`;
+  Object.values(groups).forEach(g => {
+    html += `<div class="ctas-search-group">
+      <div class="ctas-search-group-header">${escapeHtml(g.key)}</div>`;
+    g.entries.forEach(entry => {
+      html += `<div class="ctas-search-entry">
+          <span class="ctas-entry-dot" style="background:${CTAS_HEX_COLORS[entry.level]}"></span>
+          <span class="ctas-entry-desc">${ctasHighlightMatch(entry.description, terms)}</span>
+          ${ctasBadgeHtml(entry.level)}
+        </div>`;
+    });
+    html += '</div>';
+  });
+  resultsEl.innerHTML = html;
+}
+
+function ctasSwitchTab(tabIdx) {
+  ctasState.activeTab = tabIdx;
+  ctasState.openIndex = null;
+
+  document.querySelectorAll('.ctas-tab').forEach(t => {
+    const idx = Number(t.dataset.ctasTab);
+    t.classList.toggle('ctas-tab--on', idx === tabIdx);
+    t.setAttribute('aria-selected', idx === tabIdx ? 'true' : 'false');
+  });
+
+  const content = $('ctas-content');
+  if (tabIdx >= 0 && tabIdx <= 2) {
+    renderCtasAccordion(CTAS_SECTIONS[tabIdx].categories, content);
+  } else {
+    renderCtasByLevel(content);
+  }
+}
+
+let ctasLegendScrollY = 0;
+
+function openCtasLegendModal() {
+  const modal = $('ctas-legend-modal');
+  if (!modal) return;
+  ctasLegendScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${ctasLegendScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+  modal.hidden = false;
+  modal.setAttribute('aria-hidden', 'false');
+  document.documentElement.classList.add('help-modal-open');
+  document.body.classList.add('help-modal-open');
+  modal.querySelector('.ctas-legend-close')?.focus();
+}
+
+function closeCtasLegendModal() {
+  const modal = $('ctas-legend-modal');
+  if (!modal) return;
+  modal.hidden = true;
+  modal.setAttribute('aria-hidden', 'true');
+  document.documentElement.classList.remove('help-modal-open');
+  document.body.classList.remove('help-modal-open');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, ctasLegendScrollY);
+}
+
+function buildCtasLegendBody() {
+  const body = $('ctas-legend-body');
+  if (!body || body.dataset.built) return;
+  body.dataset.built = '1';
+  const levels = [1, 2, 3, 4, 5, 0];
+  let html = '';
+  levels.forEach(lvl => {
+    html += `<div class="ctas-legend-row">
+      ${ctasBadgeHtml(lvl, 'md')}
+      <div class="ctas-legend-info">
+        <div class="ctas-legend-label">${CTAS_LEVEL_LABELS[lvl]}</div>
+        <div class="ctas-legend-desc">${CTAS_LEVEL_DESCRIPTIONS[lvl]}</div>
+      </div>
+    </div>`;
+  });
+  html += '<p class="ctas-legend-attr">Referenced from "Prehospital CTAS Paramedic Guide Version 2.0: Adult" — Ontario Ministry of Health</p>';
+  body.innerHTML = html;
+}
+
+function initCtasView() {
+  // Tab switching
+  document.querySelectorAll('.ctas-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const idx = Number(tab.dataset.ctasTab);
+      // Clear search when switching tabs
+      const searchInput = $('ctas-search');
+      if (searchInput && searchInput.value) {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      ctasSwitchTab(idx);
+    });
+  });
+
+  // Initial render
+  ctasSwitchTab(0);
+
+  // CTAS-local search (only searches CTAS data)
+  const searchInput = $('ctas-search');
+  if (searchInput && !searchInput.dataset.ctasBound) {
+    searchInput.dataset.ctasBound = '1';
+    searchInput.addEventListener('input', () => {
+      ctasPerformSearch(searchInput.value);
+    });
+  }
+
+}
+
 // ─── Init ────────────────────────────────────────────────────────────────────
 function init() {
   if (isNativeWrapper()) {
@@ -4591,6 +4999,7 @@ function init() {
         'view-parkland-burn': 'Parkland',
         'view-contact': DEFAULT_HEADER_TITLE,
         'view-destination': DEFAULT_HEADER_TITLE,
+        'view-ctas': 'CTAS Levels',
       };
       showView(viewId, labels[viewId] || DEFAULT_HEADER_TITLE);
     });
@@ -4654,6 +5063,8 @@ function init() {
   buildSpecialEventView();
   buildContactView();
   buildDestinationView();
+
+  initCtasView();
 
   initSearchClearButtons();
 
@@ -4724,17 +5135,7 @@ function isNativeWrapper() {
 // Always fetch sw.js fresh so the footer shows the live server version,
 // not whatever version is frozen in the service worker cache.
 (function fetchAppVersion() {
-  if (isNativeWrapper()) {
-    var nativeTag = document.getElementById('app-version-tag');
-    if (nativeTag) nativeTag.textContent = 'App iOS bundle';
-    return;
-  }
-  fetch('sw.js', { cache: 'no-store' })
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var m = text.match(/pcp-directives-v(\d+)/);
-      var tag = document.getElementById('app-version-tag');
-      if (m && tag) tag.textContent = 'App v' + m[1];
-    })
-    .catch(function() {});
+  var APP_VERSION = '1.1.0';
+  var tag = document.getElementById('app-version-tag');
+  if (tag) tag.textContent = 'v' + APP_VERSION;
 })();

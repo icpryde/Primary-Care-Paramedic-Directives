@@ -1,6 +1,6 @@
 {
   "name": "directives",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "**Live app:** [https://icpryde.github.io/Primary-Care-Paramedic-Directives/](https://icpryde.github.io/Primary-Care-Paramedic-Directives/)",
   "main": "app.js",
   "scripts": {

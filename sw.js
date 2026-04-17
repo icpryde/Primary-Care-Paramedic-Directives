@@ -15,6 +15,7 @@ const ASSETS = [
   BASE + '/data/destinationGuidelines.js',
   BASE + '/data/calculators-content.js',
   BASE + '/data/medications.js',
+  BASE + '/data/ctasData.js',
   BASE + '/data/logos.json',
   BASE + '/assets/logos/region-waterloo-paramedic.png',
   BASE + '/assets/logos/halton-paramedic.png',
