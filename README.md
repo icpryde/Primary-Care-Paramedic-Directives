@@ -62,6 +62,19 @@ Pre-built `.ipa` (iOS) and `.apk` (Android) files are available on the [Releases
 - **iOS:** Download the `.ipa` file and sideload via AltStore, TrollStore, Signulous, or Xcode.
 - **Android:** Download the signed `.apk` file and install directly on your device.
 
+### App icon source
+
+Both iOS and Android app icons are generated from one shared source image:
+
+- `assets/logo.png`
+
+To re-apply icons after syncing native projects:
+
+```bash
+npm run ios:icon
+npm run android:icon
+```
+
 ### Android install troubleshooting
 
 If Android says the package is invalid, it is usually caused by an unsigned or corrupted APK.

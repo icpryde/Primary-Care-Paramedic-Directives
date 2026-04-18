@@ -7,9 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:web": "node scripts/build-web.mjs",
     "ios:icon": "bash scripts/apply-ios-icon.sh",
+    "android:icon": "bash scripts/apply-android-icon.sh",
     "version:ios": "node scripts/bump-ios-version.mjs",
     "cap:add:ios": "npm run build:web && npx cap add ios",
+    "cap:add:android": "npm run build:web && npx cap add android && npm run android:icon",
     "cap:sync:ios": "npm run build:web && npx cap sync ios && npm run ios:icon",
+    "cap:sync:android": "npm run build:web && npx cap sync android && npm run android:icon",
     "cap:open:ios": "npx cap open ios",
     "ipa:update": "npm run version:ios && npm run cap:sync:ios && npx cap open ios"
   },
@@ -30,5 +33,8 @@
     "@capacitor/core": "^8.3.0",
     "@capacitor/android": "^8.3.0",
     "@capacitor/ios": "^8.3.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5"
   }
 }

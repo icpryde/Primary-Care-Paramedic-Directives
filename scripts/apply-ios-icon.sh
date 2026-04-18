@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ICON_SRC="icons/icon-512.png"
+ICON_SRC="assets/logo.png"
 ICON_DST="ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png"
 
 if [[ ! -f "$ICON_SRC" ]]; then

@@ -56,6 +56,9 @@ jobs:
       - name: Sync Android project
         run: npx cap sync android
 
+      - name: Apply Android app icon
+        run: npm run android:icon
+
       - name: Build release APK
         working-directory: android
         run: ./gradlew assembleRelease --no-daemon
