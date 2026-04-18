@@ -76,6 +76,30 @@ apksigner verify --verbose --print-certs PCP-Directives-vX.Y.Z.apk
 zipalign -c -v 4 PCP-Directives-vX.Y.Z.apk
 ```
 
+### Permanent Android signing
+
+The workflow can now fall back to a generated test key so release APKs keep working, but the long-term fix is to keep one permanent Android signing key for every future update.
+
+Generate that key locally with:
+
+```bash
+./scripts/generate-android-keystore.sh
+```
+
+That script creates ignored local files under `.local/`:
+
+1. `.local/android-upload.keystore` — your permanent Android signing key
+2. `.local/android-github-secrets.txt` — the exact GitHub Actions secret values to store
+
+After running it, add the values from `.local/android-github-secrets.txt` to repository secrets:
+
+1. `ANDROID_KEYSTORE_BASE64`
+2. `ANDROID_KEYSTORE_PASSWORD`
+3. `ANDROID_KEY_ALIAS`
+4. `ANDROID_KEY_PASSWORD`
+
+Once those secrets are set correctly, the workflow will use the permanent key instead of the temporary CI-generated test key. That keeps future APK updates installable over the previous version.
+
 ## Disclaimer
 
 This project is provided as a convenience reference only and is considered beta software. It is not an official Ministry of Health, base hospital, employer, or paramedic service product, and nothing here should be treated as a substitute for the current Ontario ALS or BLS Patient Care Standards, the Companion Document, your service’s policies, medical direction, or other authoritative sources. Clinical standards, protocols, and drug information change over time, and errors or omissions may be present in this app or repository.
