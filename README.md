@@ -68,6 +68,12 @@ Both iOS and Android app icons are generated from one shared source image:
 
 - `assets/logo.png`
 
+Android also uses adaptive icon source layers for cleaner launcher masking across circle/squircle/rounded-square launchers:
+
+- `assets/icon-only.png`
+- `assets/icon-foreground.png`
+- `assets/icon-background.png`
+
 To re-apply icons after syncing native projects:
 
 ```bash

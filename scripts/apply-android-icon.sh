@@ -1,10 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ICON_SRC="assets/logo.png"
+ICON_LOGO="assets/logo.png"
+ICON_ONLY="assets/icon-only.png"
+ICON_FOREGROUND="assets/icon-foreground.png"
+ICON_BACKGROUND="assets/icon-background.png"
 
-if [[ ! -f "$ICON_SRC" ]]; then
-  echo "Missing source icon: $ICON_SRC" >&2
+if [[ ! -f "$ICON_LOGO" ]]; then
+  echo "Missing source logo: $ICON_LOGO" >&2
+  exit 1
+fi
+
+if [[ ! -f "$ICON_ONLY" || ! -f "$ICON_FOREGROUND" || ! -f "$ICON_BACKGROUND" ]]; then
+  echo "Missing adaptive icon source(s). Expected:" >&2
+  echo "- $ICON_ONLY" >&2
+  echo "- $ICON_FOREGROUND" >&2
+  echo "- $ICON_BACKGROUND" >&2
   exit 1
 fi
 
@@ -15,4 +26,4 @@ fi
 
 npx @capacitor/assets generate --android --assetPath assets
 
-echo "Applied Android app icon from $ICON_SRC"
+echo "Applied Android adaptive app icon from assets/icon-*.png"
