@@ -1,15 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ICON_LOGO="assets/logo.png"
 ICON_ONLY="assets/icon-only.png"
 ICON_FOREGROUND="assets/icon-foreground.png"
 ICON_BACKGROUND="assets/icon-background.png"
-
-if [[ ! -f "$ICON_LOGO" ]]; then
-  echo "Missing source logo: $ICON_LOGO" >&2
-  exit 1
-fi
 
 if [[ ! -f "$ICON_ONLY" || ! -f "$ICON_FOREGROUND" || ! -f "$ICON_BACKGROUND" ]]; then
   echo "Missing adaptive icon source(s). Expected:" >&2
