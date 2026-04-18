@@ -60,7 +60,21 @@ After updates are published, fully close the app and open it again so your devic
 Pre-built `.ipa` (iOS) and `.apk` (Android) files are available on the [Releases page](https://github.com/icpryde/Primary-Care-Paramedic-Directives/releases). These are automatically built and updated with every push to `main`.
 
 - **iOS:** Download the `.ipa` file and sideload via AltStore, TrollStore, Signulous, or Xcode.
-- **Android:** Download the `.apk` file and install directly on your device.
+- **Android:** Download the signed `.apk` file and install directly on your device.
+
+### Android install troubleshooting
+
+If Android says the package is invalid, it is usually caused by an unsigned or corrupted APK.
+
+1. Re-download the APK from Releases and make sure the file name matches `PCP-Directives-vX.Y.Z.apk`.
+2. Ensure the APK came from the latest workflow run (older assets may have been replaced).
+3. On-device: allow installs from unknown apps for the browser/file manager used to open the APK.
+4. Optional local verification (SDK tools):
+
+```bash
+apksigner verify --verbose --print-certs PCP-Directives-vX.Y.Z.apk
+zipalign -c -v 4 PCP-Directives-vX.Y.Z.apk
+```
 
 ## Disclaimer
 
