@@ -68,7 +68,19 @@ jobs:
             echo "Missing required secret: ANDROID_KEYSTORE_BASE64"
             exit 1
           fi
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android-signing.keystore
+
+          # Remove whitespace/newlines to support wrapped base64 secret values.
+          KEYSTORE_B64_CLEAN="$(printf '%s' "$ANDROID_KEYSTORE_BASE64" | tr -d '\r\n\t ')"
+
+          # Accept both standard and URL-safe base64 encodings.
+          if ! printf '%s' "$KEYSTORE_B64_CLEAN" | base64 --decode > android-signing.keystore 2>decode-error.log; then
+            if ! printf '%s' "$KEYSTORE_B64_CLEAN" | tr '_-' '/+' | base64 --decode > android-signing.keystore 2>decode-error.log; then
+              echo "Failed to decode ANDROID_KEYSTORE_BASE64."
+              echo "Set the secret to the full single-line base64 content of your .keystore file."
+              cat decode-error.log
+              exit 1
+            fi
+          fi
 
       - name: Align and sign APK
         env:
