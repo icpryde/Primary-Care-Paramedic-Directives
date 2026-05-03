@@ -45,6 +45,17 @@ jobs:
       - name: Sync iOS project
         run: npx cap sync ios
 
+      - name: Set iOS version from package.json
+        env:
+          APP_VERSION: ${{ steps.version.outputs.APP_VERSION }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          PBX="ios/App/App.xcodeproj/project.pbxproj"
+          /usr/bin/sed -i '' -E "s/MARKETING_VERSION = [^;]+;/MARKETING_VERSION = ${APP_VERSION};/g" "$PBX"
+          /usr/bin/sed -i '' -E "s/CURRENT_PROJECT_VERSION = [^;]+;/CURRENT_PROJECT_VERSION = ${BUILD_NUMBER};/g" "$PBX"
+          echo "--- Patched project.pbxproj ---"
+          grep -E "MARKETING_VERSION|CURRENT_PROJECT_VERSION" "$PBX" | head -4
+
       - name: Apply repository app icon
         run: npm run ios:icon
 

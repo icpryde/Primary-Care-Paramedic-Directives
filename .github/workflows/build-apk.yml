@@ -56,6 +56,18 @@ jobs:
       - name: Sync Android project
         run: npx cap sync android
 
+      - name: Set Android version from package.json
+        env:
+          APP_VERSION: ${{ steps.version.outputs.APP_VERSION }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          GRADLE_FILE="android/app/build.gradle"
+          sed -i.bak -E "s/versionCode[[:space:]]+[0-9]+/versionCode ${BUILD_NUMBER}/" "$GRADLE_FILE"
+          sed -i.bak -E "s/versionName[[:space:]]+\"[^\"]*\"/versionName \"${APP_VERSION}\"/" "$GRADLE_FILE"
+          rm -f "${GRADLE_FILE}.bak"
+          echo "--- Patched build.gradle ---"
+          grep -E "versionCode|versionName" "$GRADLE_FILE"
+
       - name: Apply Android app icon
         run: npm run android:icon
 
