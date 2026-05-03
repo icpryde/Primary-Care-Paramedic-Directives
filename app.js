@@ -1257,6 +1257,235 @@ function pedCalcGetVitals(value, timeUnit) {
   return { rr: '14–20', hr: '60–90' };
 }
 
+// Pediatric medication dosing (Ontario ALS PCS v5.4) — derived from age + estimated weight.
+// Each entry returns { dose: string|null, lines: [{dose, route}], note: string, eligible: bool }.
+function pedCalcGetMedDoses(ageInYears, weightKg) {
+  const w = weightKg;
+  const out = {};
+
+  // Epinephrine — 0.01 mg/kg IM, round to nearest 0.05 mg, max 0.5 mg
+  {
+    let mg = Math.round((0.01 * w) / 0.05) * 0.05;
+    if (mg > 0.5) mg = 0.5;
+    out.epinephrine = {
+      eligible: true,
+      lines: [{ dose: `${mg.toFixed(2)} mg`, route: 'IM' }],
+      note: 'Anaphylaxis · max 0.5 mg · q5 min, max 2 doses',
+    };
+  }
+
+  // Glucagon — IM 0.5 mg (<25 kg) or 1 mg (≥25 kg); IN 3 mg if age ≥4
+  {
+    const imDose = w < 25 ? '0.5 mg' : '1 mg';
+    const lines = [{ dose: imDose, route: 'IM' }];
+    if (ageInYears >= 4) lines.push({ dose: '3 mg', route: 'IN powder' });
+    out.glucagon = {
+      eligible: true,
+      lines,
+      note: 'q20 min · max 2 doses',
+    };
+  }
+
+  // Salbutamol — both routes shown
+  {
+    const mdi = w < 25 ? '600 mcg (6 puffs)' : '800 mcg (8 puffs)';
+    const neb = w < 25 ? '2.5 mg' : '5 mg';
+    out.salbutamol = {
+      eligible: true,
+      lines: [
+        { dose: mdi, route: 'MDI' },
+        { dose: neb, route: 'NEB' },
+      ],
+      note: 'q5–15 min · max 3 doses',
+    };
+  }
+
+  // Diphenhydramine — IV/IM, requires ≥25 kg
+  if (w >= 25) {
+    const mg = w < 50 ? '25 mg' : '50 mg';
+    out.diphenhydramine = {
+      eligible: true,
+      lines: [{ dose: mg, route: 'IV/IM' }],
+      note: 'Allergic reaction · single dose',
+    };
+  } else {
+    out.diphenhydramine = {
+      eligible: false,
+      lines: [{ dose: 'Not indicated', route: '' }],
+      note: 'Min weight 25 kg',
+    };
+  }
+
+  // Dimenhydrinate — IV/IM, requires ≥25 kg
+  if (w >= 25) {
+    const mg = w < 50 ? '25 mg' : '25–50 mg';
+    out.dimenhydrinate = {
+      eligible: true,
+      lines: [{ dose: mg, route: 'IV/IM' }],
+      note: w < 50 ? 'Single dose · dilute 1:9 NS for IV' : 'q30 min · max 2 doses (max 50 mg)',
+    };
+  } else {
+    out.dimenhydrinate = {
+      eligible: false,
+      lines: [{ dose: 'Not indicated', route: '' }],
+      note: 'Min weight 25 kg',
+    };
+  }
+
+  // Ondansetron — PO/IV/IM, requires ≥25 kg
+  if (w >= 25) {
+    out.ondansetron = {
+      eligible: true,
+      lines: [{ dose: '4 mg', route: 'PO/IV/IM' }],
+      note: 'Single dose',
+    };
+  } else {
+    out.ondansetron = {
+      eligible: false,
+      lines: [{ dose: 'Not indicated', route: '' }],
+      note: 'Min weight 25 kg',
+    };
+  }
+
+  // Acetaminophen (Tylenol) — PO, requires age ≥12 yrs
+  if (ageInYears >= 12) {
+    out.acetaminophen = {
+      eligible: true,
+      lines: [{ dose: '500–650 mg', route: 'PO' }],
+      note: 'Single dose · max 650 mg',
+    };
+  } else {
+    out.acetaminophen = {
+      eligible: false,
+      lines: [{ dose: 'Not indicated', route: '' }],
+      note: 'Min age 12 yrs',
+    };
+  }
+
+  // Ibuprofen (Advil) — PO, requires age ≥12 yrs
+  if (ageInYears >= 12) {
+    out.ibuprofen = {
+      eligible: true,
+      lines: [{ dose: '400 mg', route: 'PO' }],
+      note: 'Single dose',
+    };
+  } else {
+    out.ibuprofen = {
+      eligible: false,
+      lines: [{ dose: 'Not indicated', route: '' }],
+      note: 'Min age 12 yrs',
+    };
+  }
+
+  // Hydrocortisone — IM/IV 2 mg/kg, round to nearest 10 mg, max 100 mg
+  {
+    let mg = Math.round((2 * w) / 10) * 10;
+    if (mg > 100) mg = 100;
+    if (mg < 10) mg = 10;
+    out.hydrocortisone = {
+      eligible: true,
+      lines: [{ dose: `${mg} mg`, route: 'IM/IV' }],
+      note: 'Adrenal crisis · single dose',
+    };
+  }
+
+  // Dexamethasone — PO/IM/IV 0.5 mg/kg, max 8 mg.
+  // Bronchoconstriction: any age. Croup: ≥6 mo to <8 yr only.
+  {
+    let mg = +(0.5 * w).toFixed(1);
+    if (mg > 8) mg = 8;
+    const croupOk = ageInYears >= 0.5 && ageInYears < 8;
+    out.dexamethasone = {
+      eligible: true,
+      lines: [{ dose: `${mg} mg`, route: 'PO/IM/IV' }],
+      note: croupOk
+        ? 'Bronchoconstriction OR croup · max 8 mg'
+        : 'Bronchoconstriction only · croup needs age ≥6 mo & <8 yr',
+    };
+  }
+
+  // Dextrose 10% (D10W) — IV 0.2 g/kg (2 mL/kg). <2 yr max 5 g; ≥2 yr max 25 g.
+  {
+    const mlD10 = +(2 * w).toFixed(1);
+    let gD10 = +(0.2 * w).toFixed(1);
+    const cap = ageInYears < 2 ? 5 : 25;
+    let mlShown = mlD10;
+    if (gD10 > cap) {
+      gD10 = cap;
+      mlShown = +(cap * 10).toFixed(1); // 10 mL per g for D10W
+    }
+    out.dextrose_d10 = {
+      eligible: true,
+      lines: [{ dose: `${gD10} g (${mlShown} mL)`, route: 'IV' }],
+      note: `0.2 g/kg · max ${cap} g · q10 min, max 2 doses`,
+    };
+  }
+
+  // Dextrose 50% (D50W) — IV 0.5 g/kg (1 mL/kg), max 25 g. Age ≥2 yr only.
+  if (ageInYears >= 2) {
+    const mlD50 = +(1 * w).toFixed(1);
+    let gD50 = +(0.5 * w).toFixed(1);
+    let mlShown = mlD50;
+    if (gD50 > 25) {
+      gD50 = 25;
+      mlShown = 50; // 2 mL per g for D50W
+    }
+    out.dextrose_d50 = {
+      eligible: true,
+      lines: [{ dose: `${gD50} g (${mlShown} mL)`, route: 'IV' }],
+      note: '0.5 g/kg · max 25 g · q10 min, max 2 doses',
+    };
+  } else {
+    out.dextrose_d50 = {
+      eligible: false,
+      lines: [{ dose: 'Not indicated', route: '' }],
+      note: 'Min age 2 yrs (use D10W)',
+    };
+  }
+
+  return out;
+}
+
+function pedCalcRenderMeds(doses) {
+  const meds = [
+    'epinephrine', 'glucagon', 'salbutamol',
+    'diphenhydramine', 'dimenhydrinate', 'ondansetron',
+    'acetaminophen', 'ibuprofen', 'hydrocortisone',
+    'dexamethasone', 'dextrose_d10', 'dextrose_d50',
+  ];
+  meds.forEach((key) => {
+    const card = $(`ped-calc-med-${key}`);
+    if (!card) return;
+    const doseEl = card.querySelector('.ped-calc-med-dose');
+    const noteEl = card.querySelector('.ped-calc-med-note');
+    if (!doses) {
+      card.classList.remove('ped-calc-med-card--na');
+      if (doseEl) doseEl.textContent = '—';
+      if (noteEl) noteEl.textContent = '';
+      return;
+    }
+    const info = doses[key];
+    if (!info) return;
+    card.classList.toggle('ped-calc-med-card--na', !info.eligible);
+    if (doseEl) {
+      doseEl.innerHTML = '';
+      info.lines.forEach((ln) => {
+        const span = document.createElement('span');
+        span.className = 'ped-calc-med-dose-line';
+        span.textContent = ln.dose;
+        if (ln.route) {
+          const r = document.createElement('span');
+          r.className = 'ped-calc-med-route';
+          r.textContent = ln.route;
+          span.appendChild(r);
+        }
+        doseEl.appendChild(span);
+      });
+    }
+    if (noteEl) noteEl.textContent = info.note || '';
+  });
+}
+
 function pedCalcPopulateAgeOptions() {
   const sel = $('ped-calc-age');
   const unitEl = $('ped-calc-unit');
@@ -1308,6 +1537,7 @@ function pedCalcRefresh() {
     if (rrEl) rrEl.textContent = dash;
     if (hrEl) hrEl.textContent = dash;
     if (bglEl) bglEl.textContent = dash;
+    pedCalcRenderMeds(null);
     return;
   }
 
@@ -1325,6 +1555,7 @@ function pedCalcRefresh() {
   if (rrEl) rrEl.textContent = vitals.rr;
   if (hrEl) hrEl.textContent = vitals.hr;
   if (bglEl) bglEl.textContent = hypoglycemia;
+  pedCalcRenderMeds(pedCalcGetMedDoses(ageInYears, weight));
 }
 
 function pedCalcReset() {
@@ -3013,20 +3244,233 @@ function buildSpecialView() {
   });
 }
 
+// ─── Pin-to-top helpers (Calculators / References / Contact / Destination) ──
+const PIN_STORAGE_KEYS = {
+  calculators: 'pinned-calculators',
+  references: 'pinned-references',
+  contact: 'pinned-contact',
+  destination: 'pinned-destination',
+};
+
+function getPinnedSet(viewKey) {
+  const k = PIN_STORAGE_KEYS[viewKey];
+  if (!k) return new Set();
+  try {
+    const raw = localStorage.getItem(k);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return new Set(Array.isArray(arr) ? arr.map(String) : []);
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function setPinnedSet(viewKey, set) {
+  const k = PIN_STORAGE_KEYS[viewKey];
+  if (!k) return;
+  try {
+    localStorage.setItem(k, JSON.stringify([...set]));
+  } catch (e) { /* quota */ }
+}
+
+function isItemPinned(viewKey, id) {
+  return getPinnedSet(viewKey).has(String(id));
+}
+
+function togglePinned(viewKey, id) {
+  const set = getPinnedSet(viewKey);
+  const sid = String(id);
+  if (set.has(sid)) set.delete(sid); else set.add(sid);
+  setPinnedSet(viewKey, set);
+  return set.has(sid);
+}
+
+// Long-press / right-click → callback. Suppresses the synthetic click that follows.
+function attachLongPress(el, onLongPress, opts = {}) {
+  const duration = opts.duration ?? 500;
+  const moveThreshold = opts.moveThreshold ?? 10;
+  let timer = null;
+  let startX = 0;
+  let startY = 0;
+  let fired = false;
+
+  const clear = () => { if (timer) { clearTimeout(timer); timer = null; } };
+
+  el.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    fired = false;
+    startX = e.clientX;
+    startY = e.clientY;
+    clear();
+    timer = setTimeout(() => {
+      timer = null;
+      fired = true;
+      el.dataset.suppressNextClick = '1';
+      try { if (navigator.vibrate) navigator.vibrate(15); } catch (_) {}
+      onLongPress(e);
+    }, duration);
+  });
+  el.addEventListener('pointermove', (e) => {
+    if (!timer) return;
+    if (Math.abs(e.clientX - startX) > moveThreshold || Math.abs(e.clientY - startY) > moveThreshold) clear();
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt => {
+    el.addEventListener(evt, () => clear());
+  });
+  el.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    clear();
+    if (!fired) {
+      fired = true;
+      el.dataset.suppressNextClick = '1';
+      onLongPress(e);
+    }
+  });
+}
+
+function consumeLongPressClick(el) {
+  if (el.dataset.suppressNextClick === '1') {
+    delete el.dataset.suppressNextClick;
+    return true;
+  }
+  return false;
+}
+
+let _pinModalCleanup = null;
+function openPinConfirm({ itemTitle, isPinned, onConfirm }) {
+  const modal = $('pin-confirm-modal');
+  if (!modal) return;
+  const titleEl = $('pin-modal-title');
+  const msgEl = $('pin-modal-msg');
+  const cancelBtn = $('pin-modal-cancel');
+  const confirmBtn = $('pin-modal-confirm');
+  if (!titleEl || !msgEl || !cancelBtn || !confirmBtn) return;
+
+  titleEl.textContent = isPinned ? 'Remove pin?' : 'Pin to top?';
+  msgEl.innerHTML = isPinned
+    ? `Remove <strong></strong> from your pinned items?`
+    : `Pin <strong></strong> to the top of this list for quick access?`;
+  msgEl.querySelector('strong').textContent = itemTitle;
+  confirmBtn.textContent = isPinned ? 'Unpin' : 'Pin';
+  confirmBtn.classList.toggle('pin-modal-btn--danger', !!isPinned);
+
+  const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${scrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+
+  modal.hidden = false;
+  modal.setAttribute('aria-hidden', 'false');
+  document.documentElement.classList.add('help-modal-open');
+  document.body.classList.add('help-modal-open');
+
+  const close = () => closePinConfirm(scrollY);
+  const onConfirmClick = () => { close(); try { onConfirm(); } catch (e) {} };
+  const onBackdropClick = (e) => { if (e.target.classList.contains('help-modal-backdrop')) close(); };
+  const onKey = (e) => { if (e.key === 'Escape') close(); };
+
+  cancelBtn.addEventListener('click', close);
+  confirmBtn.addEventListener('click', onConfirmClick);
+  modal.addEventListener('click', onBackdropClick);
+  document.addEventListener('keydown', onKey);
+
+  _pinModalCleanup = () => {
+    cancelBtn.removeEventListener('click', close);
+    confirmBtn.removeEventListener('click', onConfirmClick);
+    modal.removeEventListener('click', onBackdropClick);
+    document.removeEventListener('keydown', onKey);
+  };
+  setTimeout(() => confirmBtn.focus(), 0);
+}
+
+function closePinConfirm(scrollY) {
+  const modal = $('pin-confirm-modal');
+  if (!modal) return;
+  if (_pinModalCleanup) { _pinModalCleanup(); _pinModalCleanup = null; }
+  modal.hidden = true;
+  modal.setAttribute('aria-hidden', 'true');
+  document.documentElement.classList.remove('help-modal-open');
+  document.body.classList.remove('help-modal-open');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  if (typeof scrollY === 'number') window.scrollTo(0, scrollY);
+}
+
+// Renders a list with pinned items at the top. items: array of source items.
+// getId(item) → string key. getTitle(item) → display string. onClick(item) → action.
+// rebuild: () => void — called after a pin toggles to refresh the list.
+function renderListWithPins({ container, viewKey, items, getId, getTitle, onClick, rebuild }) {
+  if (!container) return;
+  container.innerHTML = '';
+  const pinnedSet = getPinnedSet(viewKey);
+  const pinned = [];
+  const rest = [];
+  items.forEach(it => {
+    if (pinnedSet.has(String(getId(it)))) pinned.push(it); else rest.push(it);
+  });
+
+  const buildRow = (item, pinnedFlag) => {
+    const row = document.createElement('div');
+    row.className = 'directive-row' + (pinnedFlag ? ' directive-row--pinned' : '');
+    const title = getTitle(item);
+    const pinIcon = pinnedFlag
+      ? `<svg class="directive-row-pin-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 3l5 5-4 1-4 4 1 5-2 2-5-5-5 2 2-5-5-5 2-2 5 1 4-4 1-4z"/></svg>`
+      : '';
+    row.innerHTML = `${pinIcon}<span class="directive-row-title">${title}</span><span class="directive-row-chevron"></span>`;
+    row.addEventListener('click', () => {
+      if (consumeLongPressClick(row)) return;
+      onClick(item);
+    });
+    attachLongPress(row, () => {
+      openPinConfirm({
+        itemTitle: title,
+        isPinned: pinnedFlag,
+        onConfirm: () => {
+          togglePinned(viewKey, getId(item));
+          rebuild();
+        },
+      });
+    });
+    return row;
+  };
+
+  if (pinned.length) {
+    const lbl = document.createElement('div');
+    lbl.className = 'directive-row-section-label directive-row-section-label--pinned';
+    lbl.textContent = 'Pinned';
+    container.appendChild(lbl);
+    pinned.forEach(it => container.appendChild(buildRow(it, true)));
+  }
+  if (rest.length) {
+    if (pinned.length) {
+      const lbl = document.createElement('div');
+      lbl.className = 'directive-row-section-label';
+      lbl.textContent = 'All';
+      container.appendChild(lbl);
+    }
+    rest.forEach(it => container.appendChild(buildRow(it, false)));
+  }
+}
+
 // ─── Build Medical References View ───────────────────────────────────────────
 function buildReferencesView() {
   const container = $('references-list');
-  container.innerHTML = '';
-
-  REFERENCES.forEach(ref => {
-    const row = document.createElement('div');
-    row.className = 'directive-row';
-    row.innerHTML = `<span class="directive-row-title">${ref.title}</span><span class="directive-row-chevron"></span>`;
-    row.addEventListener('click', () => {
+  renderListWithPins({
+    container,
+    viewKey: 'references',
+    items: REFERENCES,
+    getId: ref => ref.id,
+    getTitle: ref => ref.title,
+    onClick: ref => {
       renderReferenceDetail(ref);
       showView('view-detail', headerTitleFromItem(ref));
-    });
-    container.appendChild(row);
+    },
+    rebuild: buildReferencesView,
   });
 }
 
@@ -3326,13 +3770,14 @@ function buildCalculatorsView() {
     { title: 'Glasgow Coma Scale (Calculator)', fn: () => renderCalculatorDetail('gcs') },
     { title: 'Pediatric Coma Scale (Calculator)', fn: () => renderCalculatorDetail('pcs') },
   ];
-  container.innerHTML = '';
-  items.forEach(item => {
-    const row = document.createElement('div');
-    row.className = 'directive-row';
-    row.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="directive-row-chevron"></span>`;
-    row.addEventListener('click', item.fn);
-    container.appendChild(row);
+  renderListWithPins({
+    container,
+    viewKey: 'calculators',
+    items,
+    getId: it => it.title,
+    getTitle: it => it.title,
+    onClick: it => it.fn(),
+    rebuild: buildCalculatorsView,
   });
 }
 
@@ -3738,32 +4183,34 @@ function buildSpecialEventView() {
 function buildContactView() {
   const container = $('contact-list');
   if (!container || typeof CONTACT_MENU === 'undefined') return;
-  container.innerHTML = '';
-  CONTACT_MENU.forEach(item => {
-    const row = document.createElement('div');
-    row.className = 'directive-row';
-    row.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="directive-row-chevron"></span>`;
-    row.addEventListener('click', () => {
+  renderListWithPins({
+    container,
+    viewKey: 'contact',
+    items: CONTACT_MENU,
+    getId: item => item.id,
+    getTitle: item => item.title,
+    onClick: item => {
       renderContactDetail(item.id, item.title);
       showView('view-detail', headerTitleFromItem(item));
-    });
-    container.appendChild(row);
+    },
+    rebuild: buildContactView,
   });
 }
 
 function buildDestinationView() {
   const container = $('destination-list');
   if (!container || typeof DESTINATION_MENU === 'undefined') return;
-  container.innerHTML = '';
-  DESTINATION_MENU.forEach(item => {
-    const row = document.createElement('div');
-    row.className = 'directive-row';
-    row.innerHTML = `<span class="directive-row-title">${item.title}</span><span class="directive-row-chevron"></span>`;
-    row.addEventListener('click', () => {
+  renderListWithPins({
+    container,
+    viewKey: 'destination',
+    items: DESTINATION_MENU,
+    getId: item => item.id,
+    getTitle: item => item.title,
+    onClick: item => {
       renderDestinationDetail(item.id, item.title);
       showView('view-detail', headerTitleFromItem(item));
-    });
-    container.appendChild(row);
+    },
+    rebuild: buildDestinationView,
   });
 }
 

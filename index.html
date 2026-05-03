@@ -94,6 +94,23 @@
     </div>
   </div>
 
+  <div id="pin-confirm-modal" class="help-modal pin-modal" hidden aria-hidden="true">
+    <div class="help-modal-backdrop pin-modal-backdrop" tabindex="-1"></div>
+    <div class="help-modal-panel pin-modal-panel" role="dialog" aria-modal="true" aria-labelledby="pin-modal-title">
+      <div class="pin-modal-body">
+        <div class="pin-modal-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76V6a3 3 0 1 1 6 0v4.76l3 3.24v1H6v-1l3-3.24z"/></svg>
+        </div>
+        <h2 id="pin-modal-title" class="pin-modal-title">Pin to top?</h2>
+        <p id="pin-modal-msg" class="pin-modal-msg"></p>
+      </div>
+      <div class="pin-modal-actions">
+        <button type="button" class="pin-modal-btn" id="pin-modal-cancel">Cancel</button>
+        <button type="button" class="pin-modal-btn pin-modal-btn--primary" id="pin-modal-confirm">Pin</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── VIEWS ──────────────────────────────────────────── -->
 
   <!-- HOME -->
@@ -381,15 +398,6 @@
   <div id="view-ped-calc" class="view ped-calc-view" hidden>
     <div class="ped-calc-scroll">
       <div class="ped-calc-card">
-        <div class="ped-calc-hero">
-          <div class="ped-calc-hero-icon" aria-hidden="true">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 10.5a4.5 4.5 0 0 0-7-3.5 4.5 4.5 0 0 0-7 3.5c0 5 7 9 7 9s7-4 7-9z"/></svg>
-          </div>
-          <h2 class="ped-calc-hero-title">Pediatric Quick Calc</h2>
-          <p class="ped-calc-hero-sub">Weight, BP, vitals &amp; BGL</p>
-          <span class="ped-calc-badge">Max age: 12 years</span>
-        </div>
-
         <div class="ped-calc-input-panel">
           <label class="ped-calc-label" for="ped-calc-age">Patient age</label>
           <div class="ped-calc-input-row">
@@ -461,6 +469,82 @@
               <p class="ped-calc-result-value ped-calc-result-value--sm" id="ped-calc-bgl">—</p>
             </div>
           </div>
+
+          <details class="ped-calc-meds" id="ped-calc-meds">
+            <summary class="ped-calc-meds-summary">
+              <span class="ped-calc-result-icon ped-calc-icon-purple" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5a7 7 0 0 1-7-7l7-7 7 7-7 7z"/><path d="M8.5 8.5l7 7"/><path d="M14 3l7 7"/></svg>
+              </span>
+              <span class="ped-calc-meds-summary-text">
+                <span class="ped-calc-meds-title">Medication dosages</span>
+                <span class="ped-calc-meds-sub">Tap to expand</span>
+              </span>
+              <svg class="ped-calc-meds-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <p class="ped-calc-meds-intro">Doses computed from weight = (age × 2) + 10. Always verify against the directive before administering.</p>
+            <div class="ped-calc-meds-grid" id="ped-calc-meds-grid">
+              <div class="ped-calc-med-card" id="ped-calc-med-epinephrine">
+                <p class="ped-calc-med-name">Epinephrine</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-glucagon">
+                <p class="ped-calc-med-name">Glucagon</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-salbutamol">
+                <p class="ped-calc-med-name">Salbutamol</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-diphenhydramine">
+                <p class="ped-calc-med-name">Diphenhydramine</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-dimenhydrinate">
+                <p class="ped-calc-med-name">Dimenhydrinate</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-ondansetron">
+                <p class="ped-calc-med-name">Ondansetron</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-acetaminophen">
+                <p class="ped-calc-med-name">Acetaminophen</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-ibuprofen">
+                <p class="ped-calc-med-name">Ibuprofen</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-hydrocortisone">
+                <p class="ped-calc-med-name">Hydrocortisone</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-dexamethasone">
+                <p class="ped-calc-med-name">Dexamethasone</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-dextrose_d10">
+                <p class="ped-calc-med-name">Dextrose 10% (D10W)</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-dextrose_d50">
+                <p class="ped-calc-med-name">Dextrose 50% (D50W)</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+            </div>
+          </details>
         </div>
 
         <div class="ped-calc-footnote">
@@ -468,10 +552,6 @@
           <p>Calculations use: Weight = (age × 2) + 10; normotension SBP ≥ 90 + (2 × age in years); hypotension SBP &lt; 70 + (2 × age in years). Vitals and BGL bands match the paediatric protocol chart in <strong>Medical References</strong> → Pediatric Values.</p>
         </div>
 
-        <button type="button" class="ped-calc-reset-btn" id="ped-calc-reset-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-          Reset
-        </button>
       </div>
     </div>
   </div>
