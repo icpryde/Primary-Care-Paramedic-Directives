@@ -162,6 +162,7 @@ function showView(viewId, title, pushHistory = true) {
   if (viewId === 'view-epi-anaphylaxis') epiAnaphylaxisInit();
   if (viewId === 'view-broncho-calc') bronchoCalcInit();
   if (viewId === 'view-croup-calc') croupCalcInit();
+  if (viewId === 'view-ped-joules') pedJoulesInit();
   if (viewId === 'view-ctas') {
     // Reset CTAS search and re-render current tab
     const ctasSearchInput = $('ctas-search');
@@ -1257,6 +1258,21 @@ function pedCalcGetVitals(value, timeUnit) {
   return { rr: '14–20', hr: '60–90' };
 }
 
+// Manual defibrillation energy (Ontario ALS PCS — Medical/Trauma Cardiac Arrest).
+// Age ≥24 hours to <8 years: 2 J/kg initial, 4 J/kg subsequent.
+// Age ≥8 years: adult energy settings as per RBHP / manufacturer (J/kg does not apply).
+function pedJoulesCompute(ageInYears, weightKg) {
+  if (ageInYears >= 8) {
+    return { adult: true, weight: weightKg, initial: null, subsequent: null };
+  }
+  return {
+    adult: false,
+    weight: weightKg,
+    initial: Math.round(2 * weightKg),
+    subsequent: Math.round(4 * weightKg),
+  };
+}
+
 // Pediatric medication dosing (Ontario ALS PCS v5.4) — derived from age + estimated weight.
 // Each entry returns { dose: string|null, lines: [{dose, route}], note: string, eligible: bool }.
 function pedCalcGetMedDoses(ageInYears, weightKg) {
@@ -1486,6 +1502,46 @@ function pedCalcRenderMeds(doses) {
   });
 }
 
+function pedCalcRenderJoules(info, ageInYears) {
+  const gridEl = $('ped-calc-joules-grid');
+  const adultEl = $('ped-calc-joules-adult');
+  const initEl = $('ped-calc-joules-initial');
+  const subEl = $('ped-calc-joules-subsequent');
+  const noteEl = $('ped-calc-joules-note');
+  if (!initEl || !subEl) return;
+
+  if (!info) {
+    if (gridEl) gridEl.hidden = false;
+    if (adultEl) adultEl.hidden = true;
+    initEl.textContent = '—';
+    subEl.textContent = '—';
+    if (noteEl) noteEl.textContent = '';
+    return;
+  }
+
+  if (info.adult) {
+    if (gridEl) gridEl.hidden = true;
+    if (adultEl) adultEl.hidden = false;
+    initEl.textContent = '—';
+    subEl.textContent = '—';
+    if (noteEl) {
+      noteEl.textContent = 'Age ≥ 8 years — weight-based J/kg does not apply. Use your monitor’s adult energy settings.';
+    }
+    return;
+  }
+
+  if (gridEl) gridEl.hidden = false;
+  if (adultEl) adultEl.hidden = true;
+  initEl.textContent = `${info.initial} J`;
+  subEl.textContent = `${info.subsequent} J`;
+  if (noteEl) {
+    const neonate = ageInYears < 1 / 12
+      ? 'Requires age ≥ 24 hours — under 24 hours, follow Newborn Resuscitation. '
+      : '';
+    noteEl.textContent = `${neonate}Manual defibrillation · select the nearest available setting on your monitor. Trauma cardiac arrest: 1 analysis and 1 defibrillation only, then transport.`;
+  }
+}
+
 function pedCalcPopulateAgeOptions() {
   const sel = $('ped-calc-age');
   const unitEl = $('ped-calc-unit');
@@ -1537,6 +1593,7 @@ function pedCalcRefresh() {
     if (rrEl) rrEl.textContent = dash;
     if (hrEl) hrEl.textContent = dash;
     if (bglEl) bglEl.textContent = dash;
+    pedCalcRenderJoules(null);
     pedCalcRenderMeds(null);
     return;
   }
@@ -1555,6 +1612,7 @@ function pedCalcRefresh() {
   if (rrEl) rrEl.textContent = vitals.rr;
   if (hrEl) hrEl.textContent = vitals.hr;
   if (bglEl) bglEl.textContent = hypoglycemia;
+  pedCalcRenderJoules(pedJoulesCompute(ageInYears, weight), ageInYears);
   pedCalcRenderMeds(pedCalcGetMedDoses(ageInYears, weight));
 }
 
@@ -3005,7 +3063,11 @@ function renderDirectiveDetail(directive) {
     'allergic-reaction':      [{ label: 'EPINEPHrine Dose Calculator',                   fn: `showView('view-epi-anaphylaxis','Epi Calculator')` }],
     'bronchoconstriction':    [{ label: 'Bronchoconstriction Drug Calculator',           fn: `showView('view-broncho-calc','Broncho Calculator')` }],
     'croup':                  [{ label: 'Croup Drug Calculator',                         fn: `showView('view-croup-calc','Croup Calculator')` }],
-    'medical-cardiac-arrest': [{ label: 'EPINEPHrine Dose Calculator (Anaphylaxis)',      fn: `showView('view-epi-anaphylaxis','Epi Calculator')` }],
+    'medical-cardiac-arrest': [
+      { label: 'EPINEPHrine Dose Calculator (Anaphylaxis)',      fn: `showView('view-epi-anaphylaxis','Epi Calculator')` },
+      { label: 'Pediatric Defibrillation (Joules) Calculator',   fn: `showView('view-ped-joules','Ped Defib Joules')` },
+    ],
+    'trauma-cardiac-arrest':  [{ label: 'Pediatric Defibrillation (Joules) Calculator',   fn: `showView('view-ped-joules','Ped Defib Joules')` }],
     'cardiogenic-shock':      [{ label: 'IV Fluid Calculator',                           fn: `ivDirOpenPreset('bolus_cardio')` }],
     'iv-fluid':               [{ label: 'IV Therapy Calculator',                         fn: `ivDirOpenPreset('bolus_general')` }],
   };
@@ -3627,6 +3689,90 @@ function epiAnaphylaxisInit() {
   epiAnaphylaxisRefresh();
 }
 
+// ── Pediatric Defibrillation (Joules) Calculator ──────────────────────────────
+const pedJoulesState = { ageUnit: 'years', weightUnit: 'kg' };
+
+function pedJoulesRefresh() {
+  const resultEl = $('ped-joules-result');
+  const emptyEl  = $('ped-joules-empty');
+  if (!resultEl || !emptyEl) return;
+
+  const ageRaw = parseFloat($('ped-joules-age')?.value ?? '');
+  if (isNaN(ageRaw) || ageRaw < 0) {
+    resultEl.classList.add('drug-calc-result--hidden');
+    emptyEl.hidden = false;
+    return;
+  }
+
+  const ageInYears = pedJoulesState.ageUnit === 'months' ? ageRaw / 12 : ageRaw;
+
+  const wRaw = parseFloat($('ped-joules-weight')?.value ?? '');
+  const hasWeight = !isNaN(wRaw) && wRaw > 0;
+  const weight = hasWeight
+    ? (pedJoulesState.weightUnit === 'lbs' ? wRaw / 2.20462 : wRaw)
+    : ageInYears * 2 + 10;
+
+  const info = pedJoulesCompute(ageInYears, weight);
+
+  const pedsBlock  = $('ped-joules-peds-block');
+  const adultBlock = $('ped-joules-adult-block');
+  if (pedsBlock)  pedsBlock.hidden  = info.adult;
+  if (adultBlock) adultBlock.hidden = !info.adult;
+
+  if (!info.adult) {
+    $('ped-joules-initial').textContent    = String(info.initial);
+    $('ped-joules-subsequent').textContent = String(info.subsequent);
+  }
+
+  $('ped-joules-kg-display').textContent    = weight.toFixed(1);
+  $('ped-joules-weight-source').textContent = hasWeight ? 'Entered' : 'Estimated';
+  $('ped-joules-band').textContent          = info.adult ? '≥ 8 yrs' : '< 8 yrs';
+
+  const neonateWarn = $('ped-joules-neonate-warning');
+  if (neonateWarn) neonateWarn.hidden = ageInYears >= 1 / 12;
+
+  resultEl.classList.remove('drug-calc-result--hidden');
+  emptyEl.hidden = true;
+}
+
+// Adult (≥8 yr) energy is device-specific — jump to the manufacturer settings table.
+function pedJoulesOpenAdultSettings() {
+  if (typeof REFERENCES === 'undefined') return;
+  const ref = REFERENCES.find(r => r.id === 'ref-defib-joules');
+  if (!ref) return;
+  renderReferenceDetail(ref);
+  showView('view-detail', headerTitleFromItem(ref));
+}
+
+function pedJoulesInit() {
+  const root = $('view-ped-joules');
+  if (!root || root.dataset.bound) return;
+  root.dataset.bound = '1';
+
+  $('ped-joules-age')?.addEventListener('input', pedJoulesRefresh);
+  $('ped-joules-weight')?.addEventListener('input', pedJoulesRefresh);
+
+  root.querySelectorAll('[data-ped-joules-unit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      pedJoulesState.ageUnit = btn.dataset.pedJoulesUnit;
+      root.querySelectorAll('[data-ped-joules-unit]').forEach(b =>
+        b.classList.toggle('drug-calc-unit-btn--on', b === btn));
+      pedJoulesRefresh();
+    });
+  });
+
+  root.querySelectorAll('[data-ped-joules-wunit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      pedJoulesState.weightUnit = btn.dataset.pedJoulesWunit;
+      root.querySelectorAll('[data-ped-joules-wunit]').forEach(b =>
+        b.classList.toggle('drug-calc-unit-btn--on', b === btn));
+      pedJoulesRefresh();
+    });
+  });
+
+  pedJoulesRefresh();
+}
+
 // ── Bronchoconstriction Calculator ────────────────────────────────────────────
 const bronchoState = { unit: 'kg' };
 
@@ -3759,6 +3905,7 @@ function buildCalculatorsView() {
     { title: 'Parkland Burn Calculator', fn: () => showView('view-parkland-burn', 'Parkland') },
     { title: 'LAMS Calculator', fn: () => showView('view-lams', 'LAMS Calculator') },
     { title: 'Pediatric Values Calculator', fn: () => showView('view-ped-calc', 'Pediatric Values Calculator') },
+    { title: 'Pediatric Defibrillation (Joules) Calculator', fn: () => showView('view-ped-joules', 'Ped Defib Joules') },
     { title: 'Oxygen Tank Duration', fn: () => showView('view-o2-duration', 'O₂ Duration') },
     { title: 'Weight Converter', fn: () => showView('view-weight-convert', 'Weight Converter') },
     { title: 'Medical Dosage Calculator', fn: () => showView('view-dosage-calc', 'Dosage Calc') },
@@ -4420,6 +4567,14 @@ function buildSearchIndex() {
     data: null,
   });
   index.push({
+    id: 'calc-ped-joules',
+    title: 'Pediatric Defibrillation (Joules) Calculator',
+    catLabel: 'Medical Calculators',
+    text: 'pediatric defibrillation joules j/kg defib shock energy cardiac arrest 2 j/kg 4 j/kg manual defibrillation aed saed child infant biphasic countershock vf pulseless vt trauma cardiac arrest attenuator'.toLowerCase(),
+    type: 'calc-ped-joules',
+    data: null,
+  });
+  index.push({
     id: 'calc-o2-duration',
     title: 'Oxygen Tank Duration',
     catLabel: 'Medical Calculators',
@@ -4590,6 +4745,8 @@ function openSearchResult(result, options = {}) {
     showView('view-lams', 'LAMS Calculator');
   } else if (result.type === 'calc-pediatric-values') {
     showView('view-ped-calc', 'Pediatric Values Calculator');
+  } else if (result.type === 'calc-ped-joules') {
+    showView('view-ped-joules', 'Ped Defib Joules');
   } else if (result.type === 'calc-o2-duration') {
     showView('view-o2-duration', 'O₂ Duration');
   } else if (result.type === 'calc-weight-convert') {
@@ -5632,7 +5789,7 @@ function isNativeWrapper() {
 // Always fetch sw.js fresh so the footer shows the live server version,
 // not whatever version is frozen in the service worker cache.
 (function fetchAppVersion() {
-  var APP_VERSION = '1.1.0';
+  var APP_VERSION = '1.2.0';
   var tag = document.getElementById('app-version-tag');
   if (tag) tag.textContent = 'v' + APP_VERSION;
 })();

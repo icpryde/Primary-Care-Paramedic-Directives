@@ -470,6 +470,32 @@
             </div>
           </div>
 
+          <div class="ped-calc-result-card ped-calc-result-card--block">
+            <div class="ped-calc-result-card-head">
+              <div class="ped-calc-result-icon ped-calc-icon-orange" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+              <h3 class="ped-calc-result-title">Defibrillation energy</h3>
+            </div>
+            <div class="ped-calc-joule-grid" id="ped-calc-joules-grid">
+              <div class="ped-calc-joule-box ped-calc-joule-first">
+                <p class="ped-calc-joule-tag">1st shock</p>
+                <p class="ped-calc-joule-val" id="ped-calc-joules-initial">—</p>
+                <p class="ped-calc-joule-sub">2 J/kg</p>
+              </div>
+              <div class="ped-calc-joule-box ped-calc-joule-next">
+                <p class="ped-calc-joule-tag">Subsequent</p>
+                <p class="ped-calc-joule-val" id="ped-calc-joules-subsequent">—</p>
+                <p class="ped-calc-joule-sub">4 J/kg</p>
+              </div>
+            </div>
+            <div class="ped-calc-joule-adult" id="ped-calc-joules-adult" hidden>
+              <p class="ped-calc-joule-adult-tag">Age ≥ 8 years — adult energy</p>
+              <p class="ped-calc-joule-adult-val">As per RBHP / manufacturer</p>
+            </div>
+            <p class="ped-calc-joule-note" id="ped-calc-joules-note"></p>
+          </div>
+
           <details class="ped-calc-meds" id="ped-calc-meds">
             <summary class="ped-calc-meds-summary">
               <span class="ped-calc-result-icon ped-calc-icon-purple" aria-hidden="true">
@@ -553,6 +579,110 @@
         </div>
 
       </div>
+    </div>
+  </div>
+
+  <!-- PEDIATRIC DEFIBRILLATION (JOULES) CALCULATOR -->
+  <div id="view-ped-joules" class="view drug-calc-view" hidden>
+    <div class="drug-calc-scroll">
+      <header class="drug-calc-header drug-calc-header--red">
+        <div class="drug-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div>
+          <h2 class="drug-calc-h1">Pediatric Defibrillation (J)</h2>
+          <p class="drug-calc-sub">ALS PCS — Cardiac Arrest energy settings</p>
+        </div>
+      </header>
+
+      <div class="drug-calc-card">
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Patient Age</span>
+          <div class="drug-calc-weight-row">
+            <input id="ped-joules-age" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter age" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-ped-joules-unit="years">yrs</button>
+              <button type="button" class="drug-calc-unit-btn" data-ped-joules-unit="months">mo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Known weight <em>(optional — overrides estimate)</em></span>
+          <div class="drug-calc-weight-row">
+            <input id="ped-joules-weight" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Blank = estimate from age" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-ped-joules-wunit="kg">kg</button>
+              <button type="button" class="drug-calc-unit-btn" data-ped-joules-wunit="lbs">lbs</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="ped-joules-result" class="drug-calc-result drug-calc-result--hidden">
+          <div class="drug-calc-result-main" id="ped-joules-peds-block">
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">1st defibrillation<br>2 J/kg</span>
+              <span class="drug-calc-result-value"><span id="ped-joules-initial">—</span> <span class="drug-calc-result-unit">J</span></span>
+            </div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Subsequent defibrillation(s)<br>4 J/kg</span>
+              <span class="drug-calc-result-value"><span id="ped-joules-subsequent">—</span> <span class="drug-calc-result-unit">J</span></span>
+            </div>
+          </div>
+
+          <div class="drug-calc-result-main" id="ped-joules-adult-block" hidden>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Initial &amp; subsequent dose</span>
+              <span class="drug-calc-result-value drug-calc-result-value--text">As per RBHP / manufacturer</span>
+            </div>
+            <p class="drug-calc-condition-note">Patient is ≥ 8 years — use your monitor's adult energy settings. Weight-based 2 J/kg and 4 J/kg do not apply.</p>
+            <button type="button" class="drug-calc-crosslink-btn" onclick="pedJoulesOpenAdultSettings()">Open adult joule settings by manufacturer</button>
+          </div>
+
+          <div class="drug-calc-meta-row">
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight (kg)</span><span id="ped-joules-kg-display" class="drug-calc-meta-val">—</span></div>
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight from</span><span id="ped-joules-weight-source" class="drug-calc-meta-val">—</span></div>
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Age band</span><span id="ped-joules-band" class="drug-calc-meta-val">—</span></div>
+          </div>
+
+          <div id="ped-joules-neonate-warning" class="drug-calc-warning" hidden>
+            ⚠ Defibrillation requires age ≥ 24 hours. If &lt; 24 hours old, follow the Newborn Resuscitation directive instead.
+          </div>
+
+          <div class="drug-calc-warning drug-calc-warning--red">
+            ⚠ <strong>Trauma Cardiac Arrest:</strong> 1 analysis and 1 defibrillation maximum — then transport to the closest appropriate receiving facility. Do not repeat analysis on scene.
+          </div>
+        </div>
+
+        <div id="ped-joules-empty" class="drug-calc-empty">Enter patient age to calculate defibrillation energy</div>
+      </div>
+
+      <div class="drug-calc-card drug-calc-card--info">
+        <h3 class="drug-calc-info-heading">Directive Parameters</h3>
+        <div class="drug-calc-info-grid">
+          <div>
+            <p class="drug-calc-info-sub">Medical Cardiac Arrest</p>
+            <ul class="drug-calc-info-list">
+              <li>≥24 hrs to &lt;8 yrs: 2 J/kg then 4 J/kg</li>
+              <li>≥8 yrs: as per RBHP / manufacturer</li>
+              <li>Dosing interval: 2 min</li>
+              <li>Max doses: N/A</li>
+            </ul>
+          </div>
+          <div>
+            <p class="drug-calc-info-sub">Trauma Cardiac Arrest</p>
+            <ul class="drug-calc-info-list">
+              <li>≥24 hrs to &lt;8 yrs: 2 J/kg</li>
+              <li>≥8 yrs: as per RBHP / manufacturer</li>
+              <li>Dosing interval: N/A</li>
+              <li>Max doses: <strong>1 only</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="drug-calc-note">Estimated weight = (age in years × 2) + 10. Manual defibrillation only — AED/SAED energy is fixed by the device, delivered with or without a pediatric attenuator cable as per RBHP / manufacturer. Select the nearest available setting on your monitor.</p>
+      </div>
+
+      <p class="drug-calc-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
     </div>
   </div>
 

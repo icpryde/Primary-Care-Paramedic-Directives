@@ -8,6 +8,7 @@ const ASSETS = [
   BASE + '/styles.css',
   BASE + '/app.js',
   BASE + '/data/directives.js',
+  BASE + '/data/blsStandards.js',
   BASE + '/data/companion.js',
   BASE + '/data/references.js',
   BASE + '/data/specialEvent.js',

@@ -3,16 +3,407 @@
 // For operational decisions, always confirm with the current MOH BLS PCS document.
 
 const BLS_GROUPS = [
-  { id: 'bls-general', type: 'bls-group', category: 'bls', title: 'General Standards of Care', fullTitle: 'BLS Standards — General Standards of Care' },
+  { id: 'bls-general', type: 'bls-group', category: 'bls', title: 'General Standard of Care', fullTitle: 'BLS Standards — General Standard of Care' },
   { id: 'bls-medical', type: 'bls-group', category: 'bls', title: 'Medical Standards', fullTitle: 'BLS Standards — Medical Standards' },
   { id: 'bls-trauma', type: 'bls-group', category: 'bls', title: 'Trauma Standards', fullTitle: 'BLS Standards — Trauma Standards' },
   { id: 'bls-obstetrical', type: 'bls-group', category: 'bls', title: 'Obstetrical Standards', fullTitle: 'BLS Standards — Obstetrical Standards' },
+  { id: 'bls-appendix-a', type: 'bls-group', category: 'bls', title: 'Supplemental — Prompt Cards', fullTitle: 'BLS Standards — Appendix A: Supplemental' },
 ];
 
 const BLS_GROUP_CONTENT = {
   'bls-general': {
     lead: 'High-priority baseline standards frequently used across multiple call types.',
     standards: [
+      {
+        id: 'bls-paramedic-conduct',
+        title: 'Paramedic Conduct Standard',
+        sections: [
+          {
+            heading: 'Paramedic Conduct',
+            preamble: 'The paramedic shall:',
+            items: [
+              'conserve life, alleviate pain and suffering, and promote health;',
+              'protect and maintain the patient\'s safety, dignity and privacy;',
+              'provide care based on human need with respect for human dignity;',
+              'demonstrate empathy and compassion for patients and their families;',
+              'provide patient care until it is no longer required or until another appropriately qualified health care professional has accepted responsibility for patient care;',
+              'discharge his/her duties with honesty, diligence, efficiency and integrity;',
+              'conduct and present oneself in such a manner so as to encourage and merit the respect of the public for members of the paramedic profession;',
+              'attempt to establish and maintain good working relationships with other professional colleagues and the public;',
+              'assume responsibility for personal and professional development, including quality assurance initiatives such as reporting patient safety incidents;',
+              'maintain familiarity with current applicable legislation and practice, and strive to work to the fullest extent of his/her competencies; and',
+              'report any incompetent, illegal or unethical conduct by colleagues or other health care professionals to the ambulance service operator and/or base hospital.',
+            ],
+          },
+          {
+            heading: 'Paramedic Misconduct',
+            preamble: 'The paramedic shall not:',
+            items: [
+              'practice beyond his/her level of certification;',
+              'refuse or neglect to serve persons requiring services that are part of the normal performance of his/her duties;',
+              'falsify documentation of any kind;',
+              'misrepresent qualifications or credentials;',
+              'threaten or use violent behaviour;',
+              'take or possess drugs from the ambulance service without authorization;',
+              { text: 'disclose Confidential Information to anyone, unless required or permitted by law. "Confidential Information" includes:', subItems: [
+                'identifying information about an individual;',
+                'personal health information (as defined in the PHIPA), such as a medical record or the name and address of a patient, whether in oral or recorded form (e.g. written, printed, or in electronic form); and',
+                'information obtained through one\'s position as a paramedic which is not available to the public in general;',
+              ] },
+              'have any form of inappropriate sexual contact, relations or impropriety with a patient; or',
+              'engage in any other conduct unbecoming of a paramedic.',
+            ],
+          },
+        ],
+        guidelines: [
+          'If a paramedic is unsure as to whether Confidential Information may be disclosed, the paramedic shall refrain from disclosing the Confidential Information, and shall consult with his or her ambulance service operator for direction.',
+        ]
+      },
+      {
+        id: 'bls-general-measures',
+        title: 'General Measures Standard',
+        sections: [
+          {
+            preamble: 'The paramedic shall:',
+            items: [
+              'on receipt of a call, confirm call information with the CACC/ACS;',
+              'use an appropriate route and speed while operating the ambulance, adhere to approved driving and occupant restraint policies and practices, and operate the ambulance and utilize ambulance emergency warning systems in a responsible manner;',
+              'on arrival at the scene, perform an assessment of the environment, park the ambulance in a safe place, as close to the point of patient contact as possible, and identify routes of access and egress;',
+              'ensure the call environment is safe with no danger to self or others;',
+              'if danger exists, or there is uncertainty regarding personal and/or patient safety, request assistance from allied emergency services and maintain communication with CACC/ACS;',
+              'bring to the point of initial patient contact all equipment required to establish baseline vital signs and perform defibrillation;',
+              'use call and scene information to determine any additional equipment likely to be required to manage the call, and bring to point of initial patient contact;',
+              'if there is more than one patient and/or additional resources or assistance is required, make requests to CACC/ACS;',
+              'utilize personal protective equipment according to the Patient Care and Transportation Standards, and take appropriate safety measures;',
+              'identify and introduce themselves to the patient and others as appropriate;',
+              'obtain consent for patient care as per the Heath Care Consent Act, 1996 (Ontario);',
+              'use proper, effective communication techniques to establish patient trust;',
+              'protect the patient from hazards and exposure to adverse environmental conditions;',
+              'for scene responses involving hazardous materials, reference the Transport Canada Emergency Response Guidebook;',
+              'ensure safe use and disposal of equipment (e.g. sharps); and',
+              'perform hand hygiene as per the Patient Care and Transportation Standards.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-patient-assessment',
+        title: 'Patient Assessment Standard',
+        sections: [
+          {
+            preamble: 'The paramedic shall:',
+            items: [
+              'assume the existence of serious, potentially life-, limb- and/or function-threatening conditions;',
+              'make scene observations relevant to the patient\'s status;',
+              'seek medical information tags;',
+              'attempt to determine the patient\'s name, sex, age (or approximate), and weight (or approximate);',
+              'make reasonable attempts to seek other forms of patient identification, if required;',
+              'determine the patient\'s chief complaint;',
+              { text: 'immediately on patient contact perform the primary survey by,', subItems: [
+                'noting the patient\'s general appearance, degree of distress and CTAS (Arrive Patient) as per the Prehospital CTAS Paramedic Guide,',
+                'where applicable, ensure C-spine precautions as indicated by the Spinal Motion Restriction (SMR) Standard,',
+                'assessing airway patency, breathing, circulation and level of consciousness and identifying critical findings (i.e. look for and if possible, quickly expose obvious or suspected external hemorrhage and injury sites), and,',
+                'upon identifying absent/inadequate airway, breathing, circulation or any other life-threatening concerns, perform critical interventions as per the Patient Management Standard;',
+              ] },
+              'determine history of present illness or incident (including treatment prior to arrival);',
+              'determine the patient\'s symptoms, allergies, past medical history and medications;',
+              'determine the patient\'s compliance with prescribed medications;',
+              'initiate rapid transport and perform further assessment and management en route, if the paramedic determines that the patients meets the criteria listed in the Load and Go Patient Standard;',
+              { text: 'unless the patient requires immediate intervention or meets the Load and Go Patient Standard the paramedic shall establish baseline vital signs, which include:', subItems: [
+                'heart rate,',
+                'respiration rate,',
+                'blood pressure (BP),',
+                'Pulse oximetry (SpO₂),',
+                'Glasgow Coma Scale (GCS),',
+                'pupils, and',
+                'skin colour and condition;',
+              ] },
+              'auscultate the patient\'s lungs for air entry and adventitious sounds (e.g. wheezes, crackles), if the patient is exhibiting signs or symptoms of cardiovascular, respiratory or neurological compromise;',
+              'initiate cardiac monitoring, if the patient is exhibiting signs or symptoms of cardiovascular, respiratory or neurological compromise;',
+              'perform a secondary survey, as required by patient status or the Standards;',
+              'obtain a second set of vital signs;',
+              'if the patient is suspected to be febrile or experiencing hyperthermia, obtain the patient\'s temperature;',
+              'formulate a working assessment after the primary and secondary survey;',
+              'if at any time during a call the paramedic provides a critical intervention, or series of interventions, or a change in patient status occurs, at a minimum reassess the patient\'s airway patency, breathing, circulation, level of consciousness, and consider further patient assessment or management; and',
+              { text: 'reassess vital signs relevant to patient condition/status,', subItems: [
+                'every 30 minutes at a minimum, and',
+                'more frequently, as required by patient condition, changes to patient status, or the Standards.',
+              ] },
+            ],
+          },
+        ],
+        guidelines: [
+          'The following types of calls typically warrant a cardiac monitor:',
+          'All vital signs absent (VSA) patients, except those who are obviously dead as per the Deceased Patient Standard',
+          'Unconscious or altered level of consciousness',
+          'Collapse or syncope',
+          'Suspected cardiac ischemia',
+          'Moderate to severe shortness of breath',
+          'Cerebrovascular accident (CVA)',
+          'Overdose',
+          'Major or multi-system trauma',
+          'Electrocution',
+          'Submersion injury',
+          'Hypothermia, heat exhaustion or heat illness',
+          'Abnormal vital signs as per the ALS PCS',
+          'If requested by sending facility staff (for inter-facility transfers)',
+        ]
+      },
+      {
+        id: 'bls-patient-management',
+        title: 'Patient Management Standard',
+        sections: [
+          {
+            preamble: 'The paramedic shall:',
+            items: [
+              'if the patient is vital signs absent (VSA) and meets "obvious death" criteria as per the Deceased Patient Standard, follow the procedures outlined within the Deceased Patient Standard;',
+              'if the patient has an MOH Do Not Resuscitate (DNR) Confirmation Form, refer to the Do Not Resuscitate (DNR) Standard;',
+              { text: 'perform appropriate critical interventions to establish/improve and maintain airway patency, ventilation and circulation, which include:', subItems: [
+                'protecting C-spine if C-spine precautions are indicated by the Spinal Motion Restriction (SMR) Standard,',
+                'initiating cardiopulmonary resuscitation (CPR) as per current Heart and Stroke Foundation of Canada Guidelines and as per the Cardiac Arrest Standards, if the patient is VSA (perform appropriate cardiac arrest medical directives as outlined in the ALS PCS),',
+                'clearing airway obstructions as per the Airway Obstruction Standard, with attention to suctioning of saliva, blood and vomit where necessary,',
+                'ventilating or assisting ventilations as per the Respiratory Failure Standard or Shortness of Breath Standard, and',
+                'controlling trauma-related external hemorrhage as per the Soft Tissue Injuries Standard, or as specified in other standards for both trauma and non-trauma related conditions.',
+              ] },
+              'administer oxygen therapy as per the Oxygen Therapy Standard;',
+              'initiate management of other life-, limb- and/or function-threatening conditions as outlined in other sections of the Standards and the ALS PCS;',
+              { text: 'position or re-position the patient in order to support, protect, improve and/or promote,', subItems: [
+                'C-spine alignment,',
+                'airway patency,',
+                'breathing,',
+                'venous return and perfusion,',
+                'extremity injury, and',
+                'patient comfort;',
+              ] },
+              'if the patient is stable, initiate management on-scene for non-critical conditions as outlined in other sections of the Standards;',
+              'continually monitor the patient and provide assessment and management as required by the Standards;',
+              'give the patient nothing by mouth unless indicated by the Standards or ALS PCS; and',
+              'ensure the patient maintains a comfortable temperature, or as required by the Standards.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-patient-transport',
+        title: 'Patient Transport Standard',
+        sections: [
+          {
+            preamble: 'The paramedic shall:',
+            items: [
+              'determine CTAS level (CTAS Depart Scene) as per Prehospital CTAS Paramedic Guide;',
+              'make a decision regarding the appropriate receiving health care facility and initiate transport of the patient as confirmed or directed by an ambulance communications officer (ACO);',
+              'if confirmation or direction cannot be obtained from an ACO, transport to the closest or most appropriate hospital capable of providing the medical care apparently required by the patient;',
+              'collect and transport all relevant patient medications, record of medications, and any other relevant identification and medical records, as necessary, for review by receiving facility staff;',
+              'for inter-facility transfers where the patient\'s current care requirements, or reasonably anticipated care requirements, exceed the paramedic\'s level of certification request that a medically-responsible escort be provided by the sending facility;',
+              'for all CTAS 1 and 2 patients move the patient to the stretcher using the most appropriate lift or carry;',
+              'for all CTAS 1 and 2 patients transport the patient to and from the ambulance on the stretcher;',
+              'for all CTAS 3-5 patients transport the patient to and from the ambulance using the appropriate lift, carry or ambulatory assistance with respect to the situation, the patient\'s clinical condition, or for patient comfort;',
+              'in cases of inter-facility transfers transport the patient to and from the ambulance on the stretcher;',
+              'ensure the patient, stretcher, equipment, and all occupants are secured inside the ambulance;',
+              'attend to the patient at all times;',
+              'provide support to an escort or team in the patient compartment, in the event the patient is under the care of a medical escort or a transfer team;',
+              'if the patient deteriorates during transport, and survival to the directed receiving facility is questionable, transport the patient to the closest or most appropriate hospital capable of providing the medical care apparently required by the patient. Immediately notify CACC/ACS of any destination change, and notify or ask CACC/ACS to notify the new receiving facility; and',
+              'maintain temperature and lighting conditions which are comfortable for the patient in the patient compartment, unless otherwise required by the Standards.',
+            ],
+          },
+        ],
+        guidelines: [
+          'For inter-facility transfers, obtain the following information and/or transfer documents, when available:',
+          'Name of sending physician',
+          'Verbal and/or written treatment orders from the sending physician',
+          'Transfer paper, e.g. case summary, lab work, x-rays, list of personal effects accompanying the patient, etc.',
+          'Name(s) of facility staff and list of equipment accompanying the patient',
+          'Name of receiving facility and receiving physician',
+        ]
+      },
+      {
+        id: 'bls-patient-refusal-emergency-treatment',
+        title: 'Patient Refusal/Emergency Treatment Standard',
+        sections: [
+          {
+            heading: 'Patient With Capacity Refusal',
+            items: [
+              { text: 'Where a patient requires care and/or transport to a health care facility and the patient or substitute decision maker (SDM) refuses such treatment and/or transport, the paramedic shall:', subItems: [
+                'make reasonable efforts to inform the patient or SDM that treatment and/or transport are recommended and explain the possible consequences of such refusal;',
+                'confirm that the patient or SDM has capacity utilizing the Aid to Capacity Assessment as per the Ambulance Call Report Completion Manual;',
+                'advise the patient or SDM to call 911 again if further concerns arise; and',
+                'obtain signatures and complete additional documentation requirements as per the Ontario Documentation Standards and the Ambulance Call Report Completion Manual.',
+              ] },
+            ],
+            notes: [
+              'The patient or SDM can refuse to sign the Refusal of Service section of the Ambulance Call Report, as there is no obligation on the patient or SDM to sign the Ambulance Call Report. Should this occur, the paramedic shall document the patient\'s or SDM\'s refusal and reason for failing to provide a signature.',
+            ],
+          },
+          {
+            heading: 'Emergency Treatment and Transport of an Incapable Patient Without Consent',
+            items: [
+              { text: 'The paramedic shall carry out emergency treatment and transport, if:', subItems: [
+                'the patient does not have capacity;',
+                'the patient is apparently experiencing severe suffering or is at risk, if the treatment is not administered promptly, of sustaining serious bodily harm; and',
+                'the delay required to obtain a consent or refusal on the patient\'s behalf will prolong the suffering that the patient is apparently experiencing or will put the patient at risk of sustaining serious bodily harm.',
+              ] },
+              'The paramedic shall document the circumstances that led to the decision in paragraph 1 above.',
+            ],
+          },
+          {
+            heading: 'Emergency Treatment and Transport of a Capable Patient Without Consent',
+            items: [
+              { text: 'The paramedic shall carry out emergency treatment and transport, if:', subItems: [
+                'the patient is apparently experiencing severe suffering or is at risk, if the treatment is not administered promptly, of sustaining serious bodily harm;',
+                'the communication required in order for the patient to give or refuse consent cannot take place because of a language barrier or because the patient has a disability that prevents the communication from taking place;',
+                'steps that are reasonable in the circumstances have been taken to find a practical means of enabling the communication to take place, but no such means has been found;',
+                'the delay required to find a practical means of enabling the communication to take place will prolong the suffering that the patient is apparently experiencing or will put the person at risk of sustaining serious bodily harm; and',
+                'there is no reason to believe that the patient does not want the treatment.',
+              ] },
+              'The paramedic shall document the circumstances that led to the decision in paragraph 1 above.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-reporting-to-receiving-facility',
+        title: 'Reporting of Patient Care to Receiving Facility Standard',
+        sections: [
+          {
+            preamble: 'The paramedic shall:',
+            items: [
+              { text: 'transmit a report while en route to the receiving facility for all CTAS 1 and CTAS 2 patients, which includes,', subItems: [
+                'unit number identification,',
+                'patient age,',
+                'patient sex,',
+                'CTAS level,',
+                'chief complaint,',
+                'pertinent history,',
+                'pertinent assessment findings,',
+                'pertinent management and response to management,',
+                'abnormal vital signs, and',
+                'estimated time of arrival;',
+              ] },
+              'confirm that the receiving facility or ACO has acknowledged the report; and',
+              'provide additional reports if the patient\'s CTAS changes to a higher acuity.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-patch-to-base-hospital-physician',
+        title: 'Patch to Base Hospital Physician Standard',
+        sections: [
+          {
+            preamble: 'The paramedic shall:',
+            items: [
+              'initiate a patch as required by the Standards or the ALS PCS;',
+              'initiate a patch where there is uncertainty about the appropriateness of a standard or when further direction is desired;',
+              { text: 'during the patch,', subItems: [
+                'state his/her level of certification,',
+                'provide a report which includes the information necessary to convey the patient\'s condition, situation, or circumstance which requires physician input,',
+                'provide all other information as requested by the physician, and',
+                'confirm direction, authorization and orders given; and',
+              ] },
+              'document as per the Ontario Ambulance Documentation Standards and the Ambulance Call Report Completion Manual.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-regulated-health-professionals',
+        title: 'Regulated Health Professionals Standard',
+        sections: [
+          {
+            preamble: 'In situations involving a patient under the care of a regulated health professional, the paramedic shall:',
+            items: [
+              'recognize the training and qualifications of the regulated health professional, e.g. physician, nurse, midwife, respiratory therapist;',
+              'determine the nature of the request for ambulance services;',
+              'obtain confirmation (may be verbal) that the regulated health professional is a registered member of his/her College within Ontario, and that the patient is under his/her care;',
+              'upon request, assist the regulated health professional with patient care only to the level in which the paramedic is authorized; and',
+              { text: 'in conjunction with the Documentation of Patient Care Standard, document on the Ambulance Call Report,', subItems: [
+                'the name of the regulated health professional,',
+                'the type of regulated health professional, and',
+                'any care provided by the regulated health professional.',
+              ] },
+            ],
+          },
+        ],
+        guidelines: [
+          'Recall paragraph 8 of Paramedic Conduct under the Paramedic Conduct Standard; accordingly, paramedics and regulated health professionals should work cooperatively in making decisions and providing quality patient care.',
+        ]
+      },
+      {
+        id: 'bls-transfer-of-care',
+        title: 'Transfer of Care (TOC) Standard',
+        sections: [
+          {
+            preamble: 'Upon arrival at the receiving facility, the paramedic shall:',
+            items: [
+              'liaise with receiving facility staff to determine the patient\'s destination within the receiving facility;',
+              'attend to the patient while awaiting receiving facility staff acceptance of the patient;',
+              { text: 'provide a verbal report to receiving facility staff, to include,', subItems: [
+                'patient name,',
+                'patient age,',
+                'patient sex,',
+                'CTAS (Arrive Destination) as per the Prehospital CTAS Paramedic Guide,',
+                'chief complaint,',
+                'a concise history of the patient\'s current problem(s) and relevant past medical history,',
+                'pertinent assessment findings,',
+                'pertinent management performed and responses to management,',
+                'vital signs, and',
+                'the reason for transfer, for inter-facility transfers;',
+              ] },
+              'provide a copy of any clinically relevant associated biometric data collected;',
+              { text: 'if it appears likely there will be a prolonged delay in accepting the patient,', subItems: [
+                'advise CACC/ACS,',
+                'advise receiving facility if the patient status deteriorates,',
+                'seek further assistance from the ambulance service operator, and/or',
+                'for inter-facility transfers, request receiving staff to attempt to contact the sending physician or the patient\'s family physician;',
+              ] },
+              'transfer the patient, from the stretcher where applicable, to the receiving facility;',
+              'transfer any patient medications, record of medications, other relevant identification and medical records, and any other belongings to the receiving facility, if not already done;',
+              'consider Transfer of Care complete upon completion of paragraphs 1-7 above and when the patient is no longer dependent on ambulance service resources (excluding equipment that is being left with the patient, e.g. spinal board); and',
+              'transfer documentation to the receiving facility as per the Ontario Ambulance Service Documentation Standards.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-documentation-of-patient-care',
+        title: 'Documentation of Patient Care Standard',
+        sections: [
+          {
+            preamble: 'The paramedic shall:',
+            items: [
+              'complete documentation as per the Ontario Ambulance Documentation Standards and the Ambulance Call Report Completion Manual;',
+              'document clinical response to treatment and procedures performed;',
+              'document all instances of threatened violence on the Ambulance Call Report; and',
+              { text: 'for inter-facility transfers, document,', subItems: [
+                'pertinent patient history and care information,',
+                'receipt of transfer papers (e.g. case summary, treatment orders, lab work, x-rays, list of personal effects or patient\'s personal belongings), and',
+                'name(s) of escort, transport team members and list of equipment accompanying the patient, where applicable.',
+              ] },
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-patient-care-equipment-use',
+        title: 'Patient Care Equipment Use Standard',
+        sections: [
+          {
+            preamble: 'The paramedic shall:',
+            items: [
+              'utilize all equipment in the manner in which trained by his/her ambulance service operator and base hospital, and as per manufacturer specifications; and',
+              'notify the ambulance service operator of identified equipment problems.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
       {
         id: 'bls-oxygen-therapy',
         title: 'Oxygen Therapy Standard',
@@ -51,6 +442,165 @@ const BLS_GROUP_CONTENT = {
           },
         ],
         guidelines: []
+      },
+      {
+        id: 'bls-field-trauma-triage',
+        title: 'Field Trauma Triage Standard',
+        sections: [
+          {
+            definitions: true,
+            heading: 'Definitions',
+            preamble: 'For the purposes of the Field Trauma Triage Standard:',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Regionally Designated Equivalent Hospital',
+            preamble: 'means an appropriately resourced hospital facility as defined by the Regional Trauma Network of Critical Care Services Ontario and included in a local PPS.',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Transport Time',
+            preamble: 'means the time from scene departure to time of arrival at destination.',
+            items: [],
+          },
+          {
+            heading: 'General Directive',
+            items: [
+              'The paramedic shall follow the procedure below when conducting field triage of patients injured by a traumatic mechanism or who show evidence of trauma.',
+              'The paramedic shall also use this standard to assess the clinical criteria (i.e. to determine if the patient meets the clinical criteria) as required by the Air Ambulance Utilization Standard.',
+              'The paramedic shall consider using the Trauma Termination of Resuscitation (TOR) contained in the Trauma Cardiac Arrest Medical Directive as per the ALS PCS.',
+              'CACC/ACS may authorize the transport once notified of the patient\'s need for re-direct or transport under the Field Trauma Triage Standard.',
+            ],
+          },
+          {
+            heading: 'Procedure',
+            preamble: 'The paramedic shall:',
+            items: [
+              { text: 'assess the patient to determine if he/she has one or more of the following physiological criteria (Step 1):', subItems: [
+                'Patient does not follow commands,',
+                'Systolic blood pressure <90mmHg, or',
+                'Respiratory rate <10 or ≥30 breaths per minute or need for ventilatory support (<20 in infant aged <1 year);',
+              ] },
+              'if the patient meets the physiological criteria listed in paragraph 1 above, AND the land transport time is estimated to be <30 minutes* to a Lead Trauma Hospital (LTH) or regionally designated equivalent hospital, transport the patient directly to the LTH or regionally designated equivalent hospital;',
+              { text: 'if the patient does not meet the criteria listed in paragraphs 1 and 2, assess the patient to determine if he/she has one or more of the following anatomical criteria (Step 2):', subItems: [
+                'Any penetrating injuries to head, neck, torso and extremities proximal to elbow or knee,',
+                'Chest wall instability or deformity (e.g. flail chest),',
+                'Two or more proximal long-bone fractures,',
+                'Crushed, de-gloved, mangled or pulseless extremity,',
+                'Amputation proximal to wrist or ankle,',
+                'Pelvic fractures,',
+                'Open or depressed skull fracture, or',
+                'Paralysis;',
+              ] },
+              'if the patient meets the anatomical criteria listed in paragraph 3 above and the land transport time is estimated to be <30 minutes* to the LTH or regionally designated equivalent hospital, transport the patient directly to the LTH or regionally designated equivalent hospital;',
+              'if unable to secure the patient\'s airway or survival to the LTH or regionally designated equivalent hospital is unlikely, transport the patient to the closest emergency department despite paragraphs 2 and 4 above;',
+              { text: 'despite paragraph 5 above, transport the patient directly to an LTH or regionally designated equivalent hospital if the patient has a penetrating trauma to the torso or head/neck, and meets ALL of the following:', subItems: [
+                'Vital signs absent yet not subject to TOR described in the General Directive above, and',
+                'Land transport to the LTH or regionally designated equivalent hospital is estimated to be <30 minutes*;',
+              ] },
+              { text: 'if the patient does not meet the physiological or anatomical criteria listed above, use the following criteria to determine if the patient may require other support services at the LTH or regionally designated equivalent hospital as a result of his/her traumatic mechanism of injury (Step 3):', subItems: [
+                { text: 'Falls', subItems: [
+                  'Adults: falls ≥6 metres (one story is equal to 3 metres)',
+                  'Children (age <15): falls ≥3 metres or two to three times the height of the child',
+                ] },
+                { text: 'High Risk Auto Crash', subItems: [
+                  'Intrusion ≥0.3 metres occupant site; ≥0.5 metres any site, including the roof',
+                  'Ejection (partial or complete) from automobile',
+                  'Death in the same passenger compartment',
+                  'Vehicle telemetry data consistent with high risk injury (if available)',
+                ] },
+                'Pedestrian or bicyclist thrown, run over or struck with significant impact (≥30 km/hr) by an automobile',
+                'Motorcycle crash ≥30 km/hr;',
+              ] },
+              'if the patient meets the mechanism of injury criteria listed in paragraph 7 above, AND the land transport time is estimated to be <30 minutes* to an LTH or regionally designated equivalent hospital, determine the need for patient transport to the LTH or regionally designated equivalent hospital;',
+              { text: 'in conjunction with the physiological, anatomical, and mechanism of injury criteria listed above, consider the following special criteria (Step 4):', subItems: [
+                { text: 'Age', subItems: [
+                  'Risk of injury/death increases after age 55',
+                  'SBP <110 may represent shock after age 65',
+                ] },
+                'Anticoagulation and bleeding disorders',
+                { text: 'Burns', subItems: [
+                  'With trauma mechanism: triage to LTH',
+                ] },
+                'Pregnancy ≥20 weeks; and',
+              ] },
+              'if the patient meets any of the special criteria listed above, AND the land transport time is estimated to be <30 minutes* to an LTH or regionally designated equivalent hospital, determine the need for patient transport to the LTH or regionally designated equivalent hospital.',
+            ],
+            notes: [
+              'The 30 minute transport time may be amended to up to 60 minutes as per an ambulance service PPS, but may not exceed 60 minutes.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-air-ambulance-utilization',
+        title: 'Air Ambulance Utilization Standard',
+        sections: [
+          {
+            heading: 'General Directive',
+            intro: 'Requests for an on-scene air ambulance response should meet at least one of the bulleted operational criteria PLUS one of the clinical criteria (e.g. known clinical criteria as listed in the Field Trauma Triage Standard or from the bulleted list of medical or obstetrical criteria listed below).',
+            items: [],
+          },
+          {
+            heading: 'Procedure',
+            preamble: 'The paramedic shall:',
+            items: [
+              { text: 'assess the scene response to meet one or more of the following operational criteria:', subItems: [
+                'The land ambulance is estimated to require more than 30 minutes to reach the scene and the air ambulance can reach the scene quicker.',
+                'The land ambulance is estimated to require more than 30 minutes to travel from the scene to the closest appropriate hospital and the air ambulance helicopter can reach the scene and transport the patient to the closest appropriate hospital quicker than the land ambulance.',
+                'The estimated response for both land and air is estimated to be greater than 30 minutes, but approximately equal, and the patient needs care which cannot be provided by the responding land ambulance.',
+                'There are multiple patients who meet the clinical criteria and the local land ambulance resources are already being fully utilized.',
+              ] },
+              { text: 'if the scene response meets the requirements of paragraph 1 above, assess the patient to determine if he/she meets one or more of the following clinical criteria:', subItems: [
+                'Patients meeting the criteria listed in the Field Trauma Triage Standard.',
+                'Patients meeting one or more of the following:',
+                { systemLabel: 'Medical:', subItems: [
+                  'Shock, especially hypotension with altered mentation (e.g. suspected aortic aneurysm rupture, massive gastrointestinal bleed, severe sepsis, anaphylaxis, cardiogenic shock, etc.)',
+                  'Acute stroke with a clearly determined time of onset or last known to be normal <6.0 hours',
+                  'Altered level of consciousness (GCS <10)',
+                  'Acute respiratory failure or distress',
+                  'Suspected STEMI or potentially lethal dysrhythmia',
+                  'Resuscitation from respiratory or cardiac arrest',
+                  'Status epilepticus',
+                  'Unstable airway or partial airway obstruction',
+                ] },
+                { systemLabel: 'Obstetrical:', subItems: [
+                  'Active labour with abnormal presentation (i.e. shoulder, breech or limb)',
+                  'Multiple gestation and active labour',
+                  'Umbilical cord prolapse',
+                  'Significant vaginal bleeding (suspected placental abruption or placenta previa or ectopic pregnancy);',
+                ] },
+              ] },
+              { text: 'in conjunction with the ACO, assess if an on-scene air ambulance helicopter is appropriate, based on:', subItems: [
+                'the perceived severity of the reported injuries and without confirmation that the clinical criteria have been met, or',
+                'the patient cannot reasonably be reached by land ambulance (e.g. sites without road access such as islands; geographically isolated places, etc.);',
+              ] },
+              { text: 'if the requirements listed in paragraph 2 or 3 above are met, request an on-scene air ambulance helicopter response:', subItems: [
+                'Provide the ACO with the information set out in operational and clinical criteria above. In order for the ACO to determine if an air ambulance response and transport will be quicker than land ambulance, the paramedic will provide the ACO with the estimated time to prepare the patient for transport, identify separately any time required for patient extrication, provide the estimated land ambulance driving time to the closest appropriate hospital and any additional information as required.',
+                'The paramedics shall not delay patient transport by waiting for the air ambulance helicopter, unless the air ambulance helicopter can be seen on its final approach to the scene. If the air ambulance helicopter is en route but not on final approach to the scene, and the land paramedics have the patient in his/her ambulance, then the land ambulance will proceed to the closest local hospital with an emergency department. The air ambulance helicopter will proceed to that local hospital and, if appropriate, assist hospital personnel prepare the patient for rapid evacuation.',
+                { text: 'While en route to the local hospital, paramedics may rendezvous with the air ambulance helicopter if:', subItems: [
+                  'the air ambulance helicopter is able to land along the direct route of the land ambulance; and',
+                  'it would result in a significant reduction in transport time to the most appropriate hospital.',
+                ] },
+              ] },
+              'if the call\'s circumstances and patient(s) fail to meet the criteria set out in this standard and an air ambulance helicopter is known to be responding based on the merits of the initial request for ambulance service, contact the CACC/ACS and advise that an on-scene air ambulance helicopter response is not required and why it is not required.',
+            ],
+          },
+        ],
+        guidelines: [
+          { heading: 'Air Ambulance Helicopter Landing Site Safety and Coordination', items: [
+            'Upon confirmation that the air ambulance helicopter is responding, the paramedic shall follow the guidelines set out by the Ornge Aviation Safety Department, which can be found on Ornge\'s "Aircraft Safety" website at: https://www.ornge.ca/aircraft-safety.',
+          ] },
+          { heading: 'Other Use of Air Ambulance Helicopter', items: [
+            'Air ambulance helicopters are not permitted to respond to night calls which require a landing at a site other than night licensed airports, helipads or night approved remote landing sites.',
+            'Air ambulance helicopters are not permitted to conduct search and rescue calls.',
+            'In cases where a land ambulance can reach the patient(s) and an on-scene response by air ambulance helicopter is appropriate, the ACO will assign a land ambulance and continue the land response until the flight crew requests that the land ambulance be cancelled.',
+            'In cases where a land ambulance arrives on-scene prior to the air ambulance helicopter, paramedics shall inform the CACC/ACS as clinical events occur.',
+          ] },
+        ]
       },
       {
         id: 'bls-spinal-motion-restriction',
@@ -210,6 +760,385 @@ const BLS_GROUP_CONTENT = {
         guidelines: []
       },
       {
+        id: 'bls-deceased-patient',
+        title: 'Deceased Patient Standard',
+        sections: [
+          {
+            definitions: true,
+            heading: 'Definitions',
+            preamble: 'For the purposes of the Deceased Patient Standard, the following definitions apply:',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Deceased Patient',
+            preamble: 'means a patient who is:',
+            items: [
+              'obviously dead;',
+              'the subject of a medical certificate of death, presented to the paramedic crew, in the form that is prescribed by the Vital Statistics Act (Ontario) and that appears on its face to be completed and signed in accordance with that Act;',
+              'without vital signs and the subject of an MOH Do Not Resuscitate (DNR) Confirmation Form;',
+              'without vital signs and the subject of a Termination of Resuscitation (TOR) Order given by a Base Hospital Physician; or',
+              'without vital signs and the subject of a Withhold Resuscitation Order given by a Base Hospital Physician.',
+            ],
+          },
+          {
+            definitions: true,
+            heading: 'Expected Death',
+            preamble: 'means a death that was imminently anticipated generally as a result of a progressive end stage terminal illness.',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Obviously Dead',
+            preamble: 'means death has occurred if gross signs of death are obvious, including by reason of:',
+            items: [
+              'decapitation, transection, visible decomposition, putrefaction; or',
+              { text: 'absence of vital signs and:', subItems: [
+                'a grossly charred body;',
+                'an open head or torso wound with gross outpouring of cranial or visceral contents;',
+                'gross rigor mortis (i.e. limbs and/or body stiff, posturing of limbs or body); or',
+                'dependent lividity (i.e. fixed, non-blanching purple or black discolouration of skin in dependent area of body).',
+              ] },
+            ],
+          },
+          {
+            definitions: true,
+            heading: 'Palliative Care Team',
+            preamble: 'means a team of health care professionals who provide palliative care to a terminally ill patient.',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Responsible Person',
+            preamble: 'means an adult who, in the reasonable belief of the paramedic, is capable to remain with the Deceased Patient and assume responsibility for the Deceased Patient.',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Termination of Resuscitation (TOR) Order',
+            preamble: 'means an order given by a Base Hospital Physician to a paramedic to stop resuscitation measures.',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Unexpected Death',
+            preamble: 'means a death that was not imminently anticipated (e.g. traumatic deaths, deaths related to the environment, accidental deaths, and apparently natural deaths that are sudden and unexpected).',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Withhold Resuscitation Order',
+            preamble: 'means an order given by a Base Hospital Physician to a paramedic to not initiate resuscitation measures.',
+            items: [],
+          },
+          {
+            heading: 'Procedure',
+            preamble: 'In all cases of death, the paramedic shall:',
+            items: [
+              'confirm the patient is deceased as per the Definitions above;',
+              'ensure that the Deceased Patient is treated with respect and dignity;',
+              'consider the needs of family members of the decedent and provide compassion-informed decision-making;',
+              'in cases of suspected foul play, follow the directions set out in the Police Notification Standard;',
+              'if applicable, follow all directions issued by a coroner or a person appointed by a coroner or to whom a coroner has delegated any powers or authority pursuant to the Coroners Act (Ontario);',
+              'if termination of resuscitation occurs in the ambulance en route to a health care facility, advise CACC/ACS to contact the coroner, and continue to the destination unless otherwise directed by CACC/ACS; and',
+              'for cases of obvious death, note and document the time at which the paramedic confirms the patient was deceased as per the Standards.',
+            ],
+          },
+          {
+            preamble: 'In cases of unexpected death:',
+            items: [
+              'in the absence of police or a coroner on-scene, the paramedic shall advise CACC/ACS of the death, in which case CACC/ACS shall notify the police or coroner;',
+              'if a coroner indicates that he/she will attend at the scene, the paramedic shall remain at the scene until the coroner arrives and assumes custody of the Deceased Patient. If the coroner indicates that he/she will not attend at the scene, the paramedic shall remain on the scene until the arrival of a person appointed by a coroner or to whom a coroner has delegated any powers or authority pursuant to the Coroners Act (Ontario);',
+              'notwithstanding paragraph 2 above, if police are present and have secured the scene, the paramedic may depart as soon as documentation has been completed or he/she is assigned to another call; and',
+              'where at any time the paramedic has not received any further direction from CACC/ACS, the paramedic shall request that CACC/ACS seek direction from the coroner concerning his/her responsibilities, including whether he/she may leave the scene.',
+            ],
+          },
+          {
+            preamble: 'In cases of expected death:',
+            items: [
+              'the paramedic shall advise CACC/ACS of the death;',
+              'the paramedic shall make a request of a Responsible Person, if one is present, to notify the primary care practitioner or a member of the Palliative Care Team (if any) of the patient and request his/her attendance at the scene;',
+              'if the Responsible Person is unable to provide the notice in paragraph 2 above, the paramedic shall advise CACC/ACS of the death, in which case CACC/ACS shall attempt to notify the primary care practitioner or member of the Palliative Care Team (if any) of the Deceased Patient, and request his/her attendance at the scene;',
+              'if the Deceased Patient\'s primary care practitioner or Palliative Care Team member is contacted and indicates that he/she will attend at the scene, then the paramedic shall remain at the scene until his/her arrival;',
+              'notwithstanding paragraph 4 above, if there is a Responsible Person present, and the paramedics reasonably believe that the Responsible Person will remain until the primary care practitioner or Palliative Care Team arrives, then the paramedic may depart as soon as all required documentation has been completed or he/she are assigned to another call. Alternatively, if the police are at the scene and are willing to remain until the arrival of the practitioner or Palliative Care Team member, the paramedic may leave the scene;',
+              'if the primary care practitioner or Palliative Care Team member cannot be contacted or if he/she is unable to attend, or there is no Responsible Person on-scene, the paramedic crew shall advise CACC/ACS, in which case CACC/ACS shall notify the police or coroner of the death and that there is no one else at the scene who can take responsibility for the Deceased Patient; and',
+              'if requested by the coroner, the paramedic will provide the coroner with the circumstances of the death; the paramedic will either be released from the scene or instructed to remain with the Deceased Patient until the coroner or a person appointed by a coroner or to whom a coroner has delegated any powers or authority pursuant to the Coroners Act (Ontario) or a Responsible Person can attend the scene and assume responsibility for the Deceased Patient.',
+            ],
+          },
+        ],
+        guidelines: [
+          'Although a death may be viewed as "unexpected" from the perspective of the person reporting the death (paramedic, family members), this does not necessarily imply that the death requires investigation by a coroner under the Coroners Act (Ontario).',
+        ]
+      },
+      {
+        id: 'bls-general-pediatric',
+        title: 'General Pediatric Standard',
+        sections: [
+          {
+            preamble: 'In situations involving a pediatric patient, the paramedic shall:',
+            items: [
+              'during the primary survey, be aware of problems arising due to pediatric anatomy and physiology;',
+              'be aware that respiratory arrest is the primary cause of pediatric cardiac arrest;',
+              'recognize normal vital signs as per the ALS PCS;',
+              { text: 'consider assessments for,', subItems: [
+                'change in appetite,',
+                'change in behaviour/personality,',
+                'excessive drooling,',
+                'for patients in diapers, decrease in number of wet diapers,',
+                'inconsolable crying or screaming,',
+                'lethargy,',
+                'patient positioning (e.g. tripoding), and',
+                'work of breathing;',
+              ] },
+              'if performing a full secondary survey, conduct from "toe-to-head";',
+              'have caregivers present during patient care unless they are interfering with the care; and',
+              'for infant patients, assess fontanelles.',
+            ],
+          },
+        ],
+        guidelines: [
+          'Recall that pediatric CTAS levels and GCS differ from those for adults. Determine CTAS as per the Prehospital CTAS Paramedic Guide.',
+          'Pediatric patients can present with atypical signs and symptoms and may deteriorate rapidly. Maintain a high index of suspicion when assessing pediatric patients.',
+          'When handling an infant patient, ensure that proper support is provided to the head and neck.',
+        ]
+      },
+      {
+        id: 'bls-child-in-need-of-protection',
+        title: 'Child in Need of Protection Standard',
+        sections: [
+          {
+            definitions: true,
+            heading: 'Definitions',
+            preamble: 'For the purposes of the Child in Need of Protection Standard, the following definitions apply:',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Child in need of protection',
+            preamble: 'means a child who is or who appears to be suffering from abuse and/or neglect. Section 72 of the Child and Family Services Act (Ontario) details circumstances for concern (i.e. physical, sexual, or emotional abuse, neglect, or risk of harm).',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Duty to report',
+            preamble: 'means the requirement to promptly report any reasonable suspicion that a child is or may be in need of protection directly to a Children\'s Aid Society (CAS).',
+            items: [],
+          },
+          {
+            definitions: true,
+            heading: 'Reasonable grounds',
+            preamble: 'refers to the information that an average person, using normal and honest judgement, would need in order to decide to report.',
+            items: [],
+          },
+          {
+            heading: 'General Directive',
+            preamble: 'In situations where the paramedic has reasonable grounds to believe that the patient is a child who is or may be in need of protection, the paramedic shall:',
+            items: [
+              'ensure the patient is not left alone;',
+              'request police assistance at the scene when it is believed that the patient is at risk of imminent harm;',
+              { text: 'obtain as clear a history of the incident as possible, with no display of personal curiosity. Attempt to determine,', subItems: [
+                { text: 'the validity of the history provided. Consider if the patient may be a child in need of protection if,', subItems: [
+                  'the story changes frequently or parents\' stories differ,',
+                  'the parents are vague about what happened or blame each other,',
+                  'the nature of the injury appears to be inconsistent or improbable with the explanation provided,',
+                  'the mechanism of injury is obviously beyond the developmental capabilities of the child,',
+                  'there has been prolonged, unexplained delay in seeking treatment, or',
+                  'there is a history of recurrent injuries;',
+                ] },
+                'interaction (or lack thereof) between parents/caretakers and between parents and child, e.g. the parents are openly hostile, the child is inappropriately fearful, or the child is avoiding the parents or clinging to one parent and avoiding the other (the child may also paradoxically protect the abusive party, either out of fear of losing a parent or because of verbal threats to keep quiet);',
+                'appropriateness of parental/caretaker response to the child\'s injury and/or emotional distress, e.g. lack of concern, lack of physical comforting, anger inappropriately directed towards the child; and',
+                'appropriateness of child\'s behaviour relevant to the situation/injury, e.g. inappropriate fear, indifference, lack of emotion;',
+              ] },
+              'make no accusations; make no comments about your suspicions in front of the parents or bystanders;',
+              'transport the child in all cases; and',
+              'report suspicions to the receiving hospital and complete the duty to report to the CAS.',
+            ],
+          },
+        ],
+        guidelines: [
+          { heading: 'The following types of pediatric problems are noteworthy for specific attention when a paramedic is determining if the patient may be a child in need of protection:', items: [
+            'Submersion injury',
+            'All burns',
+            'Accidental ingestions/poisoning',
+            'Other types of in-home injuries, e.g. falls',
+          ] },
+          { heading: 'Scene observations which may prompt consideration that the patient is a child in need of protection include:', items: [
+            'Household/siblings dirty, unkempt, and/or in disarray',
+            'Evidence of violence, e.g. overturned or broken furniture',
+            'Animal/pet abuse',
+            'Evidence of substance abuse, e.g. empty liquor bottles, drug paraphernalia',
+          ] },
+          { heading: 'Physical signs which may prompt consideration that the patient is a child in need of protection include:', items: [
+            'Gross or multiple deformities which are incompatible with the incident history, especially in a child under two years of age who is developmentally incapable of sustaining this type of injury',
+            'Multiple new and/or old bruises which have not been reported, or which have been reported as all being new',
+            'Distinctive marks or burns, e.g. belt, hand imprint, cigarette burns;',
+            'Bruises in unusual areas: chest, abdomen, genitals, buttocks',
+            'Burns in unusual areas: buttocks, genitals, soles of feet',
+            'Signs of long-standing physical neglect, e.g. dirty, malodourous skin, hair and clothing, severe diaper rash, uncut/dirty fingernails',
+            'Signs of malnutrition - slack skin folds, extreme pallor, dull/thin hair, dehydration',
+            'Signs of "shaking" syndrome - hemorrhages over the whites of the eyes; hand or fingerprints on the neck, upper arms or shoulders; signs of head injury unrelated to the incident history.',
+          ] },
+          'The duty to report overrides any other provincial statute, including any provisions that would otherwise prohibit someone from making a disclosure (i.e. PHIPA). The failure to report a suspicion in the circumstances set out in the Child and Family Services Act (Ontario) is an offence under that Act.',
+          'Paramedics should be aware that the duty to report under the Child and Family Services Act (Ontario) extends to any child he/she encounters in his/her professional duties and is not limited to the person(s) requesting 911 services.',
+        ]
+      },
+      {
+        id: 'bls-general-geriatric',
+        title: 'General Geriatric Standard',
+        sections: [
+          {
+            preamble: 'In situations involving a geriatric patient, the paramedic shall:',
+            items: [
+              'assume that all geriatric patients are capable of normal hearing, sight, speech, mobility and mental function unless information is provided to the contrary;',
+              'assess living accommodations, living situation, and consider the patient\'s ability to perform activities of daily living;',
+              'be aware of patient presentations associated with elder abuse; and',
+              { text: 'if elder abuse is suspected,', subItems: [
+                'and police not on-scene, offer to contact police; and',
+                'alert receiving facility staff.',
+              ] },
+            ],
+          },
+        ],
+        guidelines: [
+          { heading: 'Guideline (paragraph 1)', items: [
+            'Geriatric patients can present with atypical signs and symptoms and may have co-morbidities.',
+            'Diminished responses to pain, infection, heat/cold may lead the patient and the paramedic to underestimate the severity of the illness/injury.',
+            'Geriatric patients are susceptible to skin tearing, abrasions, and bruising; use caution when handling the patient.',
+            'Geriatric patients are more likely to experience adverse effects from medication use.',
+          ] },
+          { heading: 'Guideline (paragraph 2)', items: [
+            'Consider referral to local agency resources, when appropriate, e.g. Community Care Access Centre (CCAC), 211.',
+            'Activities of daily living include:',
+            'Bathing',
+            'Dressing',
+            'Transferring (e.g. movement and mobility)',
+            'Toileting',
+            'Eating',
+            'If a relative, friend or neighbor is available, they may be able to provide, if necessary, collateral information, such as patient\'s usual level of function and available support.',
+          ] },
+          { heading: 'Guideline (paragraph 3)', items: [
+            'Forms of elder abuse include:',
+            'Financial abuse',
+            'Psychological abuse',
+            'Physical abuse',
+            'Sexual abuse',
+            'Neglect',
+          ] },
+        ]
+      },
+      {
+        id: 'bls-mental-health',
+        title: 'Mental Health Standard',
+        sections: [
+          {
+            preamble: 'In situations involving a patient with an emotional disturbance (e.g. erratic behaviour), the paramedic shall:',
+            items: [
+              'consider underlying organic disorders;',
+              'give particular attention to personal safety as per the General Measures Standard;',
+              { text: 'in cases of patients with known or suspected suicide attempts or self-harm,', subItems: [
+                'assume that all attempts are of serious intent, and',
+                'ask the patient directly whether they have ideation or intent of suicide or self-harm;',
+              ] },
+              'in cases in which a patient is being transported without consent, not proceed with transport unless in possession of the appropriate documentation and/or escort (see paragraph 5 below);',
+              { text: 'recognize the need for an escort as follows:', subItems: [
+                'If a patient is violent or potentially violent, refer to the Violent/Aggressive Patient Standard,',
+                'If a patient is in custody under Court or Ontario Review Board Disposition, a Justice of the Peace or hospital\'s officer in charge or delegate will designate the escort;',
+              ] },
+              { text: 'with respect to use of restraints,', subItems: [
+                { text: 'only restrain a patient if,', subItems: [
+                  'directed by a physician or police officer,',
+                  'an unescorted patient becomes violent en route, or',
+                  'use of restraints is required to provide emergency treatment as per the Patient Refusal/Emergency Treatment Standard,',
+                ] },
+                'only the reasonable and minimum force shall be used to restrain the patient,',
+                'where restraints are applied prior to departing a scene under the direction of a physician or police officer, a physician escort (or delegate) or police officer ordering the restraint is required to accompany the patient in the ambulance,',
+                'concurrent with paragraph 6(c) above, if a police officer has handcuffed a patient, the paramedic shall not proceed with transport until such a time that the police officer takes the patient into custody and is present in the patient compartment,',
+                { text: 'for inter-facility transports,', subItems: [
+                  'in cases in which the sending facility is requesting restraints, advise that all restraints must be provided and applied by hospital staff or police prior to transport, and',
+                  'in cases in which the patient is restrained, the paramedic shall not proceed with the inter-facility transport unless, 1. the sending physician or sending facility has made a decision that the patient can be transferred safely, either with or without a hospital escort, 2. the patient does not appear to be a safety risk or have the potential to become violent en route, and 3. the paramedic feels comfortable with the decision that the patient does not appear to be a safety risk or who has the potential to become violent en route, and',
+                ] },
+                { text: 'if the patient is restrained, document the following on the Ambulance Call Report, in conjunction with the requirements outlined in the Documentation of Patient Care Standard:', subItems: [
+                  'that the patient was restrained,',
+                  'a description of the patient\'s behaviour that required that he/she be restrained or continue to be restrained,',
+                  'a description of the means of restraint, including the method of restraint,',
+                  'the person (e.g. physician, police officer or paramedic) ordering restraint,',
+                  'the position of the patient during restraint, and',
+                  'the clinical response to restraint; and',
+                ] },
+              ] },
+              'not transport a patient in the prone position;',
+            ],
+          },
+        ],
+        guidelines: [
+          { heading: 'Guideline (paragraph 4)', items: [
+            'The Mental Health Act (Ontario) has implications in the manner in which a paramedic may deliver care. Recall:',
+            'A person who is recommended by a physician for admission to a psychiatric facility as an informal or voluntary patient pursuant to the Mental Health Act (Ontario) may not be transported without consent',
+            'The following persons may be transported without consent, subject to the provisions of the Mental Health Act (Ontario) (Note: this list is not exhaustive, please refer to the Mental Health Act for further details):',
+            'The subject of an application for assessment signed by a physician under subsection 15(1) or 15(1.1) of the Mental Health Act (Ontario) (Form 1)',
+            'The subject of an order for examination signed by a Justice of the Peace under subsection 16(1) of the Mental Health Act (Form 2); and',
+            'A person taken into custody by a police officer under subsection 17 of the Mental Health Act (Ontario); and',
+            'A patient detained in a psychiatric facility under a certificate of involuntary admission under subsection 20(4) of the Mental Health Act (Ontario) (Form 3) or a certificate of renewal (Form 4).',
+          ] },
+          { heading: 'Guideline (paragraph 6)', items: [
+            'Restrained patients are more susceptible to rapid deterioration. Maintain a high index of suspicion for all restrained patients.',
+          ] },
+          { heading: 'Guideline (paragraph 7)', items: [
+            'When initiating full body restraint, or participating in full body restraint, of a patient:',
+            'Attempt to organize the team before attempting restraint.',
+            'Prepare all equipment in advance.',
+            'Inform the patient of the need to restrain them and explain the procedure.',
+            'Immobilize the patient\'s limbs and head in one coordinated effort. Grasp each limb at the main joint and between the main joint and the distal joint, e.g. one hand on the elbow, the other on the forearm.',
+            'Place the patient in a supine "spread eagle" position or in the left lateral position.',
+            'Restrain extremities as follows:',
+            'Secure one arm above the head and the other to the stretcher at waist level, or secure both hands to one side of the stretcher.',
+            'Elevate the head of the stretcher to protect the airway and to allow the paramedic greater visibility.',
+            'Secure the feet.',
+            'Ensure that the limbs are secured to the main frame of the stretcher, not to the stretcher side rails.',
+            'If the patient is spitting, consider use of a surgical mask on the patient.',
+          ] },
+        ]
+      },
+      {
+        id: 'bls-violent-aggressive-patient',
+        title: 'Violent/Aggressive Patient Standard',
+        sections: [
+          {
+            preamble: 'In situations involving a violent or aggressive patient, the paramedic shall:',
+            items: [
+              'consider underlying organic disorders;',
+              'give particular attention to personal safety as per the General Measures Standard;',
+              'request police assistance on-scene;',
+              { text: 'wait for police assistance if,', subItems: [
+                'there is an active shooter scenario, or',
+                'there is direct evidence of ongoing violence;',
+              ] },
+              'if electing to delay service as per paragraph 4 above, immediately notify CACC/ACS;',
+              { text: 'if the patient is uncooperative, elicit information from others at the scene; attempt to determine,', subItems: [
+                'if illness, injury and/or alcohol/drug ingestion has triggered the present behaviour, and',
+                'whether there is a past history of violence;',
+              ] },
+              'be alert for behavioural signs of impending violence;',
+              'if confronted, seek a safe egress and attempt to withdraw;',
+              'if a safe withdrawal is not feasible, attempt to speak with and calm the patient; and',
+              'consider need for restraints as per paragraph 6 of the Mental Health Standard.',
+            ],
+          },
+          {
+            preamble: 'In situations involving a patient with an embedded Electronic Control Device (ECD) probe(s), the paramedic shall:',
+            items: [
+              'remove ECD probe(s);',
+            ],
+            notes: [
+              'Police may require preservation of the probe(s) for evidentiary purposes.',
+            ]
+          },
+        ],
+        guidelines: [
+          'Consider leaving probe(s) in place and patient transport when ECD probe is embedded above the clavicle, in the nipple, in the genital area or other unusual circumstances.',
+        ]
+      },
+      {
         id: 'bls-iv-line-maintenance',
         title: 'Intravenous Line Maintenance Standard',
         sections: [
@@ -266,6 +1195,75 @@ const BLS_GROUP_CONTENT = {
         ]
       },
       {
+        id: 'bls-load-and-go-patient',
+        title: 'Load and Go Patient Standard',
+        sections: [
+          {
+            heading: 'General Directive',
+            items: [
+              { text: 'Subject to paragraph 2 below, the paramedic shall initiate rapid transport:', subItems: [
+                'for CTAS 1 patients as per the Prehospital Paramedic CTAS Guide;',
+                'for patients who meet bypass protocols as per the Standards (e.g. Field Trauma Triage, Stroke); or',
+                { text: 'for obstetrical patients, with:', subItems: [
+                  'eclampsia/pre-eclampsia,',
+                  'limb presentation,',
+                  'multiple births expected,',
+                  'premature labour, or',
+                  'umbilical cord prolapse.',
+                ] },
+              ] },
+              { text: 'Notwithstanding paragraph 1 above, the following types of patients may require interventions prior to initiation of rapid transport:', subItems: [
+                'vital signs absent patients experiencing cardiac arrest in which a TOR is not indicated as per the ALS PCS;',
+                'patients with conditions which require immediate, life-saving interventions, which the paramedic can perform; or',
+                'obstetrical patients in which delivery appears imminent.',
+              ] },
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-police-notification',
+        title: 'Police Notification Standard',
+        sections: [
+          {
+            heading: 'General Directive',
+            intro: 'Paramedics shall ensure that police are notified in any cases involving unusual or suspicious situations (e.g. sudden death, violence, foul play, accidents involving emergency vehicles).',
+            items: [],
+          },
+        ],
+        guidelines: [
+          { heading: 'Requesting Police Assistance', items: [
+            'Paramedics requesting police assistance will:',
+            'Contact his/her CACC/ACS via radio or telephone',
+            'State the nature of the request',
+            'Indicate the urgency of response and request the estimated time of arrival',
+            'Advise of possible hazards',
+            'Indicate access routes (where applicable)',
+            'Provide police with an update of the situation when they arrive at the scene',
+            'The following radio codes should be used to contact police in extenuating circumstances:',
+            '10-200 - No immediate danger is evident to patient or paramedic',
+            '10-2000 - Immediate danger is evident to patient or paramedic',
+            'Emergency button on radio and other communication equipment, when available',
+            'The use of police vehicle escorts during transport for the purpose of traffic control is discouraged due to the prevalent danger it presents',
+          ] },
+          { heading: 'Suspected Foul Play', items: [
+            'In cases of suspected foul play, every effort should be made to leave the scene undisturbed and to preserve as much evidence as possible for the police.',
+            'The following should be noted:',
+            'Once a body is moved it can never be put back in its original position',
+            'Careful attention is required whenever something is moved',
+            'Whenever possible use the shortest, most direct path to the patient and the same path when leaving the scene',
+            'Attempt to preserve the chain of evidence; do not discard linen/clothes after call completion without checking with the receiving facility or investigating officer',
+            'The receiving facility staff should also be cautioned regarding the suspected foul play',
+          ] },
+          { heading: 'Hanging', items: [
+            'In cases of hanging, the following special precautions should be taken:',
+            'Careful observation should be made of the position of the rope around the patient\'s neck.',
+            'The rope should be cut only if it cannot be readily slipped off and in such a way that the knot will be preserved.',
+          ] },
+        ]
+      },
+      {
         id: 'bls-sexual-assault',
         title: 'Sexual Assault (Reported) Standard',
         sections: [
@@ -284,11 +1282,38 @@ const BLS_GROUP_CONTENT = {
           'Advise the patient not to wash, urinate or defecate until an examination is conducted at the receiving facility.',
         ]
       },
+      {
+        id: 'bls-research-trial',
+        title: 'Research Trial Standard',
+        sections: [
+          {
+            intro: 'MOH may, at its discretion, approve research trials that include patient care practices that are different from those otherwise set out in the Standards.',
+            preamble: 'A paramedic properly enrolled in an approved research trial shall:',
+            items: [
+              { text: 'determine whether a patient may be treated in accordance with a research trial, only if the following conditions have been met:', subItems: [
+                'MOH has approved the patient care practices set out in the research trial as an alternate standard than to those set out in the Standards;',
+                { text: 'The research trial has been approved by a Research Ethics Board (REB) that:', subItems: [
+                  'abides by and is consistent with the version of the Tri-Council Policy Statement on Ethical Conduct for Research Involving Humans current at the time of submission, and',
+                  'meets the requirements for an REB set out in section 15 of O. Reg. 329/04 made under PHIPA, and',
+                ] },
+                'The research trial has been reviewed and supported in writing by the Ontario Base Hospital Group Medical Advisory Committee;',
+              ] },
+              'obtain the appropriate patient consent for participation in the research trial; and',
+              'provide care in accordance with the approved research trial.',
+            ],
+          },
+        ],
+        guidelines: [
+          'Recall section 44 of PHIPA, which includes provisions related to personal health information and researchers.',
+          'Recall paragraph 11 of the General Measures Standard, which specifies that the paramedic shall also obtain consent for patient care as per the Health Care Consent Act, 1996 (Ontario)',
+        ]
+      },
     ]
   },
 
   'bls-medical': {
     lead: 'Medical presentations requiring focused assessment, early risk recognition, and destination planning.',
+    sectionIntro: 'Specific standards in Section 2 – Medical Standards have been developed not on the basis of diagnosis, but on the basis of: chief complaint, as stated by the patient/bystanders; presenting problem as indicated by the patient/bystanders; and/or immediately obvious primary survey critical findings, e.g. respiratory failure.\n\nParamedics should be aware of a patient\'s potential to deteriorate and prepare accordingly. Particular attention should be paid to the potential for compromises to airway, breathing or circulation, seizures, and/or emesis.\n\nIn conjunction with history gathering, paramedics shall determine provoking factors, quality, region/radiation/relieving factors, severity, and timing of the chief complaint or presenting problem.\n\nWhen providing patient care as per Section 2 – Medical Standards, a paramedic shall ensure that the patient simultaneously receives care in accordance with the ALS PCS.',
     standards: [
       {
         id: 'bls-abdominal-pain',
@@ -509,11 +1534,7 @@ const BLS_GROUP_CONTENT = {
               { text: 'ventilate the patient if patient is apneic or respirations are inadequate,', subItems: [
                 { text: 'if ETCO₂ monitoring is available,', subItems: [
                   'attempt to maintain ETCO₂ values of 35-45 mmHg,',
-                  { text: 'notwithstanding paragraph 5(a)(i) above, if signs of cerebral herniation are present after measures to address hypoxemia and hypotension, hyperventilate the patient to attempt to maintain ETCO₂ values of 30-35 mmHg. Signs of cerebral herniation include a deteriorating GCS <9 with any of the following:', subItems: [
-                    'dilated and unreactive pupils,',
-                    'asymmetric pupillary response, or',
-                    'a motor response that shows either unilateral or bilateral decorticate or decerebrate posturing, or',
-                  ] },
+                  'notwithstanding paragraph 5(a)(i) above, if signs of cerebral herniation are present after measures to address hypoxemia and hypotension, hyperventilate the patient to attempt to maintain ETCO₂ values of 30-35 mmHg. Signs of cerebral herniation include a deteriorating GCS <9 with any of the following: dilated and unreactive pupils, asymmetric pupillary response, or a motor response that shows either unilateral or bilateral decorticate or decerebrate posturing, or',
                 ] },
                 { text: 'if ETCO₂ monitoring is unavailable, and measures to address hypoxemia and hypotension have been taken, and the patient shows signs of cerebral herniation as per paragraph 5(a)(ii) above, hyperventilate the patient as follows:', subItems: [
                   'Adult: approximately 20 breaths per minute,',
@@ -1511,11 +2532,7 @@ const BLS_GROUP_CONTENT = {
               { text: 'ventilate the patient if patient is apneic or respirations are inadequate,', subItems: [
                 { text: 'if ETCO₂ monitoring is available,', subItems: [
                   'attempt to maintain ETCO₂ values of 35-45 mmHg,',
-                  { text: 'notwithstanding paragraph 3(a)(i) above, if signs of cerebral herniation are present after measures to address hypoxemia and hypotension, hyperventilate the patient to attempt to maintain ETCO₂ values of 30-35 mmHg. Signs of cerebral herniation include a deteriorating GCS <9 with any of the following:', subItems: [
-                    'dilated and unreactive pupils,',
-                    'asymmetric pupillary response, or',
-                    'a motor response that shows either unilateral or bilateral decorticate or decerebrate posturing, or',
-                  ] },
+                  'notwithstanding paragraph 3(a)(i) above, if signs of cerebral herniation are present after measures to address hypoxemia and hypotension, hyperventilate the patient to attempt to maintain ETCO₂ values of 30-35 mmHg. Signs of cerebral herniation include a deteriorating GCS <9 with any of the following: dilated and unreactive pupils, asymmetric pupillary response, or a motor response that shows either unilateral or bilateral decorticate or decerebrate posturing, or',
                 ] },
                 { text: 'if ETCO₂ monitoring is unavailable, and measures to address hypoxemia and hypotension have been taken, and the patient shows signs of cerebral herniation as per paragraph 3(a)(ii) above, hyperventilate the patient as follows:', subItems: [
                   'Adult: approximately 20 breaths per minute,',
@@ -2064,4 +3081,236 @@ const BLS_GROUP_CONTENT = {
     ]
   },
 
+
+  'bls-appendix-a': {
+    lead: 'Appendix A supplemental prompt cards reproduced from the BLS PCS v3.4.',
+    sectionIntro: 'Appendix A of the BLS Patient Care Standards contains supplemental paramedic prompt cards. The card text below is reproduced verbatim from BLS PCS v3.4. The FTTG and SMR cards are flowcharts in the original; their decision arrows are written out here as \'YES / NO\' routing lines so they can be read as text. The original one-page visual cards are available under Destination Guidelines and Medical References.',
+    standards: [
+      {
+        id: 'bls-fttg-prompt-card',
+        title: 'FTTG Prompt Card',
+        sections: [
+          {
+            heading: 'Paramedic Prompt Card for Field Trauma Triage Standard',
+            intro: 'This prompt card provides a quick reference of the Field Trauma Triage Standard contained in the Basic Life Support Patient Care Standards (BLS PCS). Please refer to the BLS PCS for the full standard.',
+            preamble: 'Field triage of patients injured by a traumatic mechanism or show evidence of trauma with transport time to LTH or regionally designated equivalent hospital estimated to be <30 minutes*.',
+            items: [
+              { text: 'ANY physiological criteria met? (Step 1)', subItems: [
+                'Patient does not follow commands',
+                'SBP <90mmHg',
+                'Respiratory Rate <10 or ≥30 breaths per minute or need for ventilatory support (<20 in infant aged <1 year)',
+              ] },
+              { text: 'ANY anatomical criteria met? (Step 2)', subItems: [
+                'Any penetrating injuries to head, neck, torso and extremities proximal to elbow or knee',
+                'Chest wall instability or deformity (e.g. flail chest)',
+                'Two or more proximal long-bone fractures',
+                'Crushed, de-gloved, mangled or pulseless extremity',
+                'Amputation proximal to wrist or ankle',
+                'Pelvic fractures',
+                'Open or depressed skull fracture',
+                'Paralysis',
+              ] },
+              { text: 'ANY mechanism of injury criteria met? (Step 3)', subItems: [
+                { text: 'Falls', subItems: [
+                  'Adults: falls ≥6 metres (one story is equal to 3 metres)',
+                  'Children (age <15): falls ≥3 metres or two to three times the height of the child',
+                ] },
+                { text: 'High Risk Auto Crash', subItems: [
+                  'Intrusion ≥0.3 metres occupant site; ≥0.5 metres any site, including the roof',
+                  'Ejection (partial or complete) from automobile',
+                  'Death in the same passenger compartment',
+                  'Vehicle telemetry data consistent with high risk injury (if available)',
+                ] },
+                'Pedestrian or bicyclist thrown, run over or struck with significant impact (≥30 km/hr) by an automobile',
+                'Motorcycle crash ≥30 km/hr',
+              ] },
+              { text: 'ANY special criteria met? (Step 4)', subItems: [
+                { text: 'Age', subItems: [
+                  'Older adults: 1. Risk of injury/death increases after age 55; 2. SBP <110 may represent shock after age 65',
+                ] },
+                'Anticoagulation and bleeding disorders',
+                { text: 'Burns', subItems: [
+                  'With trauma mechanism: triage to LTH or regionally designated equivalent hospital',
+                ] },
+                'Pregnancy ≥20 weeks',
+              ] },
+            ],
+            notes: [
+              'Step 1 – YES: Transport directly to LTH or regionally designated equivalent hospital**. NO: proceed to Step 2.',
+              'Step 2 – YES: Transport directly to LTH or regionally designated equivalent hospital**. NO: proceed to Step 3.',
+              'Step 3 – YES: Determine the need for transport to the LTH; paramedic judgement is required (the paramedic may patch to the base hospital physician). NO: proceed to Step 4.',
+              'Step 4 – YES: Determine the need for transport to the LTH; paramedic judgement is required (the paramedic may patch to the base hospital physician).',
+              '*The 30 minute transport time may be amended to up to 60 minutes as per an ambulance service PPS, but may not exceed 60 minutes.',
+              '**If unable to secure the patient\'s airway or survival to the LTH or regionally designated equivalent hospital is unlikely, transport the patient to the closest ED (unless patient has penetrating trauma to the torso or head/neck). Consider the Trauma TOR as per the ALS PCS.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-smr-prompt-card',
+        title: 'SMR Prompt Card',
+        sections: [
+          {
+            heading: 'Paramedic Prompt Card for Spinal Motion Restriction (SMR) Standard',
+            intro: 'This prompt card provides a quick reference of the Spinal Motion Restriction (SMR) Standard contained in the Basic Life Support Patient Care Standards (BLS PCS). Please refer to the BLS PCS for the full standard.',
+            preamble: 'MOI suggestive of potential spine or spinal cord injury',
+            items: [
+              { text: 'MOI examples include:', subItems: [
+                'Any trauma associated with complaints of neck or back pain',
+                'Sports accidents (impaction, falls)',
+                'Diving incidents and submersion injuries',
+                'Explosions, other types of forceful acceleration/deceleration injuries',
+                'Falls (e.g. stairs)',
+                'Pedestrians struck',
+                'Electrocution',
+                'Lightning strikes',
+                'Penetrating trauma to the head, neck or torso',
+              ] },
+              { text: 'ANY risk criteria met?', subItems: [
+                'Neck or back pain',
+                'Spine tenderness',
+                'Neurologic signs or symptoms',
+                'Altered level of consciousness',
+                'Suspected drug or alcohol intoxication',
+                'A distracting painful injury',
+                'Anatomic deformity of the spine',
+                { text: 'High-energy mechanism of injury:', subItems: [
+                  'Fall from elevation greater than 3 feet/5 stairs',
+                  'Axial load to the head (e.g. diving accidents)',
+                  'MVC high speed (≥100 km/hr), rollover, ejection',
+                  'Hit by bus or large truck',
+                  'Motorized/ATV recreational vehicles collision',
+                  'Bicycle struck or collision',
+                ] },
+                'Age ≥65 including falls from standing height',
+              ] },
+              { text: 'Penetrating trauma MOI with ALL penetrating modifiers present?', subItems: [
+                'No spine tenderness',
+                'No neurologic signs or symptoms',
+                'No altered level of consciousness',
+                'No evidence of alcohol or drug intoxication',
+                'No distracting painful injury',
+                'No anatomic deformity of the spine',
+              ] },
+            ],
+            notes: [
+              'ANY risk criteria met? – NO: No SMR required. YES: assess Penetrating trauma MOI with ALL penetrating modifiers present?',
+              'Penetrating trauma MOI with ALL penetrating modifiers present? – YES: No SMR required. NO: SMR using cervical collar only, while attempting to minimize spinal movement*.',
+              '*Backboards may still be indicated for use to minimize spinal movement during extrication.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-stemi-prompt-card',
+        title: 'STEMI Prompt Card',
+        sections: [
+          {
+            heading: 'Paramedic Prompt Card for STEMI Hospital Bypass Protocol',
+            intro: 'This prompt card provides a quick reference of the STEMI Hospital Bypass Protocol contained in the Basic Life Support Patient Care Standards (BLS PCS). Please refer to the BLS PCS for the full protocol.',
+          },
+          {
+            heading: 'Indications under the STEMI Hospital Bypass Protocol',
+            preamble: 'Transport to a PCI centre will be considered for patients who meet ALL of the following:',
+            items: [
+              '≥18 years of age.',
+              'Chest pain or equivalent consistent with cardiac ischemia/myocardial infarction.',
+              'Time from onset of current episode of pain <12 hours.',
+              { text: '12-lead ECG indicates an acute AMI/STEMI*:', subItems: [
+                'At least 2 mm ST-elevation in leads V1-V3 in at least two contiguous leads; AND/OR',
+                'At least 1 mm ST-elevation in at least two other anatomically contiguous leads; OR',
+                '12-lead ECG computer interpretation of STEMI and paramedic agrees.',
+              ] },
+            ],
+            notes: [
+              '*Once activated, continue to follow the STEMI Hospital Bypass Protocol even if the ECG normalizes.',
+            ],
+          },
+          {
+            heading: 'Contraindications under the STEMI Hospital Bypass Protocol',
+            preamble: 'ANY of the following exclude a patient from being transported under the STEMI Hospital Bypass Protocol:',
+            items: [
+              'CTAS 1 and the paramedic is unable to secure patient\'s airway or ventilate.',
+              '12-lead ECG is consistent with a LBBB, ventricular paced rhythm, or any other STEMI imitator.',
+              'Transport to a PCI centre ≥60 minutes from patient contact.**',
+              { text: 'Patient is experiencing a complication requiring PCP diversion:**', subItems: [
+                'Moderate to severe respiratory distress or use of CPAP.',
+                'Hemodynamic instability or symptomatic SBP <90 mmHg at any point.',
+                'VSA without ROSC.',
+              ] },
+              { text: 'Patient is experiencing a complication requiring ACP diversion:**', subItems: [
+                'Ventilation inadequate despite assistance.',
+                'Hemodynamic instability unresponsive/not amenable to ACP treatment/management.',
+                'VSA without ROSC.',
+              ] },
+            ],
+            notes: [
+              '**The interventional cardiology program may still permit the transport to the PCI centre.',
+              'CACC/ACS will authorize the transport once notified of the patient\'s need for bypass under the STEMI Hospital Bypass Protocol.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+      {
+        id: 'bls-stroke-prompt-card',
+        title: 'Stroke Prompt Card',
+        sections: [
+          {
+            heading: 'Paramedic Prompt Card for Acute Stroke Bypass Protocol',
+            intro: 'This prompt card provides a quick reference of the Acute Stroke Protocol contained in the Basic Life Support Patient Care Standards (BLS PCS).',
+          },
+          {
+            heading: 'Indications under the Acute Stroke Protocol',
+            preamble: 'Redirect or transport to the closest or most appropriate Designated Stroke Centre (DSC)* will be considered for patients who meet BOTH of the following:',
+            items: [
+              { text: 'Present with a new onset of at least one of the following symptoms suggestive of the onset of an acute stroke:', subItems: [
+                'Unilateral arm/leg weakness or drift.',
+                'Slurred speech or inappropriate words or mute.',
+                'Unilateral facial droop.',
+              ] },
+              'Can be transported to arrive at a Designated Stroke Centre within 6 hours of a clearly determined time of symptom onset or the time the patient was last seen in a usual state of health.',
+            ],
+            notes: [
+              'Inform the CACC/ACS to aid in the determination of the most appropriate destination.',
+              '*A Regional Stroke Centre, District Stroke Centre or Telestroke Centre regardless of EVT capability.',
+            ],
+          },
+          {
+            heading: 'Large Vessel Occlusion (LVO) Assessment',
+            items: [
+              { text: 'Perform a secondary screen for LVO stroke using the Los Angeles Motor Scale (LAMS) for all probable stroke patients presenting within 24 hours of stroke symptom onset.', subItems: [
+                'if LAMS is greater than or equal to 4 (≥4), classify the patient as CTAS 2',
+                'inform the receiving hospital whether "LVO Clinical Screen is positive or negative" **',
+              ] },
+            ],
+            notes: [
+              '** In select regions, LVO Clinical Screen + patients, presenting within 6 hours of stroke symptom onset, may be redirected to the closest EVT centre.',
+            ],
+          },
+          {
+            heading: 'Contraindications under the Acute Stroke Protocol',
+            preamble: 'ANY of the following exclude a patient from being transported under the Acute Stroke Protocol:',
+            items: [
+              'CTAS Level 1 and/or uncorrected airway, breathing or circulatory problem.',
+              'Symptoms of the stroke resolved prior to paramedic arrival or assessment***.',
+              'Blood sugar <3 mmol/L****.',
+              'Seizure at onset of symptoms or observed by paramedics.',
+              'Glasgow Coma Scale <10.',
+              'Terminally ill or palliative care patient.',
+              'Duration of out of hospital transport will exceed two hours.',
+            ],
+            notes: [
+              '***Patients whose symptoms improve significantly or resolve during transport will continue to be transported to a Designated Stroke Centre.',
+              '****If symptoms persist after correction of blood glucose level, the patient is not contraindicated.',
+              'CACC/ACS will authorize the transport once notified of the patient\'s need for redirect or transport under the Acute Stroke Protocol.',
+            ],
+          },
+        ],
+        guidelines: []
+      },
+    ]
+  },
 };

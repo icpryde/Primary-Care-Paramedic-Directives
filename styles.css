@@ -3837,6 +3837,10 @@ body.ios-native-nav-commit .view.active { animation: none; }
   background: #fef9c3;
   color: #ca8a04;
 }
+.ped-calc-icon-orange {
+  background: #ffedd5;
+  color: #ea580c;
+}
 .ped-calc-result-label {
   margin: 0;
   font-size: 13px;
@@ -3908,6 +3912,92 @@ body.ios-native-nav-commit .view.active { animation: none; }
   gap: 12px;
   margin-top: 4px;
 }
+/* ── Defibrillation energy (joules) ──────────────────────── */
+.ped-calc-joule-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+.ped-calc-joule-grid[hidden] {
+  display: none;
+}
+.ped-calc-joule-box {
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: center;
+}
+.ped-calc-joule-first {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+.ped-calc-joule-next {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+.ped-calc-joule-tag {
+  margin: 0 0 2px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.ped-calc-joule-first .ped-calc-joule-tag {
+  color: #c2410c;
+}
+.ped-calc-joule-next .ped-calc-joule-tag {
+  color: #b91c1c;
+}
+.ped-calc-joule-val {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+.ped-calc-joule-sub {
+  margin: 2px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: #78716c;
+}
+.ped-calc-joule-first .ped-calc-joule-val {
+  color: #9a3412;
+}
+.ped-calc-joule-next .ped-calc-joule-val {
+  color: #991b1b;
+}
+.ped-calc-joule-adult {
+  margin-top: 4px;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+.ped-calc-joule-adult-tag {
+  margin: 0 0 2px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #1d4ed8;
+}
+.ped-calc-joule-adult-val {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #1e3a8a;
+}
+.ped-calc-joule-note {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #64748b;
+}
+.ped-calc-joule-note:empty {
+  display: none;
+}
+
 .ped-calc-footnote {
   display: flex;
   gap: 10px;
@@ -6547,6 +6637,30 @@ body.ios-native-nav-commit .view.active { animation: none; }
   font-weight: 600;
   color: #92400e;
   margin-top: 8px;
+}
+
+.drug-calc-result-value--text { font-size: 0.95rem; font-weight: 700; text-align: right; max-width: 55%; line-height: 1.3; }
+
+.drug-calc-crosslink-btn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.drug-calc-crosslink-btn:active { background: #dbeafe; }
+
+.drug-calc-warning--red {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
 }
 
 .drug-calc-empty {
