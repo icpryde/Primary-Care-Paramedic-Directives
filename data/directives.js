@@ -268,7 +268,7 @@ const DIRECTIVES = [
         cols: ['', 'Age <1 year', 'Age ≥1 year to <12 years', 'Age ≥12 years'],
         rows: [
           ['Dose', 'Suction at 60-100 mmHg', 'Suction at 100-120 mmHg', 'Suction at 100-150 mmHg'],
-          ['Max. single dose', 'Until fluid disappears or after 15 seconds of no fluid return', '', ''],
+          ['Max. single dose', 'Until fluid disappears or after 15 seconds of no fluid return', 'Until fluid disappears or after 15 seconds of no fluid return', 'Until fluid disappears or after 15 seconds of no fluid return'],
           ['Dosing interval', 'N/A', 'N/A', 'N/A'],
           ['Max. # of doses', 'N/A', 'N/A', 'N/A'],
         ]
