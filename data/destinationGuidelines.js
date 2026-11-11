@@ -71,7 +71,9 @@ function blsSourceFooter() {
 }
 
 function flowchartBlock(label, pdfPath, thumbPath) {
-  const fullImg = esc(pdfPath).replace(/\.pdf$/i, '-full.png');
+  // Full-size image sits beside the thumbnail (…-thumb.png → …-full.png). Deriving it from the
+  // PDF name broke the Field Trauma Triage card, whose PDF and PNGs are named differently.
+  const fullImg = esc(thumbPath).replace(/-thumb\.png$/i, '-full.png');
   return `<div class="flowchart-wrap destination-flowchart-wrap">
     <div class="flowchart-label">${esc(label)}</div>
     <img class="flowchart-thumb" src="${esc(thumbPath)}" alt="${esc(label)}"
