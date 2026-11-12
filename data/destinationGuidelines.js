@@ -48,7 +48,7 @@ const DESTINATION_MENU = [
   {
     id: 'fit-2-sit',
     title: 'Fit 2 Sit Process',
-    keywords: 'fit2sit fit to sit ctas gcs rowpsv grh cmh st mary exclusion inclusion',
+    keywords: 'fit2sit fit to sit ctas gcs rowpsv wrhn midtown queens queen\'s blvd grand river grh cmh st mary cambridge exclusion inclusion',
   },
   {
     id: 'radio-channel-change',
@@ -508,7 +508,7 @@ function buildDestinationDetailHtml(id) {
 
         <h3 class="destination-hospital-process">Hospital process</h3>
 
-        <h4 class="destination-hospital-h4">Grand River &amp; St. Mary’s Hospital Fit2SIT</h4>
+        <h4 class="destination-hospital-h4">Midtown &amp; Queen’s Fit2SIT</h4>
         <ol class="destination-hospital-steps">
           <li>Complete Reporting Details Form.</li>
           <li>Provide pamphlet/poster to the patient.</li>
