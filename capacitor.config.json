@@ -4,5 +4,10 @@
   "webDir": "dist",
   "ios": {
     "backgroundColor": "#0D2B55"
+  },
+  "plugins": {
+    "Keyboard": {
+      "resize": "native"
+    }
   }
 }

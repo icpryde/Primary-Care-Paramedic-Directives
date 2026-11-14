@@ -1,91 +1,78 @@
-const CACHE_NAME = 'pcp-directives-v124';
-const BASE = (self.location && self.location.hostname === 'icpryde.github.io')
-  ? '/Primary-Care-Paramedic-Directives'
-  : '';
-const ASSETS = [
-  BASE + '/',
-  BASE + '/index.html',
-  BASE + '/styles.css',
-  BASE + '/app.js',
-  BASE + '/data/directives.js',
-  BASE + '/data/blsStandards.js',
-  BASE + '/data/companion.js',
-  BASE + '/data/references.js',
-  BASE + '/data/specialEvent.js',
-  BASE + '/data/contact.js',
-  BASE + '/data/destinationGuidelines.js',
-  BASE + '/data/calculators-content.js',
-  BASE + '/data/medications.js',
-  BASE + '/data/ctasData.js',
-  BASE + '/data/logos.json',
-  BASE + '/assets/logos/region-waterloo-paramedic.png',
-  BASE + '/assets/logos/halton-paramedic.png',
-  BASE + '/assets/logos/niagara-ems.png',
-  BASE + '/assets/logos/hamilton-paramedic.png',
-  BASE + '/assets/logos/brant-brantford-paramedic.png',
-  BASE + '/assets/logos/york-region-paramedic.png',
-  BASE + '/assets/logos/peel-paramedic.png',
-  BASE + '/assets/logos/oxford-county-paramedic.png',
-  BASE + '/assets/logos/guelph-wellington-paramedic.png',
-  BASE + '/assets/logos/toronto-paramedic.png',
-  BASE + '/manifest.json',
-  BASE + '/icons/icon-192.png',
-  BASE + '/icons/icon-512.png',
-  BASE + '/assets/Paramedic_Directives_logo.png',
-  BASE + '/assets/newborn-flowchart-full.png',
-  BASE + '/assets/newborn-flowchart-thumb.png',
-  BASE + '/assets/trauma-arrest-flowchart-full.png',
-  BASE + '/assets/trauma-arrest-flowchart-thumb.png',
-  BASE + '/assets/12-lead-ecg.png',
-  BASE + '/assets/v4r-ecg.png',
-  BASE + '/assets/15-lead-v8-v9.png',
-  BASE + '/assets/cpr-guidelines-full.png',
-  BASE + '/assets/cpr-guidelines-thumb.png',
-  BASE + '/assets/breech-delivery.png',
-  BASE + '/assets/breech-flowchart.png',
-  BASE + '/assets/cord-prolapse-management.png',
-  BASE + '/assets/cord-prolapse-transport.png',
-  BASE + '/assets/pain-scale.png',
-  BASE + '/assets/rule-of-nines.png',
-  BASE + '/assets/etco2-waveforms.png',
-  BASE + '/assets/cpap-step1.png',
-  BASE + '/assets/cpap-step2.png',
-  BASE + '/assets/cpap-step3.png',
-  BASE + '/assets/omc-patch.png',
-  BASE + '/assets/fast-sepsis-prealert-chart.png',
-  BASE + '/assets/field-trauma-triage-flowchart-full.png',
-  BASE + '/assets/field-trauma-triage-flowchart-thumb.png',
-  BASE + '/assets/spinal-motion-restriction-prompt-card-full.png',
-  BASE + '/assets/spinal-motion-restriction-prompt-card-thumb.png',
-  BASE + '/assets/12-lead-acs-process-flowchart.png',
-  BASE + '/assets/radio-channel-selector.png'
+// Directives v2.0, the web app's offline copy. The phone apps carry everything and never use this.
+// The deploy workflow bumps the number below on every push to main, so a new version replaces the saved one.
+const CACHE_NAME = 'pcp-directives-v125';
+const OWN = CACHE_NAME.replace(/\d+$/, '');            // this app's earlier copies; the archived first app (v1/) has its own name
+const SCOPE = self.registration.scope;
+const PRECACHE = [
+"./",
+"index.html",
+"manifest.json",
+"icons/icon-192.png",
+"icons/icon-512.png",
+"icons/apple-touch-icon.png",
+"img/12-lead-acs-process-flowchart.jpg",
+"img/12-lead-ecg.png",
+"img/15-lead-v8-v9.png",
+"img/bls-dnr-confirmation-form-sample.jpg",
+"img/breech-delivery.png",
+"img/breech-flowchart.png",
+"img/cord-prolapse-management.png",
+"img/cord-prolapse-transport.png",
+"img/cpap-step1.png",
+"img/cpap-step2.png",
+"img/cpap-step3.png",
+"img/cpr-guidelines-full.png",
+"img/cpr-guidelines-thumb.png",
+"img/etco2-waveforms.png",
+"img/fast-sepsis-prealert-chart.png",
+"img/field-trauma-triage-flowchart-full.png",
+"img/field-trauma-triage-flowchart-thumb.png",
+"img/imist-ambo-full.png",
+"img/imist-ambo-thumb.png",
+"img/mrsopa-infographic.webp",
+"img/newborn-flowchart-full.png",
+"img/newborn-flowchart-thumb.png",
+"img/omc-patch.jpg",
+"img/pads-adult-anterior-lateral.png",
+"img/pads-adult-anterior-posterior.png",
+"img/pads-pediatric-anterior-posterior.png",
+"img/pain-scale.png",
+"img/radio-channel-selector.jpg",
+"img/rule-of-nines.png",
+"img/spinal-motion-restriction-prompt-card-full.png",
+"img/spinal-motion-restriction-prompt-card-thumb.png",
+"img/trauma-arrest-flowchart-full.png",
+"img/trauma-arrest-flowchart-thumb.png",
+"img/v4r-ecg.png",
+"files/imist-ambo.pdf",
+"pdfjs/pdf.min.js",
+"pdfjs/pdf.worker.min.js"
 ];
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-  );
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE.map((p) => new URL(p, SCOPE).href))));
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+self.addEventListener('activate', (event) => {
+  event.waitUntil(caches.keys()
+    .then((keys) => Promise.all(keys.filter((k) => k.indexOf(OWN) === 0 && k !== CACHE_NAME).map((k) => caches.delete(k))))
+    .then(() => self.clients.claim()));
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        return response;
-      }).catch(() => cached);
-    })
-  );
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.href.indexOf(SCOPE) !== 0) return;                                 // another site, or another app on this one
+  const path = url.href.slice(SCOPE.length);
+  if (path.indexOf('v1/') === 0 || path.indexOf('vid/') === 0) return;      // the archived first app; skill videos (network)
+  if (req.mode === 'navigate') {                                            // the app is one page: any visit gets it
+    event.respondWith(caches.match(new URL('index.html', SCOPE).href).then((hit) => hit || fetch(req)));
+    return;
+  }
+  event.respondWith(caches.match(req, { ignoreSearch: true }).then((hit) => hit || fetch(req).then((res) => {
+    if (res && res.ok && res.type === 'basic') { const copy = res.clone(); caches.open(CACHE_NAME).then((c) => c.put(req, copy)); }
+    return res;
+  })));
 });

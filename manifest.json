@@ -2,12 +2,12 @@
   "id": "https://icpryde.github.io/Primary-Care-Paramedic-Directives/",
   "name": "Directives",
   "short_name": "Directives",
-  "description": "Ontario ALS PCS v5.4 Primary Care Paramedic Medical Directives",
+  "description": "Ontario Primary Care Paramedic medical directives, with every dose worked out for your patient. ALS PCS 5.4, BLS PCS 3.4, Companion 5.4.",
   "start_url": "https://icpryde.github.io/Primary-Care-Paramedic-Directives/",
   "scope": "https://icpryde.github.io/Primary-Care-Paramedic-Directives/",
   "display": "standalone",
-  "background_color": "#0D2B55",
-  "theme_color": "#0D2B55",
+  "background_color": "#0B111B",
+  "theme_color": "#0B111B",
   "orientation": "portrait",
   "icons": [
     {

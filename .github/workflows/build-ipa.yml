@@ -59,6 +59,9 @@ jobs:
       - name: Apply repository app icon
         run: npm run ios:icon
 
+      - name: Apply the iOS shell (clean fresh open, swipe back, launch screen)
+        run: npm run ios:shell
+
       - name: Build unsigned app for iphoneos
         run: |
           xcodebuild \

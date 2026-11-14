@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Directives v1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#0D2B55" />
+  <title>PCP Medical Directives</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app-on-home">
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header id="app-header">
+    <button id="back-btn" class="header-back header-back-slot" aria-label="Back" hidden>
+      <svg width="11" height="18" viewBox="0 0 11 18" fill="none">
+        <path d="M10 1L2 9L10 17" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="header-brand-stack">
+      <h1 id="header-title">Medical Directives</h1>
+      <div id="header-paramedic-brand" class="header-paramedic-brand">
+        <span class="header-paramedic-line">PARAMEDIC</span>
+        <span class="header-paramedic-line">SERVICES</span>
+      </div>
+    </div>
+    <div class="header-tools-slot">
+      <div class="header-right-tools">
+        <button type="button" id="header-logo-btn" class="header-logo-btn" aria-label="Choose service logo" title="Choose logo">
+          <img id="header-logo-img" class="header-logo-img" alt="" width="96" height="96" decoding="async" hidden />
+          <span id="header-logo-placeholder" class="header-logo-placeholder">Tap to choose logo</span>
+        </button>
+      </div>
+    </div>
+    <button type="button" id="header-help-btn" class="header-help header-help-corner" aria-label="Help: install app and updates" title="Help">?</button>
+  </header>
+
+  <div id="install-help-modal" class="help-modal" hidden aria-hidden="true">
+    <div class="help-modal-backdrop" tabindex="-1"></div>
+    <div class="help-modal-panel" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
+      <div class="help-modal-header">
+        <h2 id="help-modal-title">App help</h2>
+        <button type="button" class="help-modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="help-modal-body">
+        <p class="help-modal-lead"><strong>Install</strong> — add to your home screen for a full-screen shortcut.</p>
+
+        <section class="help-modal-section">
+          <h3>iPhone &amp; iPad (Safari)</h3>
+          <ol class="help-modal-steps">
+            <li>Open this app’s URL in <strong>Safari</strong>.</li>
+            <li>Tap <strong>Share</strong> <span class="help-icon-inline" aria-hidden="true">□↗</span> → <strong>Add to Home Screen</strong> → <strong>Add</strong>.</li>
+            <li>Launch it from the home screen icon. Delete an old icon first if it opens the wrong page.</li>
+          </ol>
+        </section>
+
+        <section class="help-modal-section">
+          <h3>Android (Chrome)</h3>
+          <ol class="help-modal-steps">
+            <li>Open this site in <strong>Chrome</strong>.</li>
+            <li>Tap <strong>⋮</strong> → <strong>Install app</strong> or <strong>Add to Home screen</strong>, then confirm.</li>
+          </ol>
+          <p class="help-modal-note"><strong>Samsung Internet:</strong> <strong>Menu</strong> → <strong>Add page to</strong> → <strong>Home screen</strong>.</p>
+        </section>
+
+        <section class="help-modal-section">
+          <h3>Get the latest version</h3>
+          <p class="help-modal-para">After we publish updates, <strong>fully close this app</strong> and open it again so your device loads the newest files (especially if something looks out of date).</p>
+          <ul class="help-modal-bullets">
+            <li><strong>iPhone / iPad:</strong> Swipe up from the bottom edge and pause (or double-click the Home button). Find this app in the app switcher and <strong>swipe it up off the screen</strong> to close it. Then open it again from your Home Screen icon.</li>
+            <li><strong>Android:</strong> Tap the <strong>Recents</strong> button (square or swipe up and hold), then <strong>swipe this app away</strong> to close it. Re-open from your home screen or app list.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="logo-picker-modal" class="help-modal logo-picker-modal" hidden aria-hidden="true">
+    <div class="help-modal-backdrop logo-picker-backdrop" tabindex="-1"></div>
+    <div class="help-modal-panel logo-picker-panel" role="dialog" aria-modal="true" aria-labelledby="logo-picker-title">
+      <div class="help-modal-header">
+        <h2 id="logo-picker-title">Choose logo</h2>
+        <button type="button" class="help-modal-close logo-picker-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="help-modal-body logo-picker-body">
+        <p id="logo-picker-empty" class="logo-picker-empty" hidden>No logos bundled yet. Add image files under <code>assets/logos/</code> and register them in <code>data/logos.json</code>.</p>
+        <div id="logo-picker-grid" class="logo-picker-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pin-confirm-modal" class="help-modal pin-modal" hidden aria-hidden="true">
+    <div class="help-modal-backdrop pin-modal-backdrop" tabindex="-1"></div>
+    <div class="help-modal-panel pin-modal-panel" role="dialog" aria-modal="true" aria-labelledby="pin-modal-title">
+      <div class="pin-modal-body">
+        <div class="pin-modal-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76V6a3 3 0 1 1 6 0v4.76l3 3.24v1H6v-1l3-3.24z"/></svg>
+        </div>
+        <h2 id="pin-modal-title" class="pin-modal-title">Pin to top?</h2>
+        <p id="pin-modal-msg" class="pin-modal-msg"></p>
+      </div>
+      <div class="pin-modal-actions">
+        <button type="button" class="pin-modal-btn" id="pin-modal-cancel">Cancel</button>
+        <button type="button" class="pin-modal-btn pin-modal-btn--primary" id="pin-modal-confirm">Pin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VIEWS ──────────────────────────────────────────── -->
+
+  <!-- HOME -->
+  <div id="view-home" class="view active">
+    <div class="home-search-stack">
+      <div class="search-bar-wrap home-search-bar">
+        <div class="search-bar">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+            <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input id="global-search" type="search" placeholder="Search" autocomplete="off" />
+        </div>
+      </div>
+      <div id="search-results" class="search-results" hidden></div>
+    </div>
+    <nav class="home-nav">
+      <button class="home-nav-btn cat-pcp" data-view="view-pcp">Primary Care Paramedic</button>
+      <button class="home-nav-btn cat-specialevent" data-view="view-special-event">Special Event Directives</button>
+      <button class="home-nav-btn cat-special" data-view="view-special">Special Care Directives</button>
+      <button class="home-nav-btn cat-companion" data-view="view-companion">Companion Document</button>
+      <button class="home-nav-btn cat-reference" data-view="view-references">Medical References</button>
+      <button class="home-nav-btn cat-calculators" data-view="view-calculators">Medical Calculators</button>
+      <button class="home-nav-btn cat-medications" data-view="view-medications">Medication Information</button>
+      <button class="home-nav-btn cat-ctas" data-view="view-ctas">CTAS Levels</button>
+      <button class="home-nav-btn cat-contact" data-view="view-contact">Contact</button>
+      <button class="home-nav-btn cat-destination" data-view="view-destination">Destination Guidelines</button>
+    </nav>
+    <footer class="home-footer">
+      <div class="home-footer-compact">
+        <span class="home-footer-label">Ontario Paramedic Clinical Guide</span>
+        <span class="home-footer-tags">ALS 5.4 · BLS 3.4 · Companion 5.4 · <span id="app-version-tag">v…</span></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- PCP DIRECTIVES LIST -->
+  <div id="view-pcp" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="pcp-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div id="pcp-list" class="category-list"></div>
+  </div>
+
+  <!-- SPECIAL EVENT DIRECTIVES LIST -->
+  <div id="view-special-event" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="special-event-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div class="specialevent-banner">SPECIAL EVENT DIRECTIVES</div>
+    <p class="view-intro">PCP auxiliary directives for authorized mass-gathering events (ALS PCS Section 3). Use only when authorized by your RBHP.</p>
+    <div id="special-event-list" class="category-list flat-list"></div>
+  </div>
+
+  <!-- MEDICAL CALCULATORS (menu) -->
+  <div id="view-calculators" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="calculators-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div class="calculators-top-banner">MEDICAL CALCULATORS</div>
+    <p class="view-intro">Interactive scoring and decision-support tools. Reference charts (GCS, PCS, LAMS) are under <strong>Medical References</strong>.</p>
+    <div id="calculators-list" class="category-list flat-list"></div>
+  </div>
+
+  <!-- MEDICATION INFORMATION -->
+  <div id="view-medications" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="medications-search" type="search" placeholder="Search meds, classes, tags…" autocomplete="off" />
+      </div>
+    </div>
+    <div class="medications-top-banner">MEDICATION INFORMATION</div>
+    <p class="view-intro">Common home medications and paramedic-carried drugs: class, route, onset, and field notes. Suffix patterns help recognize unfamiliar drug names.</p>
+    <div class="med-tab-bar" role="tablist" aria-label="Medication filter">
+      <button type="button" class="med-tab med-tab--on" data-med-tab="All" role="tab" aria-selected="true">All</button>
+      <button type="button" class="med-tab" data-med-tab="Paramedic Drug" role="tab" aria-selected="false">EMS Drugs</button>
+      <button type="button" class="med-tab" data-med-tab="Home Med" role="tab" aria-selected="false">Home Meds</button>
+      <button type="button" class="med-tab" data-med-tab="Suffixes" role="tab" aria-selected="false">Suffixes</button>
+    </div>
+    <div id="medications-list" class="medications-list"></div>
+  </div>
+
+  <!-- BURN CALCULATOR -->
+  <div id="view-burn" class="view burn-view" hidden>
+    <div class="burn-scroll">
+      <div class="burn-top-card">
+        <div class="burn-top-row">
+          <div>
+            <h2 class="burn-h2">Burn % Calculator</h2>
+            <p class="burn-tagline">Rule of Nines Assessment</p>
+          </div>
+          <div class="burn-top-actions">
+            <button type="button" class="burn-icon-btn" id="burn-btn-zoom" aria-label="Toggle diagram zoom" title="Zoom">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            </button>
+            <button type="button" class="burn-icon-btn burn-icon-btn--reset" id="burn-btn-reset" aria-label="Reset selection" title="Reset">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="burn-panel">
+        <div class="burn-row-split">
+          <button type="button" id="burn-type-adult" class="burn-type-btn burn-type-btn--on">Adult</button>
+          <button type="button" id="burn-type-ped" class="burn-type-btn">Paediatric</button>
+        </div>
+        <div class="burn-degree-row">
+          <button type="button" class="burn-deg-btn" data-burn-degree="1st">1st Degree</button>
+          <button type="button" class="burn-deg-btn burn-deg-btn--on" data-burn-degree="2nd">2nd Degree</button>
+          <button type="button" class="burn-deg-btn" data-burn-degree="3rd">3rd Degree</button>
+        </div>
+      </div>
+      <div id="burn-diagrams" class="burn-diagrams"></div>
+      <div id="burn-result-mount"></div>
+      <div id="burn-bls-mount"></div>
+      <p class="burn-foot">Medical decision support tool — not sole basis for critical interventions.</p>
+    </div>
+  </div>
+
+  <!-- PRE-SEPSIS TOOL (FAST ParaHEWS) -->
+  <div id="view-presepsis" class="view presepsis-view" hidden>
+    <div class="presepsis-scroll">
+      <div class="presepsis-local-header">
+        <div>
+          <h2 class="presepsis-local-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            FAST Sepsis Pre-Alert
+          </h2>
+          <p class="presepsis-local-sub">GWPS, HPS, ROWPS Protocol</p>
+        </div>
+        <button type="button" id="presepsis-reset" class="presepsis-reset-btn">Reset Tool</button>
+      </div>
+
+      <section class="presepsis-card" aria-labelledby="presepsis-gateway-h">
+        <h2 id="presepsis-gateway-h">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          1. Clinical Suspicion
+        </h2>
+        <p class="presepsis-gateway-q">Do you suspect or know there is an infection?</p>
+        <div class="presepsis-yesno">
+          <button type="button" id="presepsis-yes">Yes</button>
+          <button type="button" id="presepsis-no">No</button>
+        </div>
+        <div id="presepsis-not-indicated" class="presepsis-not-indicated" hidden>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div><strong>Sepsis protocol not indicated.</strong> Continue with standard care protocols.</div>
+        </div>
+      </section>
+
+      <section id="presepsis-para-section" class="presepsis-card presepsis-para-card" hidden aria-labelledby="presepsis-para-h">
+        <h2 id="presepsis-para-h">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          2. Apply ParaHEWS
+        </h2>
+        <div id="presepsis-para-rows"></div>
+      </section>
+    </div>
+
+    <div id="presepsis-footer" class="presepsis-footer" hidden>
+      <div class="presepsis-footer-inner">
+        <div>
+          <div class="presepsis-total-label">TOTAL SCORE</div>
+          <div id="presepsis-total" class="presepsis-total-num">0</div>
+        </div>
+        <div id="presepsis-alert-panel" class="presepsis-alert-panel">
+          <span id="presepsis-alert-idle">Score &lt; 5: Standard monitoring</span>
+          <div id="presepsis-alert-active" class="presepsis-alert-active-row" hidden>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div>
+              <div class="presepsis-alert-title">SEPSIS PRE-ALERT</div>
+              <div class="presepsis-alert-sub">Notify receiving hospital &amp; Apply Capnography</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAMS SCORE CALCULATOR -->
+  <div id="view-lams" class="view lams-view" hidden>
+    <div class="lams-scroll">
+      <div class="lams-header-card">
+        <div class="lams-header-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div>
+          <h2 class="lams-title">LAMS Score</h2>
+          <p class="lams-subtitle">Los Angeles Motor Scale</p>
+        </div>
+      </div>
+
+      <section class="lams-section" aria-labelledby="lams-facial-h">
+        <h3 id="lams-facial-h" class="lams-section-title">Facial Droop</h3>
+        <div class="lams-options">
+          <button type="button" class="lams-opt" data-lams-field="facial" data-value="0" data-tone="green"><span>Absent</span><span class="lams-opt-val">0</span></button>
+          <button type="button" class="lams-opt" data-lams-field="facial" data-value="1" data-tone="red"><span>Present</span><span class="lams-opt-val">1</span></button>
+        </div>
+      </section>
+      <section class="lams-section" aria-labelledby="lams-arm-h">
+        <h3 id="lams-arm-h" class="lams-section-title">Arm Drift</h3>
+        <div class="lams-options">
+          <button type="button" class="lams-opt" data-lams-field="arm" data-value="0" data-tone="green"><span>Absent</span><span class="lams-opt-val">0</span></button>
+          <button type="button" class="lams-opt" data-lams-field="arm" data-value="1" data-tone="yellow"><span>Drifts Down</span><span class="lams-opt-val">1</span></button>
+          <button type="button" class="lams-opt" data-lams-field="arm" data-value="2" data-tone="red"><span>Falls Rapidly</span><span class="lams-opt-val">2</span></button>
+        </div>
+      </section>
+      <section class="lams-section" aria-labelledby="lams-grip-h">
+        <h3 id="lams-grip-h" class="lams-section-title">Grip Strength</h3>
+        <div class="lams-options">
+          <button type="button" class="lams-opt" data-lams-field="grip" data-value="0" data-tone="green"><span>Normal</span><span class="lams-opt-val">0</span></button>
+          <button type="button" class="lams-opt" data-lams-field="grip" data-value="1" data-tone="yellow"><span>Weak grip</span><span class="lams-opt-val">1</span></button>
+          <button type="button" class="lams-opt" data-lams-field="grip" data-value="2" data-tone="red"><span>No Grip</span><span class="lams-opt-val">2</span></button>
+        </div>
+      </section>
+
+      <div id="lams-guidance" class="lams-guidance" hidden>
+        <div class="lams-guidance-inner">
+          <div class="lams-guidance-head">
+            <span class="lams-guidance-icon" id="lams-guidance-icon" aria-hidden="true"></span>
+            <h3 class="lams-guidance-title" id="lams-guidance-title">Acute Stroke Protocol Guidance</h3>
+          </div>
+          <ul class="lams-guidance-list" id="lams-guidance-list"></ul>
+          <div class="lams-criteria-block">
+            <button type="button" class="lams-criteria-toggle" id="lams-criteria-toggle" aria-expanded="false">
+              <span>View Bypass Contraindications</span>
+              <svg class="lams-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <ul class="lams-criteria-list" id="lams-criteria-list" hidden>
+              <li>CTAS 1 and/or uncorrected ABC problem</li>
+              <li>Symptoms resolved prior to paramedic arrival</li>
+              <li>Blood sugar &lt; 3 mmol/L (unless symptoms persist after correction)</li>
+              <li>Seizure at onset of symptoms</li>
+              <li>Glasgow Coma Scale &lt; 10</li>
+              <li>Terminally ill or palliative care patient</li>
+              <li>Transport out of hospital will exceed 2 hours</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="lams-crosslink">
+        <p class="lams-crosslink-text"><strong>More on stroke protocol:</strong> For DSC indications, LVO/CTAS reporting, and contraindications from BLS PCS, open the <strong>Acute Stroke Protocol - Prompt Card</strong> under <strong>Destination Guidelines</strong>.</p>
+        <button type="button" class="lams-crosslink-btn" onclick="renderDestinationDetail('prompt-acute-stroke', 'Acute Stroke Protocol - Prompt Card'); showView('view-detail', headerTitleFromItem('Acute Stroke Protocol - Prompt Card'));">Open Acute Stroke prompt card</button>
+      </div>
+
+      <p class="lams-disclaimer">Decision support only — apply BLS PCS, ALS PCS, and CACC direction.</p>
+      <div class="lams-scroll-spacer" aria-hidden="true"></div>
+    </div>
+    <footer class="lams-footer">
+      <div class="lams-footer-left">
+        <p class="lams-total-label">Total Score</p>
+        <p class="lams-total-row"><span id="lams-total-num">0</span><span class="lams-total-denom">/ 5</span></p>
+        <p class="lams-severity" id="lams-severity-text">Complete all fields</p>
+      </div>
+      <button type="button" class="lams-reset-btn" id="lams-reset-btn" aria-label="Reset LAMS calculator">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset
+      </button>
+    </footer>
+  </div>
+
+  <!-- PEDIATRIC VALUES CALCULATOR -->
+  <div id="view-ped-calc" class="view ped-calc-view" hidden>
+    <div class="ped-calc-scroll">
+      <div class="ped-calc-card">
+        <div class="ped-calc-input-panel">
+          <label class="ped-calc-label" for="ped-calc-age">Patient age</label>
+          <div class="ped-calc-input-row">
+            <select id="ped-calc-age" class="ped-calc-select ped-calc-select--grow" aria-label="Age value">
+              <option value="">Select…</option>
+            </select>
+            <select id="ped-calc-unit" class="ped-calc-select" aria-label="Age unit">
+              <option value="months">Months</option>
+              <option value="years" selected>Years</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ped-calc-results">
+          <div class="ped-calc-result-card">
+            <div class="ped-calc-result-icon ped-calc-icon-blue" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M6 8l6-5 6 5M6 16l6 5 6-5"/></svg>
+            </div>
+            <div>
+              <p class="ped-calc-result-label">Est. weight (kg)</p>
+              <p class="ped-calc-result-value" id="ped-calc-weight">—</p>
+            </div>
+          </div>
+
+          <div class="ped-calc-result-card ped-calc-result-card--block">
+            <div class="ped-calc-result-card-head">
+              <div class="ped-calc-result-icon ped-calc-icon-red" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-8.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+              </div>
+              <h3 class="ped-calc-result-title">Blood pressure (SBP)</h3>
+            </div>
+            <div class="ped-calc-bp-grid">
+              <div class="ped-calc-bp-box ped-calc-bp-norm">
+                <p class="ped-calc-bp-tag">Normotension</p>
+                <p class="ped-calc-bp-val" id="ped-calc-sbp-norm">—</p>
+              </div>
+              <div class="ped-calc-bp-box ped-calc-bp-hypo">
+                <p class="ped-calc-bp-tag">Hypotension</p>
+                <p class="ped-calc-bp-val" id="ped-calc-sbp-hypo">—</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ped-calc-result-card ped-calc-result-card--block">
+            <div class="ped-calc-result-card-head">
+              <div class="ped-calc-result-icon ped-calc-icon-teal" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              </div>
+              <h3 class="ped-calc-result-title">Normal vitals (reference)</h3>
+            </div>
+            <div class="ped-calc-vitals-grid">
+              <div>
+                <p class="ped-calc-result-label">Resp. rate</p>
+                <p class="ped-calc-result-value ped-calc-result-value--sm" id="ped-calc-rr">—</p>
+              </div>
+              <div>
+                <p class="ped-calc-result-label">Heart rate</p>
+                <p class="ped-calc-result-value ped-calc-result-value--sm" id="ped-calc-hr">—</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ped-calc-result-card">
+            <div class="ped-calc-result-icon ped-calc-icon-yellow" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.7l2.4 7.4h7.8l-6.3 4.6 2.4 7.4L12 17.5l-6.3 4.6 2.4-7.4-6.3-4.6h7.8L12 2.7z"/></svg>
+            </div>
+            <div>
+              <p class="ped-calc-result-label">Hypoglycemia threshold</p>
+              <p class="ped-calc-result-value ped-calc-result-value--sm" id="ped-calc-bgl">—</p>
+            </div>
+          </div>
+
+          <div class="ped-calc-result-card ped-calc-result-card--block">
+            <div class="ped-calc-result-card-head">
+              <div class="ped-calc-result-icon ped-calc-icon-orange" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+              <h3 class="ped-calc-result-title">Defibrillation energy</h3>
+            </div>
+            <div class="ped-calc-joule-grid" id="ped-calc-joules-grid">
+              <div class="ped-calc-joule-box ped-calc-joule-first">
+                <p class="ped-calc-joule-tag">1st shock</p>
+                <p class="ped-calc-joule-val" id="ped-calc-joules-initial">—</p>
+                <p class="ped-calc-joule-sub">2 J/kg</p>
+              </div>
+              <div class="ped-calc-joule-box ped-calc-joule-next">
+                <p class="ped-calc-joule-tag">Subsequent</p>
+                <p class="ped-calc-joule-val" id="ped-calc-joules-subsequent">—</p>
+                <p class="ped-calc-joule-sub">4 J/kg</p>
+              </div>
+            </div>
+            <div class="ped-calc-joule-adult" id="ped-calc-joules-adult" hidden>
+              <p class="ped-calc-joule-adult-tag">Age ≥ 8 years — adult energy</p>
+              <p class="ped-calc-joule-adult-val">As per RBHP / manufacturer</p>
+            </div>
+            <p class="ped-calc-joule-note" id="ped-calc-joules-note"></p>
+          </div>
+
+          <details class="ped-calc-meds" id="ped-calc-meds">
+            <summary class="ped-calc-meds-summary">
+              <span class="ped-calc-result-icon ped-calc-icon-purple" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5a7 7 0 0 1-7-7l7-7 7 7-7 7z"/><path d="M8.5 8.5l7 7"/><path d="M14 3l7 7"/></svg>
+              </span>
+              <span class="ped-calc-meds-summary-text">
+                <span class="ped-calc-meds-title">Medication dosages</span>
+                <span class="ped-calc-meds-sub">Tap to expand</span>
+              </span>
+              <svg class="ped-calc-meds-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <p class="ped-calc-meds-intro">Doses computed from weight = (age × 2) + 10. Always verify against the directive before administering.</p>
+            <div class="ped-calc-meds-grid" id="ped-calc-meds-grid">
+              <div class="ped-calc-med-card" id="ped-calc-med-epinephrine">
+                <p class="ped-calc-med-name">Epinephrine</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-glucagon">
+                <p class="ped-calc-med-name">Glucagon</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-salbutamol">
+                <p class="ped-calc-med-name">Salbutamol</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-diphenhydramine">
+                <p class="ped-calc-med-name">Diphenhydramine</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-dimenhydrinate">
+                <p class="ped-calc-med-name">Dimenhydrinate</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-ondansetron">
+                <p class="ped-calc-med-name">Ondansetron</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-acetaminophen">
+                <p class="ped-calc-med-name">Acetaminophen</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-ibuprofen">
+                <p class="ped-calc-med-name">Ibuprofen</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-hydrocortisone">
+                <p class="ped-calc-med-name">Hydrocortisone</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-dexamethasone">
+                <p class="ped-calc-med-name">Dexamethasone</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-dextrose_d10">
+                <p class="ped-calc-med-name">Dextrose 10% (D10W)</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+              <div class="ped-calc-med-card" id="ped-calc-med-dextrose_d50">
+                <p class="ped-calc-med-name">Dextrose 50% (D50W)</p>
+                <p class="ped-calc-med-dose">—</p>
+                <p class="ped-calc-med-note"></p>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ped-calc-footnote">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ped-calc-foot-icon" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <p>Calculations use: Weight = (age × 2) + 10; normotension SBP ≥ 90 + (2 × age in years); hypotension SBP &lt; 70 + (2 × age in years). Vitals and BGL bands match the paediatric protocol chart in <strong>Medical References</strong> → Pediatric Values.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PEDIATRIC DEFIBRILLATION (JOULES) CALCULATOR -->
+  <div id="view-ped-joules" class="view drug-calc-view" hidden>
+    <div class="drug-calc-scroll">
+      <header class="drug-calc-header drug-calc-header--red">
+        <div class="drug-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div>
+          <h2 class="drug-calc-h1">Pediatric Defibrillation (J)</h2>
+          <p class="drug-calc-sub">ALS PCS — Cardiac Arrest energy settings</p>
+        </div>
+      </header>
+
+      <div class="drug-calc-card">
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Patient Age</span>
+          <div class="drug-calc-weight-row">
+            <input id="ped-joules-age" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter age" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-ped-joules-unit="years">yrs</button>
+              <button type="button" class="drug-calc-unit-btn" data-ped-joules-unit="months">mo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Known weight <em>(optional — overrides estimate)</em></span>
+          <div class="drug-calc-weight-row">
+            <input id="ped-joules-weight" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Blank = estimate from age" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-ped-joules-wunit="kg">kg</button>
+              <button type="button" class="drug-calc-unit-btn" data-ped-joules-wunit="lbs">lbs</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="ped-joules-result" class="drug-calc-result drug-calc-result--hidden">
+          <div class="drug-calc-result-main" id="ped-joules-peds-block">
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">1st defibrillation<br>2 J/kg</span>
+              <span class="drug-calc-result-value"><span id="ped-joules-initial">—</span> <span class="drug-calc-result-unit">J</span></span>
+            </div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Subsequent defibrillation(s)<br>4 J/kg</span>
+              <span class="drug-calc-result-value"><span id="ped-joules-subsequent">—</span> <span class="drug-calc-result-unit">J</span></span>
+            </div>
+          </div>
+
+          <div class="drug-calc-result-main" id="ped-joules-adult-block" hidden>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Initial &amp; subsequent dose</span>
+              <span class="drug-calc-result-value drug-calc-result-value--text">As per RBHP / manufacturer</span>
+            </div>
+            <p class="drug-calc-condition-note">Patient is ≥ 8 years — use your monitor's adult energy settings. Weight-based 2 J/kg and 4 J/kg do not apply.</p>
+            <button type="button" class="drug-calc-crosslink-btn" onclick="pedJoulesOpenAdultSettings()">Open adult joule settings by manufacturer</button>
+          </div>
+
+          <div class="drug-calc-meta-row">
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight (kg)</span><span id="ped-joules-kg-display" class="drug-calc-meta-val">—</span></div>
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight from</span><span id="ped-joules-weight-source" class="drug-calc-meta-val">—</span></div>
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Age band</span><span id="ped-joules-band" class="drug-calc-meta-val">—</span></div>
+          </div>
+
+          <div id="ped-joules-neonate-warning" class="drug-calc-warning" hidden>
+            ⚠ Defibrillation requires age ≥ 24 hours. If &lt; 24 hours old, follow the Newborn Resuscitation directive instead.
+          </div>
+
+          <div class="drug-calc-warning drug-calc-warning--red">
+            ⚠ <strong>Trauma Cardiac Arrest:</strong> 1 analysis and 1 defibrillation maximum — then transport to the closest appropriate receiving facility. Do not repeat analysis on scene.
+          </div>
+        </div>
+
+        <div id="ped-joules-empty" class="drug-calc-empty">Enter patient age to calculate defibrillation energy</div>
+      </div>
+
+      <div class="drug-calc-card drug-calc-card--info">
+        <h3 class="drug-calc-info-heading">Directive Parameters</h3>
+        <div class="drug-calc-info-grid">
+          <div>
+            <p class="drug-calc-info-sub">Medical Cardiac Arrest</p>
+            <ul class="drug-calc-info-list">
+              <li>≥24 hrs to &lt;8 yrs: 2 J/kg then 4 J/kg</li>
+              <li>≥8 yrs: as per RBHP / manufacturer</li>
+              <li>Dosing interval: 2 min</li>
+              <li>Max doses: N/A</li>
+            </ul>
+          </div>
+          <div>
+            <p class="drug-calc-info-sub">Trauma Cardiac Arrest</p>
+            <ul class="drug-calc-info-list">
+              <li>≥24 hrs to &lt;8 yrs: 2 J/kg</li>
+              <li>≥8 yrs: as per RBHP / manufacturer</li>
+              <li>Dosing interval: N/A</li>
+              <li>Max doses: <strong>1 only</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="drug-calc-note">Estimated weight = (age in years × 2) + 10. Manual defibrillation only — AED/SAED energy is fixed by the device, delivered with or without a pediatric attenuator cable as per RBHP / manufacturer. Select the nearest available setting on your monitor.</p>
+      </div>
+
+      <p class="drug-calc-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
+    </div>
+  </div>
+
+  <!-- OXYGEN TANK DURATION CALCULATOR -->
+  <div id="view-o2-duration" class="view o2-calc-view" hidden>
+    <div class="o2-calc-scroll">
+      <div class="o2-calc-header">
+        <div class="o2-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h2 class="o2-calc-title">O₂ Tank Duration</h2>
+        <p class="o2-calc-sub">Pressure, flow, and cylinder factor</p>
+      </div>
+
+      <div class="o2-calc-card">
+        <div class="o2-calc-field">
+          <label class="o2-calc-label" for="o2-gauge">Gauge pressure (psi)</label>
+          <div class="o2-calc-input-suffix">
+            <input id="o2-gauge" class="o2-calc-input" type="number" inputmode="decimal" placeholder="e.g. 2000" autocomplete="off" />
+            <span class="o2-calc-suffix" aria-hidden="true">psi</span>
+          </div>
+        </div>
+        <div class="o2-calc-field">
+          <label class="o2-calc-label" for="o2-residual">Safe residual pressure (psi)</label>
+          <div class="o2-calc-input-suffix">
+            <input id="o2-residual" class="o2-calc-input" type="number" inputmode="decimal" value="500" placeholder="e.g. 500" autocomplete="off" />
+            <span class="o2-calc-suffix" aria-hidden="true">psi</span>
+          </div>
+        </div>
+        <div class="o2-calc-field">
+          <label class="o2-calc-label" for="o2-flow">Flow rate</label>
+          <div class="o2-calc-flow-row">
+            <input id="o2-flow" class="o2-calc-input o2-calc-input--flow" type="number" inputmode="decimal" placeholder="e.g. 15" autocomplete="off" aria-label="Flow rate value" />
+            <select id="o2-flow-unit" class="o2-calc-select o2-calc-select--unit" aria-label="Flow unit">
+              <option value="lpm">L/min</option>
+              <option value="percent">% (cannula)</option>
+            </select>
+          </div>
+          <p id="o2-lpm-hint" class="o2-calc-hint" hidden></p>
+        </div>
+        <div class="o2-calc-field">
+          <label class="o2-calc-label" for="o2-cylinder">Cylinder type / factor</label>
+          <select id="o2-cylinder" class="o2-calc-select o2-calc-select--full">
+            <option value="0.16">D-tank (0.16)</option>
+            <option value="1.56">M-tank (1.56)</option>
+            <option value="0.28">E-tank (0.28)</option>
+            <option value="custom">Custom factor</option>
+          </select>
+        </div>
+        <div id="o2-custom-wrap" class="o2-calc-field" hidden>
+          <label class="o2-calc-label" for="o2-custom">Custom factor</label>
+          <input id="o2-custom" class="o2-calc-input" type="number" inputmode="decimal" step="0.01" placeholder="e.g. 0.28" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="o2-calc-results">
+        <div class="o2-calc-results-head">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <h3 class="o2-calc-results-title">Estimated duration</h3>
+        </div>
+        <div class="o2-calc-result-box">
+          <div id="o2-result-empty" class="o2-calc-result-empty">Enter tank values to see duration</div>
+          <div id="o2-result-values" class="o2-calc-result-values" hidden>
+            <p class="o2-calc-mins"><span id="o2-duration-mins">0</span> <span class="o2-calc-mins-unit">mins</span></p>
+            <p id="o2-duration-formatted" class="o2-calc-formatted"></p>
+          </div>
+        </div>
+        <p class="o2-calc-formula">Formula: ((gauge − safe residual) × factor) ÷ flow rate. Always monitor the patient and physical gauge.</p>
+      </div>
+
+      <button type="button" class="o2-calc-reset-btn" id="o2-reset-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <!-- WEIGHT CONVERTER (lbs ↔ kg) -->
+  <div id="view-weight-convert" class="view wt-calc-view" hidden>
+    <div class="wt-calc-scroll">
+      <div class="wt-calc-card">
+        <div class="wt-calc-head">
+          <div class="wt-calc-head-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h2v4H4zM18 10h2v4h-2z"/><path d="M6 12h12M8 8v8M16 8v8"/></svg>
+          </div>
+          <h2 class="wt-calc-title">Weight Converter</h2>
+        </div>
+
+        <div class="wt-calc-row">
+          <div class="wt-calc-col">
+            <label class="wt-calc-label" for="wt-lbs">Pounds (lbs)</label>
+            <div class="wt-calc-input-wrap">
+              <input id="wt-lbs" class="wt-calc-input" type="number" inputmode="decimal" step="any" placeholder="0.00" autocomplete="off" />
+              <span class="wt-calc-unit" aria-hidden="true">lbs</span>
+            </div>
+          </div>
+
+          <div class="wt-calc-arrow" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4M7 4L3 8M7 4l4 4M17 8v12M17 20l4-4M17 20l-4-4"/></svg>
+          </div>
+
+          <div class="wt-calc-col">
+            <label class="wt-calc-label" for="wt-kg">Kilograms (kg)</label>
+            <div class="wt-calc-input-wrap">
+              <input id="wt-kg" class="wt-calc-input" type="number" inputmode="decimal" step="any" placeholder="0.00" autocomplete="off" />
+              <span class="wt-calc-unit" aria-hidden="true">kg</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="wt-calc-formula">1 kg = 2.20462 lbs</p>
+
+        <button type="button" class="wt-calc-reset-btn" id="wt-reset-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDICAL DOSAGE CALCULATOR -->
+  <div id="view-dosage-calc" class="view dosage-calc-view" hidden>
+    <div class="dosage-calc-scroll">
+      <header class="dosage-calc-header">
+        <div class="dosage-calc-header-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 11.8a7 7 0 1 1 12.8 3.8"/><path d="M8 12h.01M12 12h.01M16 12h.01"/><path d="M12 16v4M9 20h6"/></svg>
+        </div>
+        <div>
+          <h2 class="dosage-calc-h1">Medical Dosage Calculator</h2>
+          <p class="dosage-calc-lead">(Want ÷ Have) × volume → mL to administer</p>
+        </div>
+      </header>
+
+      <div class="dosage-calc-grid">
+        <div class="dosage-calc-col dosage-calc-col--inputs">
+          <section class="dosage-card">
+            <div class="dosage-card-head">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.5-2.5-5.5S14 6 12 3 9.5 5.5 7.5 9.5 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+              <h3 class="dosage-card-title">Dose ordered (what you want)</h3>
+            </div>
+            <div class="dosage-row-2">
+              <div class="dosage-field dosage-field--grow">
+                <label class="dosage-label" for="dosage-want-amount">Amount</label>
+                <input id="dosage-want-amount" class="dosage-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 7.5" autocomplete="off" />
+              </div>
+              <div class="dosage-field dosage-field--unit">
+                <label class="dosage-label" for="dosage-want-unit">Unit</label>
+                <select id="dosage-want-unit" class="dosage-select">
+                  <option value="g">g</option>
+                  <option value="mg" selected>mg</option>
+                  <option value="mcg">mcg</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section class="dosage-card">
+            <div class="dosage-card-head">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="8" width="18" height="10" rx="2"/><path d="M7 8V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/></svg>
+              <h3 class="dosage-card-title">Dose on hand (what you have)</h3>
+            </div>
+            <div class="dosage-tabs" role="tablist" aria-label="Concentration format">
+              <button type="button" class="dosage-tab dosage-tab--on" data-dosage-type="custom" role="tab" aria-selected="true">Custom</button>
+              <button type="button" class="dosage-tab" data-dosage-type="cr" role="tab" aria-selected="false">CR (mg/mL)</button>
+              <button type="button" class="dosage-tab" data-dosage-type="sd" role="tab" aria-selected="false">SD (1g/X mL)</button>
+              <button type="button" class="dosage-tab" data-dosage-type="spercent" role="tab" aria-selected="false">S% (g/100 mL)</button>
+            </div>
+            <div class="dosage-panels">
+              <div id="dosage-panel-custom" class="dosage-panel" role="tabpanel">
+                <div class="dosage-row-2">
+                  <div class="dosage-field dosage-field--grow">
+                    <label class="dosage-label" for="dosage-have-amount">Drug amount</label>
+                    <input id="dosage-have-amount" class="dosage-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 5" autocomplete="off" />
+                  </div>
+                  <div class="dosage-field dosage-field--unit">
+                    <label class="dosage-label" for="dosage-have-unit">Unit</label>
+                    <select id="dosage-have-unit" class="dosage-select">
+                      <option value="g">g</option>
+                      <option value="mg" selected>mg</option>
+                      <option value="mcg">mcg</option>
+                    </select>
+                  </div>
+                </div>
+                <p class="dosage-in-volume">in a volume of</p>
+                <div class="dosage-row-2">
+                  <div class="dosage-field dosage-field--grow">
+                    <label class="dosage-label" for="dosage-have-vol">Liquid volume</label>
+                    <input id="dosage-have-vol" class="dosage-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 2" autocomplete="off" />
+                  </div>
+                  <div class="dosage-field dosage-field--unit">
+                    <label class="dosage-label" for="dosage-have-vol-unit">Unit</label>
+                    <select id="dosage-have-vol-unit" class="dosage-select">
+                      <option value="mL" selected>mL</option>
+                      <option value="L">L</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div id="dosage-panel-cr" class="dosage-panel" role="tabpanel" hidden>
+                <label class="dosage-label" for="dosage-cr">Concentration ratio (CR)</label>
+                <div class="dosage-inline-row">
+                  <input id="dosage-cr" class="dosage-input dosage-input--inline" type="number" inputmode="decimal" step="any" placeholder="e.g. 2" autocomplete="off" />
+                  <span class="dosage-inline-hint">mg / 1 mL</span>
+                </div>
+                <p class="dosage-help">mg present in every 1 mL.</p>
+              </div>
+              <div id="dosage-panel-sd" class="dosage-panel" role="tabpanel" hidden>
+                <label class="dosage-label" for="dosage-sd-vol">Standard dilution (SD)</label>
+                <div class="dosage-inline-row">
+                  <span class="dosage-inline-hint">1 g /</span>
+                  <input id="dosage-sd-vol" class="dosage-input dosage-input--inline" type="number" inputmode="decimal" step="any" placeholder="e.g. 1000" autocomplete="off" />
+                  <span class="dosage-inline-hint">mL</span>
+                </div>
+                <p class="dosage-help">Volume (mL) that contains exactly 1 g.</p>
+              </div>
+              <div id="dosage-panel-spercent" class="dosage-panel" role="tabpanel" hidden>
+                <label class="dosage-label" for="dosage-s-percent">Solution percentage (S%)</label>
+                <div class="dosage-inline-row">
+                  <input id="dosage-s-percent" class="dosage-input dosage-input--inline" type="number" inputmode="decimal" step="any" placeholder="e.g. 5" autocomplete="off" />
+                  <span class="dosage-inline-hint dosage-inline-hint--lg">%</span>
+                </div>
+                <p class="dosage-help">Grams of drug per 100 mL.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="dosage-calc-col dosage-calc-col--results">
+          <div class="dosage-result-card">
+            <h3 class="dosage-result-label">Administer volume</h3>
+            <div id="dosage-result-empty" class="dosage-result-empty">
+              <p>Enter ordered dose and on-hand values to see mL.</p>
+            </div>
+            <div id="dosage-result-value" class="dosage-result-value" hidden>
+              <span id="dosage-result-num" class="dosage-result-num">0</span>
+              <span class="dosage-result-unit">mL</span>
+            </div>
+          </div>
+
+          <div class="dosage-tutor-card">
+            <div class="dosage-tutor-head">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+              <h3 class="dosage-tutor-title">Tutor breakdown</h3>
+            </div>
+            <div id="dosage-tutor-placeholder" class="dosage-tutor-placeholder">
+              <p>Fill the form for a step-by-step walkthrough.</p>
+            </div>
+            <div id="dosage-tutor-steps" class="dosage-tutor-steps" hidden></div>
+            <div id="dosage-tutor-tip" class="dosage-tutor-tip" hidden>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              <p><strong>Tip:</strong> Divide what you <em>want</em> by what you <em>have</em>, then multiply by the volume that “have” is dissolved in.</p>
+            </div>
+          </div>
+
+          <button type="button" class="dosage-reset-btn" id="dosage-reset-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <p class="dosage-disclaimer">Clinical decision support only — verify with protocol, double-check math, and follow scope.</p>
+    </div>
+  </div>
+
+  <!-- PARKLAND BURN FLUID CALCULATOR -->
+  <div id="view-parkland-burn" class="view parkland-view" hidden>
+    <div class="parkland-scroll">
+      <header class="parkland-header">
+        <div class="parkland-header-icon" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+        </div>
+        <div>
+          <h2 class="parkland-h1">Parkland Burn Calculator</h2>
+          <p class="parkland-sub">Fluid resuscitation &amp; IV drip rates</p>
+        </div>
+      </header>
+
+      <div class="parkland-grid">
+        <section class="parkland-card parkland-card--inputs">
+          <h3 class="parkland-card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Patient details
+          </h3>
+          <div class="parkland-field">
+            <label class="parkland-label" for="parkland-weight">Patient weight</label>
+            <div class="parkland-weight-row">
+              <input id="parkland-weight" class="parkland-input parkland-input--grow" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight" autocomplete="off" />
+              <select id="parkland-weight-unit" class="parkland-select parkland-select--unit" aria-label="Weight unit">
+                <option value="kg" selected>kg</option>
+                <option value="lbs">lbs</option>
+              </select>
+            </div>
+          </div>
+          <div class="parkland-field">
+            <label class="parkland-label" for="parkland-tbsa">Total body surface area burned</label>
+            <div class="parkland-input-suffix">
+              <input id="parkland-tbsa" class="parkland-input" type="number" inputmode="decimal" min="0" max="100" step="any" placeholder="0–100" autocomplete="off" />
+              <span class="parkland-suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="parkland-field">
+            <label class="parkland-label" for="parkland-drop-factor">IV drip set (drop factor)</label>
+            <select id="parkland-drop-factor" class="parkland-select parkland-select--full">
+              <option value="10" selected>10 gtts/mL (macrodrip)</option>
+              <option value="15">15 gtts/mL (macrodrip)</option>
+              <option value="20">20 gtts/mL (macrodrip)</option>
+              <option value="60">60 gtts/mL (microdrip)</option>
+            </select>
+          </div>
+        </section>
+
+        <div class="parkland-results-wrap">
+          <div id="parkland-placeholder" class="parkland-placeholder">
+            <div class="parkland-placeholder-icon" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+            </div>
+            <h3 class="parkland-placeholder-title">Awaiting patient data</h3>
+            <p class="parkland-placeholder-text">Enter weight and TBSA burned (1–100%) to estimate 24-hour fluid needs and drip timing.</p>
+          </div>
+
+          <div id="parkland-results" class="parkland-results" hidden>
+            <div class="parkland-total-card">
+              <h3 class="parkland-total-label">Total 24-hour fluid requirement</h3>
+              <p class="parkland-weight-kg" id="parkland-weight-kg-line"></p>
+              <p class="parkland-total-ml"><span id="parkland-total-ml">0</span> <span class="parkland-total-unit">mL</span></p>
+            </div>
+
+            <div class="parkland-split">
+              <div class="parkland-phase parkland-phase--8">
+                <div class="parkland-phase-head">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  <h4>First 8 hours</h4>
+                </div>
+                <p class="parkland-stat-label">Total volume to infuse</p>
+                <p class="parkland-stat-val" id="parkland-half-8">0</p>
+                <p class="parkland-stat-label">Hourly rate (pump)</p>
+                <p class="parkland-stat-rate" id="parkland-rate-8">0 mL/hr</p>
+                <div class="parkland-drip-box parkland-drip-box--red">
+                  <p class="parkland-drip-label">Manual drip rate</p>
+                  <p class="parkland-drip-val"><span id="parkland-drip-8">0</span> <span class="parkland-drip-unit">gtts/min</span></p>
+                  <div class="parkland-drip-meta">
+                    <span>Drops/sec</span><span id="parkland-dps-8">0</span>
+                  </div>
+                  <div class="parkland-drip-meta">
+                    <span>Timing</span><span id="parkland-timing-8">—</span>
+                  </div>
+                  <p class="parkland-drip-set" id="parkland-set-8"></p>
+                </div>
+              </div>
+
+              <div class="parkland-phase parkland-phase--16">
+                <div class="parkland-phase-head parkland-phase-head--blue">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  <h4>Next 16 hours</h4>
+                </div>
+                <p class="parkland-stat-label">Total volume to infuse</p>
+                <p class="parkland-stat-val parkland-stat-val--sm" id="parkland-half-16">0</p>
+                <p class="parkland-stat-label">Hourly rate (pump)</p>
+                <p class="parkland-stat-rate" id="parkland-rate-16">0 mL/hr</p>
+                <div class="parkland-drip-box parkland-drip-box--blue">
+                  <p class="parkland-drip-label">Manual drip rate</p>
+                  <p class="parkland-drip-val parkland-drip-val--blue"><span id="parkland-drip-16">0</span> <span class="parkland-drip-unit">gtts/min</span></p>
+                  <div class="parkland-drip-meta">
+                    <span>Drops/sec</span><span id="parkland-dps-16">0</span>
+                  </div>
+                  <div class="parkland-drip-meta">
+                    <span>Timing</span><span id="parkland-timing-16">—</span>
+                  </div>
+                  <p class="parkland-drip-set parkland-drip-set--blue" id="parkland-set-16"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="parkland-formula-ref">
+        <h3 class="parkland-formula-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          Formula reference
+        </h3>
+        <p><strong>Total vol:</strong> 4 mL × weight (kg) × TBSA (%)</p>
+        <p><strong>Drip rate:</strong> (mL/hr × drop factor) ÷ 60 → gtts/min</p>
+      </div>
+
+      <button type="button" class="parkland-reset-btn" id="parkland-reset-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset
+      </button>
+
+      <p class="parkland-disclaimer">Decision support only — follow local burn/trauma protocol, pediatric rules, and medical direction.</p>
+    </div>
+  </div>
+
+  <!-- IV THERAPY CALCULATOR -->
+  <div id="view-iv-therapy" class="view iv-calc-view" hidden>
+    <div class="iv-calc-scroll">
+      <header class="iv-calc-header">
+        <div class="iv-calc-header-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.7c2 4 6 6 6 10a6 6 0 1 1-12 0c0-4 4-6 6-10z"/></svg>
+        </div>
+        <div>
+          <h2 class="iv-calc-h1">IV Therapy Calculator</h2>
+          <p class="iv-calc-sub">Drip rates &amp; Ontario ALS PCS–style fluid targets</p>
+        </div>
+      </header>
+
+      <div class="iv-tab-bar" role="tablist" aria-label="Calculator mode">
+        <button type="button" class="iv-tab iv-tab--on" data-iv-tab="general" role="tab" aria-selected="true">General IV</button>
+        <button type="button" class="iv-tab" data-iv-tab="directive" role="tab" aria-selected="false">PCP directives</button>
+      </div>
+
+      <div id="iv-panel-general" class="iv-panel" role="tabpanel">
+        <div class="iv-card">
+          <div class="iv-gen-grid">
+            <div class="iv-gen-inputs">
+              <div class="iv-field">
+                <label class="iv-label" for="iv-std-vol">Volume to administer (mL)</label>
+                <input id="iv-std-vol" class="iv-input" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 1000" autocomplete="off" />
+              </div>
+              <div class="iv-field">
+                <label class="iv-label" for="iv-std-time">Time</label>
+                <div class="iv-time-row">
+                  <input id="iv-std-time" class="iv-input iv-input--time" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 60" autocomplete="off" />
+                  <select id="iv-std-time-unit" class="iv-select iv-select--unit" aria-label="Time unit">
+                    <option value="minutes" selected>Mins</option>
+                    <option value="hours">Hours</option>
+                  </select>
+                </div>
+              </div>
+              <div class="iv-field">
+                <span class="iv-label">Drop factor (gtts/mL)</span>
+                <div class="iv-df-grid iv-df-grid--4">
+                  <button type="button" class="iv-std-df-btn iv-drop-btn--on" data-df="10">10</button>
+                  <button type="button" class="iv-std-df-btn" data-df="15">15</button>
+                  <button type="button" class="iv-std-df-btn" data-df="20">20</button>
+                  <button type="button" class="iv-std-df-btn" data-df="60">60</button>
+                </div>
+              </div>
+            </div>
+            <div class="iv-gen-result">
+              <h3 class="iv-result-title">Drip rate</h3>
+              <p class="iv-result-gtts"><span id="iv-std-gtts">0</span> <span class="iv-result-gtts-unit">gtts/min</span></p>
+              <div class="iv-result-sub">
+                <div id="iv-std-sub-fast" class="iv-result-sub-inner" hidden>
+                  <p class="iv-sub-label">Drops per second</p>
+                  <p id="iv-std-dps-val" class="iv-sub-big">0</p>
+                  <p id="iv-std-dps-practical" class="iv-sub-pill"></p>
+                </div>
+                <div id="iv-std-sub-slow" class="iv-result-sub-inner">
+                  <p class="iv-sub-label">Seconds per drop</p>
+                  <p id="iv-std-spd-val" class="iv-sub-big">0</p>
+                  <p id="iv-std-spd-practical" class="iv-sub-pill" hidden></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="iv-panel-directive" class="iv-panel" role="tabpanel" hidden>
+        <div class="iv-card">
+          <div class="iv-field">
+            <span class="iv-label">Select directive</span>
+            <div class="iv-dir-type-grid">
+              <button type="button" class="iv-dir-type-btn iv-dir-type-btn--on" data-iv-preset="maintenance">Maintenance infusion</button>
+              <button type="button" class="iv-dir-type-btn" data-iv-preset="bolus_general">0.9% NaCl fluid bolus</button>
+              <button type="button" class="iv-dir-type-btn" data-iv-preset="bolus_cardio">Cardiogenic shock bolus</button>
+            </div>
+          </div>
+
+          <div class="iv-dir-params">
+            <div id="iv-dir-age-row" class="iv-field">
+              <label class="iv-label" for="iv-dir-age">Age group</label>
+              <select id="iv-dir-age" class="iv-select iv-select--full">
+                <option value="pediatric">2 years to &lt; 12 years</option>
+                <option value="adult" selected>≥ 12 years</option>
+              </select>
+            </div>
+            <div id="iv-dir-cardio-age" class="iv-field" hidden>
+              <span class="iv-label">Age group</span>
+              <div class="iv-static-field">≥ 18 years</div>
+            </div>
+            <div id="iv-dir-ped-age-row" class="iv-field" hidden>
+              <label class="iv-label" for="iv-dir-ped-age">Age (years) <span class="iv-label-hint">→ est. kg</span></label>
+              <input id="iv-dir-ped-age" class="iv-input" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 5" autocomplete="off" />
+            </div>
+            <div id="iv-dir-weight-row" class="iv-field" hidden>
+              <label class="iv-label" for="iv-dir-weight">Weight (kg)</label>
+              <input id="iv-dir-weight" class="iv-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight in kg" autocomplete="off" />
+            </div>
+            <div id="iv-dir-rate-row" class="iv-field">
+              <label class="iv-label" for="iv-dir-rate">Rate selection</label>
+              <select id="iv-dir-rate" class="iv-select iv-select--full">
+                <option value="30">30 mL/hr</option>
+                <option value="40">40 mL/hr</option>
+                <option value="50">50 mL/hr</option>
+                <option value="60">60 mL/hr</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="iv-dir-drip-setup">
+            <div id="iv-dir-admin-row" class="iv-field" hidden>
+              <label class="iv-label" for="iv-dir-admin-mins">Run bolus over (mins)</label>
+              <input id="iv-dir-admin-mins" class="iv-input" type="number" inputmode="decimal" min="1" step="any" value="60" placeholder="e.g. 15" autocomplete="off" />
+            </div>
+            <div class="iv-field iv-field--df-wide">
+              <span class="iv-label">Drop factor (gtts/mL)</span>
+              <div class="iv-df-grid iv-df-grid--row">
+                <button type="button" class="iv-dir-df-btn iv-drop-btn--on" data-df="10">10</button>
+                <button type="button" class="iv-dir-df-btn" data-df="15">15</button>
+                <button type="button" class="iv-dir-df-btn" data-df="20">20</button>
+                <button type="button" class="iv-dir-df-btn" data-df="60">60</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="iv-dir-results">
+            <div class="iv-dir-results-top">
+              <div class="iv-dir-target">
+                <p class="iv-dir-stat-label">Target volume</p>
+                <p class="iv-dir-target-val"><span id="iv-dir-vol">0</span> <span>mL</span></p>
+              </div>
+              <div id="iv-dir-bolus-meta" class="iv-dir-bolus-meta" hidden>
+                <div>
+                  <p class="iv-dir-stat-label">Reassess every</p>
+                  <p class="iv-dir-stat-num"><span id="iv-dir-reassess">0</span> mL</p>
+                </div>
+                <div>
+                  <p class="iv-dir-stat-label">Max volume</p>
+                  <p class="iv-dir-stat-num"><span id="iv-dir-max">0</span> mL</p>
+                </div>
+              </div>
+            </div>
+            <div class="iv-dir-drip-block">
+              <div>
+                <p class="iv-dir-stat-label">Calculated drip rate</p>
+                <p class="iv-dir-drip-big"><span id="iv-dir-gtts">0</span> <span>gtts/min</span></p>
+              </div>
+              <div class="iv-dir-practical-card">
+                <p class="iv-sub-label">Practical guide</p>
+                <div id="iv-dir-practical-fast" hidden>
+                  <p class="iv-sub-big"><span id="iv-dir-dps">0</span> <span class="iv-inline-unit">drops/sec</span></p>
+                  <p id="iv-dir-dps-pill" class="iv-sub-pill"></p>
+                </div>
+                <div id="iv-dir-practical-slow">
+                  <p class="iv-sub-big">1 drop / <span id="iv-dir-spd">0</span>s</p>
+                  <p id="iv-dir-spd-pill" class="iv-sub-pill" hidden></p>
+                </div>
+              </div>
+            </div>
+            <div id="iv-dir-notes" class="iv-dir-notes" hidden></div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="iv-reset-btn" id="iv-reset-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset
+      </button>
+      <p class="iv-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
+    </div>
+  </div>
+
+  <!-- CONTACT MENU -->
+  <div id="view-contact" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="contact-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div class="contact-top-banner">CONTACT</div>
+    <p class="view-intro">Regional contacts, OMC patch, and reference tools. Tap any phone number to call.</p>
+    <div id="contact-list" class="category-list flat-list"></div>
+  </div>
+
+  <!-- DESTINATION GUIDELINES -->
+  <div id="view-destination" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="destination-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div class="destination-top-banner">DESTINATION GUIDELINES</div>
+    <p class="view-intro">Ontario BLS PCS destination standards, prompt cards, and regional operational references. Confirm all details with your service.</p>
+    <div id="destination-list" class="category-list flat-list"></div>
+  </div>
+
+  <!-- SPECIAL CARE DIRECTIVES LIST -->
+  <div id="view-special" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="special-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div class="special-care-banner">SPECIAL CARE DIRECTIVES</div>
+    <div id="special-list" class="category-list flat-list"></div>
+  </div>
+
+  <!-- COMPANION DOCUMENT LIST -->
+  <div id="view-companion" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="comp-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div class="companion-banner">COMPANION DOCUMENT</div>
+    <div id="companion-list" class="category-list"></div>
+  </div>
+
+  <!-- MEDICAL REFERENCES LIST -->
+  <div id="view-references" class="view" hidden>
+    <div class="search-bar-wrap sticky">
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+          <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="ref-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+    </div>
+    <div class="reference-banner">MEDICAL REFERENCES</div>
+    <div id="references-list" class="category-list"></div>
+  </div>
+
+  <!-- DEXTROSE DOSE CALCULATOR -->
+  <div id="view-dextrose" class="view drug-calc-view" hidden>
+    <div class="drug-calc-scroll">
+      <header class="drug-calc-header drug-calc-header--blue">
+        <div class="drug-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.7c2 4 6 6 6 10a6 6 0 1 1-12 0c0-4 4-6 6-10z"/></svg>
+        </div>
+        <div>
+          <h2 class="drug-calc-h1">Dextrose Calculator</h2>
+          <p class="drug-calc-sub">ALS PCS — Hypoglycemia Directive</p>
+        </div>
+      </header>
+
+      <div class="drug-calc-card">
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Patient Weight</span>
+          <div class="drug-calc-weight-row">
+            <input id="dex-weight" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-dex-unit="kg">kg</button>
+              <button type="button" class="drug-calc-unit-btn" data-dex-unit="lbs">lbs</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Age Group</span>
+          <div class="drug-calc-toggle-row">
+            <button type="button" class="drug-calc-option-btn" id="dex-age-under2">Under 2 years</button>
+            <button type="button" class="drug-calc-option-btn drug-calc-option-btn--on" id="dex-age-over2">2 years and older</button>
+          </div>
+        </div>
+
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Concentration</span>
+          <div class="drug-calc-toggle-row">
+            <button type="button" class="drug-calc-option-btn drug-calc-option-btn--on" id="dex-conc-10">10% (D10W)</button>
+            <button type="button" class="drug-calc-option-btn" id="dex-conc-50">50% (D50W)</button>
+          </div>
+        </div>
+
+        <div id="dex-result" class="drug-calc-result drug-calc-result--hidden">
+          <div class="drug-calc-result-main">
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Volume to administer</span>
+              <span class="drug-calc-result-value"><span id="dex-vol">—</span> <span class="drug-calc-result-unit">mL</span></span>
+            </div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dextrose mass</span>
+              <span class="drug-calc-result-value"><span id="dex-dose">—</span> <span class="drug-calc-result-unit">g</span></span>
+            </div>
+          </div>
+          <div class="drug-calc-meta-row">
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight (kg)</span><span id="dex-kg-display" class="drug-calc-meta-val">—</span></div>
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Route</span><span class="drug-calc-meta-val">IV</span></div>
+          </div>
+          <div id="dex-max-warning" class="drug-calc-warning" hidden>
+            ⚠ Dose exceeds maximum — showing max allowed dose
+          </div>
+        </div>
+
+        <div id="dex-empty" class="drug-calc-empty">Enter patient weight to calculate dose</div>
+      </div>
+
+      <div class="drug-calc-card drug-calc-card--info">
+        <h3 class="drug-calc-info-heading">Directive Parameters</h3>
+        <div class="drug-calc-info-grid">
+          <div>
+            <p class="drug-calc-info-sub">D10W — Under 2 years</p>
+            <ul class="drug-calc-info-list">
+              <li>Dose: 0.2 g/kg (2 mL/kg)</li>
+              <li>Max single dose: 5 g (50 mL)</li>
+            </ul>
+            <p class="drug-calc-info-sub" style="margin-top:8px">D10W — Age ≥ 2 yr</p>
+            <ul class="drug-calc-info-list">
+              <li>Dose: 0.2 g/kg (2 mL/kg)</li>
+              <li>Max single dose: 25 g (250 mL)</li>
+            </ul>
+            <p class="drug-calc-info-sub" style="margin-top:8px">D50W — Age ≥ 2 yr</p>
+            <ul class="drug-calc-info-list">
+              <li>Dose: 0.5 g/kg (1 mL/kg)</li>
+              <li>Max single dose: 25 g (50 mL)</li>
+            </ul>
+          </div>
+          <div>
+            <p class="drug-calc-info-sub">Dosing</p>
+            <ul class="drug-calc-info-list">
+              <li>Route: IV</li>
+              <li>Interval: 10 min</li>
+              <li>Max doses: 2</li>
+            </ul>
+          </div>
+        </div>
+        <p class="drug-calc-note">Titrate to level of awareness where patient can safely consume complex carbohydrate.</p>
+      </div>
+
+      <p class="drug-calc-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
+    </div>
+  </div>
+
+  <!-- EPI ANAPHYLAXIS DOSE CALCULATOR -->
+  <div id="view-epi-anaphylaxis" class="view drug-calc-view" hidden>
+    <div class="drug-calc-scroll">
+      <header class="drug-calc-header drug-calc-header--red">
+        <div class="drug-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V12m0 0l-4-4m4 4l4-4M6 6h.01M18 6h.01M12 2v4"/></svg>
+        </div>
+        <div>
+          <h2 class="drug-calc-h1">EPINEPHrine (IM) Calculator</h2>
+          <p class="drug-calc-sub">ALS PCS — Anaphylaxis (1:1,000)</p>
+        </div>
+      </header>
+
+      <div class="drug-calc-card">
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Patient Weight</span>
+          <div class="drug-calc-weight-row">
+            <input id="epi-weight" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-epi-unit="kg">kg</button>
+              <button type="button" class="drug-calc-unit-btn" data-epi-unit="lbs">lbs</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="epi-result" class="drug-calc-result drug-calc-result--hidden">
+          <div class="drug-calc-result-main">
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dose to administer</span>
+              <span class="drug-calc-result-value"><span id="epi-dose">—</span> <span class="drug-calc-result-unit">mg</span></span>
+            </div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Volume to draw up (1:1,000)</span>
+              <span class="drug-calc-result-value"><span id="epi-vol">—</span> <span class="drug-calc-result-unit">mL</span></span>
+            </div>
+          </div>
+          <div class="drug-calc-meta-row">
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight (kg)</span><span id="epi-kg-display" class="drug-calc-meta-val">—</span></div>
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Route</span><span class="drug-calc-meta-val">IM</span></div>
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Conc.</span><span class="drug-calc-meta-val">1 mg/mL</span></div>
+          </div>
+          <div id="epi-max-warning" class="drug-calc-warning" hidden>
+            ⚠ Dose exceeds maximum — showing max allowed dose (0.5 mg / 0.5 mL)
+          </div>
+        </div>
+
+        <div id="epi-empty" class="drug-calc-empty">Enter patient weight to calculate dose</div>
+      </div>
+
+      <div class="drug-calc-card drug-calc-card--info">
+        <h3 class="drug-calc-info-heading">Directive Parameters</h3>
+        <div class="drug-calc-info-grid">
+          <div>
+            <p class="drug-calc-info-sub">Allergic Reaction</p>
+            <ul class="drug-calc-info-list">
+              <li>Dose: 0.01 mg/kg IM (rounded to nearest 0.05 mg)</li>
+              <li>Max single dose: 0.5 mg</li>
+              <li>Interval: minimum 5 min</li>
+              <li>Max doses: 2</li>
+            </ul>
+          </div>
+          <div>
+            <p class="drug-calc-info-sub">Medical Cardiac Arrest<br><em>(Anaphylaxis as causative event)</em></p>
+            <ul class="drug-calc-info-list">
+              <li>Same dose calculation</li>
+              <li>Max doses: <strong>1 only</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="drug-calc-note">Concentration: 1 mg/mL (1:1,000). EPINEPHrine administration takes priority over IV access.</p>
+      </div>
+
+      <p class="drug-calc-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
+    </div>
+  </div>
+
+  <!-- BRONCHOCONSTRICTION DRUG CALCULATOR -->
+  <div id="view-broncho-calc" class="view drug-calc-view" hidden>
+    <div class="drug-calc-scroll">
+      <header class="drug-calc-header drug-calc-header--teal">
+        <div class="drug-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+        </div>
+        <div>
+          <h2 class="drug-calc-h1">Bronchoconstriction Calculator</h2>
+          <p class="drug-calc-sub">ALS PCS — EPINEPHrine &amp; Dexamethasone</p>
+        </div>
+      </header>
+
+      <div class="drug-calc-card">
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Patient Weight</span>
+          <div class="drug-calc-weight-row">
+            <input id="broncho-weight" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-broncho-unit="kg">kg</button>
+              <button type="button" class="drug-calc-unit-btn" data-broncho-unit="lbs">lbs</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="broncho-result" class="drug-calc-result drug-calc-result--hidden">
+          <div class="drug-calc-drug-section">
+            <div class="drug-calc-drug-label drug-calc-drug-label--red">EPINEPHrine IM (1:1,000)</div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dose</span>
+              <span class="drug-calc-result-value"><span id="broncho-epi-dose">—</span> <span class="drug-calc-result-unit">mg</span></span>
+            </div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Volume to draw up</span>
+              <span class="drug-calc-result-value"><span id="broncho-epi-vol">—</span> <span class="drug-calc-result-unit">mL</span></span>
+            </div>
+            <div id="broncho-epi-max-warning" class="drug-calc-warning" hidden>⚠ Dose exceeds maximum — showing max (0.5 mg / 0.5 mL)</div>
+            <p class="drug-calc-condition-note">Condition: apneic patient requiring BVM + history of asthma. Max 1 dose.</p>
+          </div>
+
+          <div class="drug-calc-drug-section">
+            <div class="drug-calc-drug-label drug-calc-drug-label--green">Dexamethasone PO / IM / IV</div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dose</span>
+              <span class="drug-calc-result-value"><span id="broncho-dex-dose">—</span> <span class="drug-calc-result-unit">mg</span></span>
+            </div>
+            <div id="broncho-dex-max-warning" class="drug-calc-warning" hidden>⚠ Dose exceeds maximum — showing max (8 mg)</div>
+            <p class="drug-calc-condition-note">Condition: Hx asthma OR COPD OR ≥ 20 pack-year. Max 1 dose.</p>
+          </div>
+
+          <div class="drug-calc-meta-row">
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight (kg)</span><span id="broncho-kg-display" class="drug-calc-meta-val">—</span></div>
+          </div>
+        </div>
+
+        <div id="broncho-empty" class="drug-calc-empty">Enter patient weight to calculate doses</div>
+      </div>
+
+      <div class="drug-calc-card drug-calc-card--info">
+        <h3 class="drug-calc-info-heading">Directive Parameters</h3>
+        <div class="drug-calc-info-grid">
+          <div>
+            <p class="drug-calc-info-sub">EPINEPHrine IM (1:1,000)</p>
+            <ul class="drug-calc-info-list">
+              <li>0.01 mg/kg (rounded to nearest 0.05 mg)</li>
+              <li>Max single dose: 0.5 mg</li>
+              <li>Max doses: 1</li>
+            </ul>
+          </div>
+          <div>
+            <p class="drug-calc-info-sub">Dexamethasone</p>
+            <ul class="drug-calc-info-list">
+              <li>0.5 mg/kg PO/IM/IV</li>
+              <li>Max single dose: 8 mg</li>
+              <li>Max doses: 1</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p class="drug-calc-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
+    </div>
+  </div>
+
+  <!-- CROUP DRUG CALCULATOR -->
+  <div id="view-croup-calc" class="view drug-calc-view" hidden>
+    <div class="drug-calc-scroll">
+      <header class="drug-calc-header drug-calc-header--purple">
+        <div class="drug-calc-header-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+        </div>
+        <div>
+          <h2 class="drug-calc-h1">Croup Calculator</h2>
+          <p class="drug-calc-sub">ALS PCS — EPINEPHrine NEB &amp; Dexamethasone</p>
+        </div>
+      </header>
+
+      <div class="drug-calc-card">
+        <div class="drug-calc-field">
+          <span class="drug-calc-label">Patient Weight</span>
+          <div class="drug-calc-weight-row">
+            <input id="croup-weight" class="drug-calc-input" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter weight" autocomplete="off" />
+            <div class="drug-calc-unit-toggle">
+              <button type="button" class="drug-calc-unit-btn drug-calc-unit-btn--on" data-croup-unit="kg">kg</button>
+              <button type="button" class="drug-calc-unit-btn" data-croup-unit="lbs">lbs</button>
+            </div>
+          </div>
+        </div>
+        <p class="drug-calc-age-note">Age range: ≥ 6 months to &lt; 8 years</p>
+
+        <div id="croup-result" class="drug-calc-result drug-calc-result--hidden">
+          <div class="drug-calc-drug-section">
+            <div class="drug-calc-drug-label drug-calc-drug-label--red">EPINEPHrine NEB (1:1,000)</div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dose</span>
+              <span class="drug-calc-result-value"><span id="croup-epi-dose">—</span> <span class="drug-calc-result-unit">mg</span></span>
+            </div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Volume of 1:1,000 solution</span>
+              <span class="drug-calc-result-value"><span id="croup-epi-vol">—</span> <span class="drug-calc-result-unit">mL</span></span>
+            </div>
+            <p class="drug-calc-condition-note">Condition: stridor at rest. HR &lt; 200 bpm. Max 1 dose.</p>
+          </div>
+
+          <div class="drug-calc-drug-section">
+            <div class="drug-calc-drug-label drug-calc-drug-label--green">Dexamethasone PO</div>
+            <div class="drug-calc-result-row">
+              <span class="drug-calc-result-label">Dose</span>
+              <span class="drug-calc-result-value"><span id="croup-dex-dose">—</span> <span class="drug-calc-result-unit">mg</span></span>
+            </div>
+            <div id="croup-dex-max-warning" class="drug-calc-warning" hidden>⚠ Dose exceeds maximum — showing max (8 mg)</div>
+            <p class="drug-calc-condition-note">For mild, moderate and severe croup. Unaltered LOA. Max 1 dose.</p>
+          </div>
+
+          <div class="drug-calc-meta-row">
+            <div class="drug-calc-meta-pill"><span class="drug-calc-meta-label">Weight (kg)</span><span id="croup-kg-display" class="drug-calc-meta-val">—</span></div>
+            <div class="drug-calc-meta-pill" id="croup-weight-bracket-pill"><span class="drug-calc-meta-label">Epi bracket</span><span id="croup-weight-bracket" class="drug-calc-meta-val">—</span></div>
+          </div>
+        </div>
+
+        <div id="croup-empty" class="drug-calc-empty">Enter patient weight to calculate doses</div>
+      </div>
+
+      <div class="drug-calc-card drug-calc-card--info">
+        <h3 class="drug-calc-info-heading">Directive Parameters</h3>
+        <div class="drug-calc-info-grid">
+          <div>
+            <p class="drug-calc-info-sub">EPINEPHrine NEB (1:1,000)</p>
+            <ul class="drug-calc-info-list">
+              <li>Weight &lt; 10 kg → 2.5 mg (2.5 mL)</li>
+              <li>Weight ≥ 10 kg → 5 mg (5 mL)</li>
+              <li>Max doses: 1</li>
+            </ul>
+          </div>
+          <div>
+            <p class="drug-calc-info-sub">Dexamethasone PO</p>
+            <ul class="drug-calc-info-list">
+              <li>0.5 mg/kg</li>
+              <li>Max single dose: 8 mg</li>
+              <li>Max doses: 1</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p class="drug-calc-disclaimer">Decision support only — confirm with ALS PCS, BHP, and service policy.</p>
+    </div>
+  </div>
+
+  <!-- CTAS LEVELS -->
+  <div id="view-ctas" class="view" hidden>
+    <div class="ctas-top-bar">
+      <div class="search-bar-wrap ctas-search-wrap">
+        <div class="search-bar">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+            <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input id="ctas-search" type="search" placeholder="Search CTAS entries…" autocomplete="off" />
+        </div>
+      </div>
+      <div class="ctas-tab-bar" role="tablist" aria-label="CTAS sections">
+        <button type="button" class="ctas-tab ctas-tab--on" data-ctas-tab="0" role="tab" aria-selected="true">Complaints</button>
+        <button type="button" class="ctas-tab" data-ctas-tab="1" role="tab" aria-selected="false">1st Mod</button>
+        <button type="button" class="ctas-tab" data-ctas-tab="2" role="tab" aria-selected="false">2nd Mod</button>
+        <button type="button" class="ctas-tab" data-ctas-tab="3" role="tab" aria-selected="false">By Level</button>
+      </div>
+    </div>
+    <div id="ctas-search-results" class="ctas-search-results" hidden></div>
+    <div id="ctas-content" class="ctas-content"></div>
+    <p class="ctas-attribution">Referenced from "Prehospital CTAS Paramedic Guide Version 2.0: Adult" — Ontario Ministry of Health</p>
+  </div>
+
+  <!-- DIRECTIVE DETAIL -->
+  <div id="view-detail" class="view" hidden>
+    <div id="detail-content" class="detail-content"></div>
+  </div>
+
+  <!-- Reference image: pinch-zoom + pan (Medical References charts) -->
+  <div id="ref-image-viewer" class="ref-image-viewer" hidden aria-hidden="true">
+    <div class="ref-image-viewer-backdrop" tabindex="-1"></div>
+    <div class="ref-image-viewer-topbar">
+      <button type="button" class="ref-image-viewer-fit" id="ref-image-viewer-fit" aria-label="Fit to screen">Fit</button>
+      <button type="button" class="ref-image-viewer-close" aria-label="Close">&times;</button>
+    </div>
+    <div id="ref-image-viewer-outer" class="ref-image-viewer-outer">
+      <div id="ref-image-viewer-stage" class="ref-image-viewer-stage">
+        <img id="ref-image-viewer-img" src="" alt="" draggable="false" />
+      </div>
+    </div>
+    <p class="ref-image-viewer-hint">Pinch to zoom · drag to pan · <strong>Fit</strong> resets view</p>
+  </div>
+
+  <script src="data/directives.js"></script>
+  <script src="data/companion.js"></script>
+  <script src="data/references.js"></script>
+  <script src="data/specialEvent.js"></script>
+  <script src="data/contact.js"></script>
+  <script src="data/destinationGuidelines.js"></script>
+  <script src="data/calculators-content.js"></script>
+  <script src="data/medications.js"></script>
+  <script src="data/blsStandards.js"></script>
+  <script src="data/ctasData.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
-dist/
-ios/
-android/
+/dist/
+# made by `npx cap add` (in CI too); the app's own iOS pieces live in native/ios/ and are applied by scripts/apply-ios-shell.sh
+/ios/
+/android/
 .local/
