@@ -1,6 +1,6 @@
 {
   "name": "directives",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Ontario Primary Care Paramedic medical directives, with every dose worked out for your patient. Live app: https://icpryde.github.io/Primary-Care-Paramedic-Directives/",
   "main": "app.js",
   "scripts": {
