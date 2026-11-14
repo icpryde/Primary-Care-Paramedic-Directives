@@ -8,10 +8,10 @@ ALS PCS 5.4 · BLS PCS 3.4 · Companion 5.4</p>
 <p align="center">
 <a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/"><b>Open the app</b></a> ·
 <a href="https://github.com/icpryde/Primary-Care-Paramedic-Directives/releases/latest"><b>iPhone and Android downloads</b></a> ·
-<a href="media/directives-trailer-v2.mp4"><b>Watch the trailer</b></a>
+<a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/directives-trailer-v2.mp4"><b>Watch the trailer</b></a>
 </p>
 
-<p align="center"><a href="media/directives-trailer-v2.mp4"><img src="media/trailer-poster.png" width="270" alt="Directives trailer: tap to watch" /></a></p>
+<p align="center"><a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/directives-trailer-v2.mp4"><img src="media/trailer-poster.png" width="270" alt="Directives trailer: tap to watch" /></a></p>
 
 ## Version 2.0: a whole new app
 
