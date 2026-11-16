@@ -1,6 +1,6 @@
 // Directives v2.0, the web app's offline copy. The phone apps carry everything and never use this.
 // The deploy workflow bumps the number below on every push to main, so a new version replaces the saved one.
-const CACHE_NAME = 'pcp-directives-v131';
+const CACHE_NAME = 'pcp-directives-v132';
 const OWN = CACHE_NAME.replace(/\d+$/, '');            // this app's earlier copies; the archived first app (v1/) has its own name
 const SCOPE = self.registration.scope;
 const PRECACHE = [
@@ -16,6 +16,7 @@ const PRECACHE = [
 "img/bls-dnr-confirmation-form-sample.jpg",
 "img/breech-delivery.png",
 "img/breech-flowchart.png",
+"img/childbirth-perineum.png",
 "img/cord-prolapse-management.png",
 "img/cord-prolapse-transport.png",
 "img/cpap-step1.png",
@@ -39,10 +40,13 @@ const PRECACHE = [
 "img/pain-scale.png",
 "img/radio-channel-selector.jpg",
 "img/rule-of-nines.png",
+"img/shoulder-mcroberts.png",
+"img/shoulder-suprapubic.png",
 "img/spinal-motion-restriction-prompt-card-full.png",
 "img/spinal-motion-restriction-prompt-card-thumb.png",
 "img/trauma-arrest-flowchart-full.png",
 "img/trauma-arrest-flowchart-thumb.png",
+"img/uterine-massage-side.png",
 "img/v4r-ecg.png",
 "files/imist-ambo.pdf",
 "pdfjs/pdf.min.js",
@@ -50,7 +54,9 @@ const PRECACHE = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE.map((p) => new URL(p, SCOPE).href))));
+  // 'no-cache': ask the server each time, never the browser's own short-term copy (GitHub Pages lets a browser reuse a
+  // file for 10 minutes, so a new version installed in that time would otherwise save the old page under the new name)
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE.map((p) => new Request(new URL(p, SCOPE).href, { cache: 'no-cache' })))));
   self.skipWaiting();
 });
 
