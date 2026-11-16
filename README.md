@@ -82,7 +82,8 @@ Open **https://icpryde.github.io/Primary-Care-Paramedic-Directives/**
 After the first visit the web app works with no signal. Skill videos play from the internet in the web app (the phone apps carry them).
 
 ### Updating
-Close the app fully and open it again to get a new version. In the web app, open it once with signal.
+- **Web app:** it looks for a new version when it opens and when you come back to it, with a signal. When one is ready it says so: tap **Restart**. Settings → About → Check for updates looks right away.
+- **iPhone and Android apps:** from 2.0.4 on, the app tells you when a new version is out, with a button to get it. Install the new `.ipa` or `.apk` the same way as the first time; it installs over the one you have.
 
 ## Coming from version 1
 
