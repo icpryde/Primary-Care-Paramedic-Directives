@@ -63,6 +63,7 @@ Directives 2.0 is rebuilt from the ground up around one idea: set the patient on
 **At home on your phone**
 - Looks like an iPhone app on iPhone and an Android app on Android, in light or dark mode.
 - Swipe back from the edge, pull down on Home to search everything, and it all works with no signal.
+- Turn the phone on its side and the app spreads out: the sections move to a bar down the side (left or right, your choice), lists run in two columns and treatment cards sit side by side. Settings → Rotation → Lock upright keeps it upright instead.
 
 ## Get the app
 
