@@ -57,7 +57,7 @@ Directives 2.0 is rebuilt from the ground up around one idea: set the patient on
 **Everything in one place**
 - 36 directives (25 PCP, 4 special event, 7 palliative) and all 65 BLS Patient Care Standards.
 - 391 medications, 9 calculators, 26 medical references, 20 procedure sheets from the Companion Document, 17 skill videos, 12 common 10-codes.
-- Find any medication sold in Canada by its brand, generic or pharmacy name, even spelled a little wrong, from Health Canada's drug list.
+- Find any medication sold in Canada by its brand, generic or pharmacy name, as a label or a pharmacy's printout writes it (strength, form, salt and all), even spelled a little wrong, from Health Canada's drug list.
 - CTAS, Transport (10 destination guidelines with bypass protocols, 8 contact pages, the CPER patch number), a 706-question quiz and drug suffix quizzes.
 
 **At home on your phone**
