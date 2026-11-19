@@ -77,8 +77,17 @@ Version 2.0 installs over version 1 as an update.
 
 ### Web app (add to Home Screen)
 Open **https://icpryde.github.io/Primary-Care-Paramedic-Directives/**
-- **iPhone (Safari):** Share → **Add to Home Screen** → Add.
-- **Android (Chrome):** ⋮ → **Install app** or **Add to Home screen**.
+- **iPhone (Safari):** tap the menu button next to the address, then Share → View More → **Add to Home Screen** → Add. On older iPhones, tap Share at the bottom of Safari, then **Add to Home Screen**.
+- **Android (Chrome):** ⋮ → **Install and create shortcut** → Install → Install. On older Chrome: ⋮ → **Install app** or **Add to Home screen**.
+
+Watch how, with voice-over and subtitles:
+
+<table>
+<tr>
+<td align="center" valign="top" width="50%"><a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/add-to-home-screen-iphone.mp4"><img src="media/add-to-home-screen-iphone.png" width="220" alt="Video: adding Directives to the Home Screen on an iPhone" /></a><br /><sub><b>iPhone</b> · 43 seconds</sub></td>
+<td align="center" valign="top" width="50%"><a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/add-to-home-screen-android.mp4"><img src="media/add-to-home-screen-android.png" width="220" alt="Video: adding Directives to the Home Screen on Android" /></a><br /><sub><b>Android</b> · 32 seconds</sub></td>
+</tr>
+</table>
 
 After the first visit the web app works with no signal. Skill videos play from the internet in the web app (the phone apps carry them).
 
