@@ -63,7 +63,7 @@ Directives 2.0 is rebuilt from the ground up around one idea: set the patient on
 **At home on your phone**
 - Looks like an iPhone app on iPhone and an Android app on Android, in light or dark mode.
 - Swipe back from the edge, pull down on Home to search everything, and it all works with no signal.
-- Turn the phone on its side and the app spreads out: the sections move to a bar down the side (left or right, your choice), lists run in two columns and treatment cards sit side by side. Settings → Rotation → Lock upright keeps it upright instead.
+- Turn the phone on its side and the app spreads out: the sections move to a bar down the side (left or right, your choice), lists run in two columns and treatment cards sit side by side. To keep it upright: in the iPhone and Android apps, Settings → Rotation → Lock upright; in the web app, your phone's own rotation lock (Settings → Rotation shows how).
 
 ## Get the app
 
@@ -94,6 +94,7 @@ After the first visit the web app works with no signal. Skill videos play from t
 ### Updating
 - **Web app:** it looks for a new version when it opens and when you come back to it, with a signal. When one is ready it says so: tap **Restart**. Settings → About → Check for updates looks right away.
 - **iPhone and Android apps:** from 2.0.4 on, the app tells you when a new version is out, with a button to get it. Install the new `.ipa` or `.apk` the same way as the first time; it installs over the one you have.
+- **What's new:** from 2.1.2 on, the first time the app opens after an update it lists what changed. Settings → About → What's new shows it again.
 
 ## Coming from version 1
 
