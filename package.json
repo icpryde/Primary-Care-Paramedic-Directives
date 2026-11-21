@@ -1,6 +1,6 @@
 {
   "name": "directives",
-  "version": "2.1.2",
+  "version": "2.3.0",
   "description": "Ontario Primary Care Paramedic medical directives, with every dose worked out for your patient. Live app: https://icpryde.github.io/Primary-Care-Paramedic-Directives/",
   "main": "app.js",
   "scripts": {
@@ -30,13 +30,16 @@
   },
   "homepage": "https://github.com/icpryde/Primary-Care-Paramedic-Directives#readme",
   "dependencies": {
+    "@capacitor-community/keep-awake": "^8.0.1",
     "@capacitor/android": "^8.6.2",
     "@capacitor/app": "^8.1.2",
     "@capacitor/cli": "^8.6.2",
     "@capacitor/core": "^8.6.2",
+    "@capacitor/filesystem": "^8.1.5",
     "@capacitor/ios": "^8.6.2",
     "@capacitor/keyboard": "^8.0.6",
-    "@capacitor/screen-orientation": "^8.0.2"
+    "@capacitor/screen-orientation": "^8.0.2",
+    "@capacitor/share": "^8.0.3"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5"

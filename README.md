@@ -44,19 +44,22 @@ Directives 2.0 is rebuilt from the ground up around one idea: set the patient on
 - One patient, set once by age, weight or both, carried into every directive, the search and the calculators.
 - Each directive shows that patient's doses, worked out and held at the maximum dose, and says plainly when a drug is not indicated and why.
 - Normal values for the patient's age, and pediatric defibrillation with the nearest energy your monitor can select (pick your defibrillator in Settings).
-- Type the patient's medications, any name on the bottle, and every directive marks a drug they contraindicate: blood thinners, antiplatelets, NSAIDs, steroids and more.
+- Type the patient's medications, any name on the bottle, and every directive marks a drug they contraindicate: blood thinners, antiplatelets, NSAIDs, steroids and more. Or say them: tap the microphone on your keyboard and list them off, and the commas are put in for you.
+- Tap **Given** on a medication's card and the time is noted. The **Report** has the patient's age and weight, their medications and what you gave, with the times, ready to read out at the hospital. It holds no name and stays on your phone.
 
 **Every directive, four tabs**
-- **Quick**: what you need on a call. **Full directive**: the directive in full. **Companion**: its Companion Document section. **Aids**: charts, references, transport pages, skill videos, procedure sheets and your own files for that directive.
+- **Quick**: what you need on a call. **Full directive**: the directive in full. **Companion**: its Companion Document section (August 2026 edition). **Aids**: charts, references, transport pages, skill videos, procedure sheets and your own files for that directive.
 
 **Make it yours**
 - Pin directives, BLS standards, calculators and anything in the Library to Home.
 - Add your own notes, photos, videos and PDFs to any directive or BLS standard. They stay on your device only.
 - Keep your own contacts beside the regional contacts and patch numbers. One tap to call.
+- **Backup:** Settings → Backup puts your notes, files, contacts, pins and settings in one file. Keep it in iCloud Drive or Google Drive, or send it to a new phone and bring it all back there.
 
 **Everything in one place**
 - 36 directives (25 PCP, 4 special event, 7 palliative) and all 65 BLS Patient Care Standards.
-- 391 medications, 9 calculators, 26 medical references, 20 procedure sheets from the Companion Document, 17 skill videos, 12 common 10-codes.
+- 391 medications, 9 calculators, 26 medical references, 22 step-by-step skill sheets from the Companion Document (August 2026), 17 skill videos, 12 common 10-codes.
+- OBHG's drug monograph on the page of each of the 21 drugs a PCP directive gives: brand names, class, onset, peak, duration, adverse reactions and interactions.
 - Find any medication sold in Canada by its brand, generic or pharmacy name, as a label or a pharmacy's printout writes it (strength, form, salt and all), even spelled a little wrong, from Health Canada's drug list.
 - CTAS, Transport (10 destination guidelines with bypass protocols, 8 contact pages, the CPER patch number), a 706-question quiz and drug suffix quizzes.
 
@@ -64,6 +67,7 @@ Directives 2.0 is rebuilt from the ground up around one idea: set the patient on
 - Looks like an iPhone app on iPhone and an Android app on Android, in light or dark mode.
 - Swipe back from the edge, pull down on Home to search everything, and it all works with no signal.
 - Turn the phone on its side and the app spreads out: the sections move to a bar down the side (left or right, your choice), lists run in two columns and treatment cards sit side by side. To keep it upright: in the iPhone and Android apps, Settings → Rotation → Lock upright; in the web app, your phone's own rotation lock (Settings → Rotation shows how).
+- Settings → Screen → Keep it on stops the phone dimming or locking while Directives is open, whatever its own setting.
 
 ## Get the app
 
