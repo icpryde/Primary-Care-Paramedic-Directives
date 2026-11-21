@@ -8,10 +8,28 @@ ALS PCS 5.4 · BLS PCS 3.4 · Companion 5.4</p>
 <p align="center">
 <a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/"><b>Open the app</b></a> ·
 <a href="https://github.com/icpryde/Primary-Care-Paramedic-Directives/releases/latest"><b>iPhone and Android downloads</b></a> ·
-<a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/directives-trailer-v2.mp4"><b>Watch the trailer</b></a>
+<a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/directives-trailer-v2.mp4"><b>Watch the trailer</b></a> ·
+<a href="#how-to-videos"><b>How-to videos</b></a>
 </p>
 
 <p align="center"><a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/directives-trailer-v2.mp4"><img src="media/trailer-poster.png" width="270" alt="Directives trailer: tap to watch" /></a></p>
+
+## How-to videos
+
+Six short videos, about a minute each, on getting the most out of Directives. Tap one to watch.
+
+<table>
+<tr>
+<td align="center" valign="top" width="33%"><a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/tutorials/1-set-the-patient-first.mp4"><img src="media/tutorials/1-set-the-patient-first.png" width="200" alt="Video 1, Set the patient first: tap to watch" /></a><br /><sub><b>1. Set the patient first</b><br />every dose worked out for your patient</sub></td>
+<td align="center" valign="top" width="33%"><a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/tutorials/2-everything-in-one-directive.mp4"><img src="media/tutorials/2-everything-in-one-directive.png" width="200" alt="Video 2, Everything in one directive: tap to watch" /></a><br /><sub><b>2. Everything in one directive</b><br />vitals, joules, Full directive and Companion</sub></td>
+<td align="center" valign="top" width="33%"><a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/tutorials/3-the-patients-medications.mp4"><img src="media/tutorials/3-the-patients-medications.png" width="200" alt="Video 3, The patient's medications: tap to watch" /></a><br /><sub><b>3. The patient's medications</b><br />warnings, Given and the report</sub></td>
+</tr>
+<tr>
+<td align="center" valign="top"><a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/tutorials/4-the-aids-tab.mp4"><img src="media/tutorials/4-the-aids-tab.png" width="200" alt="Video 4, The Aids tab: tap to watch" /></a><br /><sub><b>4. The Aids tab</b><br />videos, pictures and your own files</sub></td>
+<td align="center" valign="top"><a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/tutorials/5-settings.mp4"><img src="media/tutorials/5-settings.png" width="200" alt="Video 5, Settings: tap to watch" /></a><br /><sub><b>5. Settings</b><br />your defibrillator, Keep it on, Backup</sub></td>
+<td align="center" valign="top"><a href="https://icpryde.github.io/Primary-Care-Paramedic-Directives/media/tutorials/6-getting-around.mp4"><img src="media/tutorials/6-getting-around.png" width="200" alt="Video 6, Getting around: tap to watch" /></a><br /><sub><b>6. Getting around</b><br />Tools, Library, Transport, pins and search</sub></td>
+</tr>
+</table>
 
 ## Version 2.0: a whole new app
 
