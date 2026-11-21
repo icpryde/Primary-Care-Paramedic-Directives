@@ -16,7 +16,7 @@ ALS PCS 5.4 · BLS PCS 3.4 · Companion 5.4</p>
 
 ## How-to videos
 
-Six short videos, about a minute each, on getting the most out of Directives. Tap one to watch.
+Six short videos, about a minute each, on getting the most out of Directives. Tap one to watch, or find them in the app under Settings → How to use Directives.
 
 <table>
 <tr>
