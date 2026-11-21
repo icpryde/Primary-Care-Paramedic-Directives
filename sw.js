@@ -1,6 +1,6 @@
 // Directives v2.0, the web app's offline copy. The phone apps carry everything and never use this.
 // The deploy workflow bumps the number below on every push to main, so a new version replaces the saved one.
-const CACHE_NAME = 'pcp-directives-v144';
+const CACHE_NAME = 'pcp-directives-v145';
 const OWN = CACHE_NAME.replace(/\d+$/, '');            // this app's earlier copies; the archived first app (v1/) has its own name
 const SCOPE = self.registration.scope;
 const PRECACHE = [
@@ -28,6 +28,12 @@ const PRECACHE = [
 "img/fast-sepsis-prealert-chart.png",
 "img/field-trauma-triage-flowchart-full.png",
 "img/field-trauma-triage-flowchart-thumb.png",
+"img/how-to-1.jpg",
+"img/how-to-2.jpg",
+"img/how-to-3.jpg",
+"img/how-to-4.jpg",
+"img/how-to-5.jpg",
+"img/how-to-6.jpg",
 "img/imist-ambo-full.png",
 "img/imist-ambo-thumb.png",
 "img/mrsopa-infographic.webp",
@@ -72,7 +78,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
   if (url.href.indexOf(SCOPE) !== 0) return;                                 // another site, or another app on this one
   const path = url.href.slice(SCOPE.length);
-  if (path.indexOf('v1/') === 0 || path.indexOf('vid/') === 0) return;      // the archived first app; skill videos (network)
+  if (path.indexOf('v1/') === 0 || path.indexOf('vid/') === 0 || path.indexOf('media/') === 0) return;      // the archived first app; skill videos and the How to videos (network)
   if (req.mode === 'navigate') {                                            // the app is one page: any visit gets it
     event.respondWith(caches.match(new URL('index.html', SCOPE).href).then((hit) => hit || fetch(req)));
     return;

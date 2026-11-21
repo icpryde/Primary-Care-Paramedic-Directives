@@ -1,6 +1,6 @@
 // Copies the web app into dist/, which Capacitor puts inside the iPhone and Android apps.
 // v2.0: one page (index.html) with its pictures, skill videos, PDFs and PDF.js beside it, so the phone apps
-// carry everything and need no signal. The first app (v1/) stays on the website only.
+// carry everything and need no signal. 2.3.1: and the six How to videos (media/tutorials). The first app (v1/) stays on the website only.
 import { cp, mkdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -21,7 +21,8 @@ const copyDirs = [
   'vid',
   'files',
   'pdfjs',
-  'icons'
+  'icons',
+  'media/tutorials'     // Settings → How to use Directives plays these (the rest of media/ is the README's own)
 ];
 
 await rm(outDir, { recursive: true, force: true });

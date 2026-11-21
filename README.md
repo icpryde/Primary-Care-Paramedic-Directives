@@ -72,6 +72,7 @@ Directives 2.0 is rebuilt from the ground up around one idea: set the patient on
 - Pin directives, BLS standards, calculators and anything in the Library to Home.
 - Add your own notes, photos, videos and PDFs to any directive or BLS standard. They stay on your device only.
 - Keep your own contacts beside the regional contacts and patch numbers. One tap to call.
+- **Your own numbers:** not under CPER? Make one of your contacts your base hospital's patch number and every directive shows it instead. Your STEMI and stroke centres' numbers can go on their bypass pages too.
 - **Backup:** Settings → Backup puts your notes, files, contacts, pins and settings in one file. Keep it in iCloud Drive or Google Drive, or send it to a new phone and bring it all back there.
 
 **Everything in one place**
@@ -79,7 +80,7 @@ Directives 2.0 is rebuilt from the ground up around one idea: set the patient on
 - 391 medications, 9 calculators, 26 medical references, 22 step-by-step skill sheets from the Companion Document (August 2026), 17 skill videos, 12 common 10-codes.
 - OBHG's drug monograph on the page of each of the 21 drugs a PCP directive gives: brand names, class, onset, peak, duration, adverse reactions and interactions.
 - Find any medication sold in Canada by its brand, generic or pharmacy name, as a label or a pharmacy's printout writes it (strength, form, salt and all), even spelled a little wrong, from Health Canada's drug list.
-- CTAS, Transport (10 destination guidelines with bypass protocols, 8 contact pages, the CPER patch number), a 706-question quiz and drug suffix quizzes.
+- CTAS, Transport (10 destination guidelines with bypass protocols, 8 contact pages, the CPER patch number or your own), a 706-question quiz and drug suffix quizzes.
 
 **At home on your phone**
 - Looks like an iPhone app on iPhone and an Android app on Android, in light or dark mode.
