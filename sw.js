@@ -1,6 +1,6 @@
 // Directives v2.0, the web app's offline copy. The phone apps carry everything and never use this.
 // The deploy workflow bumps the number below on every push to main, so a new version replaces the saved one.
-const CACHE_NAME = 'pcp-directives-v146';
+const CACHE_NAME = 'pcp-directives-v147';
 const OWN = CACHE_NAME.replace(/\d+$/, '');            // this app's earlier copies; the archived first app (v1/) has its own name
 const SCOPE = self.registration.scope;
 const PRECACHE = [
@@ -44,7 +44,6 @@ const PRECACHE = [
 "img/pads-adult-anterior-posterior.png",
 "img/pads-pediatric-anterior-posterior.png",
 "img/pain-scale.png",
-"img/radio-channel-selector.jpg",
 "img/rule-of-nines.png",
 "img/shoulder-mcroberts.png",
 "img/shoulder-suprapubic.png",
